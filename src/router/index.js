@@ -8,7 +8,7 @@ let router =  new Router({
 	routes: [{
 		path: '/',
 		name: 'home',
-		component: resolve => require(['../views/Home'], resolve),
+		component: resolve => require(['../views/home/Home'], resolve),
 		redirect: { path: '/home/index' },
 		// 配置了scrollToTop为true，点击这个路由，页面会滚到顶部
 		// 如果没配置scrollToTop或配置scrollToTop为false，点击这个路由，页面保持原先的滚动位置
