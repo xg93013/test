@@ -1,7 +1,7 @@
 <template>
 	<div class="home">
 		<!--<span>admin</span>-->
-		<router-link to="/home/excel">excel</router-link>
+		<!-- <router-link to="/home/excel">excel</router-link> -->
 		<router-view />
 	</div>
 </template>
