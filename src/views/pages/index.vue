@@ -1,11 +1,13 @@
 <template>
-	<div>
-		{{ $t("home.title") }}
+	<div class="map-box">
+		<!-- {{ $t("home.title") }}
 		<span @click="changeLang">切换</span>
-		<span @click="cancelSelect">取消选中</span>
+		<span @click="cancelSelect">取消选中</span> -->
 		<!-- <div @click="login">登录</div>
 		<div @click="getUser">获取用户</div> -->
-		<div id="map"></div>
+		<span @click="cancelSelect">取消选中</span>
+		<div id="map" class="map-area"></div>
+		<div class="dataList"></div>
 	</div>
 </template>
 
@@ -14,14 +16,21 @@
 	import { setStorage } from '@/utils';
 	import Cookies from 'js-cookie';
 	import ol from 'openlayers';
+	import originData from '@/assets/data/area.js'
 	export default {
 		name: 'HelloWorld',
 		data() {
 			return {
 				msg: '',
 				map: '',
-				clickSelect: ""
+				markerLayers: '', // 坐标点
+				markerArr: '',
+				clickSelect: "",
+				selectMarkerId: ''
 			}
+		},
+		created () {
+			console.log(originData)
 		},
 		computed: {
 			...mapGetters(['loginUser'])
@@ -51,29 +60,17 @@
 			},
 			initMap () {
 				let that = this
-				var layer = new ol.layer.Vector({
-					source: new ol.source.Vector(),
-					style: new ol.style.Style({
-						image: new ol.style.Circle({
-							radius: 10,
-							fill: new ol.style.Fill({
-								color: 'red'
-							})
-						})
-					})
+				that.markerLayers = new ol.layer.Vector({
+					source: new ol.source.Vector()
 				});
-				// 在地图上添加一个圆
-				var circle = new ol.Feature({
-					geometry: new ol.geom.Point([104, 30])
-				})
-				layer.getSource().addFeature(circle);
+				
 				that.map = new ol.Map({
 					target: 'map',
 					layers: [
 						new ol.layer.Tile({
 							source: new ol.source.OSM()
 						}),
-						layer
+						that.markerLayers
 					],
 					view: new ol.View({
 						projection: 'EPSG:4326',
@@ -81,62 +78,79 @@
 						zoom: 6
 					})
 				});
-				
-				// 添加绘图的交互类
-				// that.map.addInteraction(new ol.interaction.Draw({
-				// 	type: 'LineString' // 设置绘制线
-				// }));
-				// 监听singleclick事件
-				// that.map.on('singleclick', function(event){
-				// 	console.log(event.coordinate)
-				// 	// 通过getEventCoordinate方法获取地理位置，再转换为wgs84坐标，并弹出对话框显示
-				// 	alert(ol.proj.transform(event.coordinate, 'EPSG:3857', 'EPSG:4326'));
-				// })
-				console.log(this.map)
 
-				// 异步加载
-				// 添加一个用于选择Feature的交互方式
-				that.clickSelect = new ol.interaction.Select({
-					style: new ol.style.Style({
-						image: new ol.style.Circle({
-							radius: 10,
-							fill: new ol.style.Fill({
-								color: 'blue'
-							})
-						})
-					})
-				});
-				that.map.addInteraction(that.clickSelect);
-
-				// var vectorSource = new Vector({
-				// 	format: new GeoJSON(),
-				// 	loader: function(extent, resolution, projection) {
-				// 		var proj = projection.getCode();
-				// 		var url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
-				// 			'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
-				// 			'outputFormat=application/json&srsname=' + proj + '&' +
-				// 			'bbox=' + extent.join(',') + ',' + proj;
-				// 		var xhr = new XMLHttpRequest();
-				// 		xhr.open('GET', url);
-				// 		var onError = function() {
-				// 		vectorSource.removeLoadedExtent(extent);
-				// 		}
-				// 		xhr.onerror = onError;
-				// 		xhr.onload = function() {
-				// 		if (xhr.status == 200) {
-				// 			vectorSource.addFeatures(
-				// 				vectorSource.getFormat().readFeatures(xhr.responseText));
-				// 		} else {
-				// 			onError();
-				// 		}
-				// 		}
-				// 		xhr.send();
-				// 	},
-				// 		strategy: bbox
-				// });
+				that.addMarkers()
+				that.addEvents()
 			},
 			cancelSelect () {
-				this.clickSelect.getFeatures().clear()
+				if(this.selectMarkerId){
+					this.markerArr[this.selectMarkerId].setStyle(new ol.style.Style({
+						image: new ol.style.Circle({
+							radius: 4,
+							fill: new ol.style.Fill({
+								color: 'gray'
+							})
+						})
+					}))
+				}
+				
+			},
+			addMarkers () {
+				this.markerArr = {}
+				// 在地图上添加一个圆
+				let circle = new ol.Feature({
+					geometry: new ol.geom.Point([104, 30]),
+					id: 1
+				})
+				circle.setStyle(new ol.style.Style({
+					image: new ol.style.Circle({
+						radius: 4,
+						fill: new ol.style.Fill({
+							color: 'gray'
+						})
+					})
+				}))
+				let circle1 = new ol.Feature({
+					geometry: new ol.geom.Point([104, 30.12]),
+					id: 2
+				})
+				circle1.setStyle(new ol.style.Style({
+					image: new ol.style.Circle({
+						radius: 4,
+						fill: new ol.style.Fill({
+							color: 'gray'
+						})
+					})
+				}))
+				this.markerArr['1'] = circle
+				this.markerArr['2'] = circle1
+				this.markerLayers.getSource().addFeature(circle);
+				this.markerLayers.getSource().addFeature(circle1);
+			},
+			addEvents () {
+				var that = this
+				that.clickSelect = new ol.interaction.Select();
+				that.clickSelect.on('select', function(event){
+					that.cancelSelect()
+					if(event.selected[0]){
+						// console.log(event.selected[0].getGeometry().getCoordinates())
+						that.selectMarkerId = event.selected[0].getProperties().id
+						event.selected[0].setStyle(new ol.style.Style({
+							image: new ol.style.Circle({
+								radius: 5,
+								fill: new ol.style.Fill({
+									color: 'black'
+								})
+							})
+						}));
+					} else {
+
+					}
+				})
+				that.map.addInteraction(that.clickSelect);
+				that.map.on('pointermove', function(event){
+					that.map.getTargetElement().style.cursor = that.map.hasFeatureAtPixel(event.pixel) ? 'pointer' : '';
+				})
 			}
 		},
 		mounted () {
@@ -146,8 +160,17 @@
 </script>
 
 <style lang="scss" scoped>
+.map-box{
+	position: relative;
+	width: 100%;
+	height: 100%;
+	.map-area{
+		position: absolute;
+
+	}
+}
 #map{
-	width: 200px;
-	height: 200px;
+	width: 500px;
+	height: 500px;
 }
 </style>
