@@ -8,6 +8,9 @@
 		<span @click="cancelSelect">取消选中</span>
 		<div id="map" class="map-area"></div>
 		<div class="dataList"></div>
+		<div class="date-select">
+			<DateSelect></DateSelect>
+		</div>
 	</div>
 </template>
 
@@ -16,9 +19,13 @@
 	import { setStorage } from '@/utils';
 	import Cookies from 'js-cookie';
 	import ol from 'openlayers';
-	import originData from '@/assets/data/area.js'
+	import originData from '@/assets/data/area.js';
+	import DateSelect from '@/components/DateSelect/DateSelect.vue'
 	export default {
-		name: 'HelloWorld',
+		name: 'index',
+		components: {
+			DateSelect
+		},
 		data() {
 			return {
 				msg: '',
@@ -162,11 +169,15 @@
 <style lang="scss" scoped>
 .map-box{
 	position: relative;
-	width: 100%;
-	height: 100%;
+	width: 500px;
+	height: 500px;
 	.map-area{
 		position: absolute;
-
+	}
+	.date-select{
+		position: absolute;
+		top: 10px;
+		right: 10px;
 	}
 }
 #map{
