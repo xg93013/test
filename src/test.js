@@ -252,3 +252,18 @@
         "syn_score": 0
       }
   ]
+
+
+//   proxyTable: {
+//     '/': {
+//         // target: 'http://182.150.44.160:7002/',
+//         changeOrigin: true,
+//         target: 'http://172.27.2.87:8080/',
+//         pathRewrite: {
+//             '^/': ''
+//         }
+//     }
+// },
+
+
+  

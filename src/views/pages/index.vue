@@ -32,7 +32,7 @@
 				map: '',
 				markerLayers: '', // 坐标点
 				markerArr: '',
-				clickSelect: "",
+				clickSelect: '',
 				selectMarkerId: ''
 			}
 		},
