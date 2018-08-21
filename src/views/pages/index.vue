@@ -20,7 +20,7 @@
 	import Cookies from 'js-cookie';
 	import ol from 'openlayers';
 	import originData from '@/assets/data/area.js';
-	import DateSelect from '@/components/DateSelect/DateSelect.vue'
+	import DateSelect from '@/components/DateSelect/DateSelect.vue';
 	export default {
 		name: 'index',
 		components: {

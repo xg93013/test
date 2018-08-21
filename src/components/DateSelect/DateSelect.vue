@@ -1,7 +1,7 @@
 <template>
     <div class="date-container">
-        <div class="date-select">{{ currentTime }}</div>
-        <div class="date-box">
+        <div class="date-select" @click="showDateSelect">{{ currentTime }}</div>
+        <div class="date-box" v-show="showSelect">
             <div class="date-type">
                 <span class="item" @click="changeDateType(1)" :class="{'active' : dateType === 1}">月度</span>
                 <span class="item" @click="changeDateType(2)" :class="{'active' : dateType === 2}">季</span>
@@ -43,6 +43,7 @@ import allDate from '@/assets/data/dateInfo.js'
 export default {
     data () {
         return {
+            showSelect: false,
             getDate: "",
             currentDate: "",
             currentTime: "", // 当前时间
@@ -121,6 +122,9 @@ export default {
                     break;
             }
             return name
+        },
+        showDateSelect () {
+            this.showSelect = !this.showSelect;
         },
         confirmDate () {
             let typeName = this.switchTypeName(this.dateType)
