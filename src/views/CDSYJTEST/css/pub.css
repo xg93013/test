@@ -1,0 +1,272 @@
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	color: #fff;
+}
+
+/* body{
+	background: #18235B;
+} */
+
+#header{
+	position: fixed;
+	background: #0F2571;
+	width: 100%;
+	left: 0;
+	top: 0;
+	z-index: 100;
+	box-shadow: 0 0 2px 2px #151C3E;
+	-moz-box-shadow: 0 0 2px 2px #151C3E;
+	-webkit-box-shadow: 0 0 2px 2px #151C3E;
+	-o-box-shadow: 0 0 2px 2px #151C3E;
+	-ms-box-shadow: 0 0 2px 2px #151C3E;
+}
+
+.title{
+	float: left;
+	font-size: 2.2rem;
+	margin-left: 14%;
+}
+
+.navs{
+	float: right;
+	margin-right: 14%;
+}
+.navs .nav,
+.nav-pro-lists,
+.nav-pro-lists div{
+	transition: all .3s;
+	-webkit-transition: all .3s;
+	-moz-transition: all .3s;
+	-ms-transition: all .3s;
+	-o-transition: all .3s;
+}
+.navs .nav{
+	position: relative;
+	float: left;
+	margin-left: 2rem;
+	cursor: pointer;
+	font-size: 1.6rem;
+}
+
+.nav:hover,
+.nav-pro-lists div:hover{
+	background: #293979;
+}
+.navs .active:after{
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 2px;
+	content: "";
+	background: #fff;
+}
+
+
+.navs .nav:first-child{
+	margin-left: 0;
+}
+
+
+.nav-pro-lists{
+	position: absolute;
+	left: 0;
+	top: 6rem;
+	width: 16rem;
+	transform-origin: 0 0;
+	transform: rotateX(-90deg);
+	-webkit-transform: rotateX(-90deg);
+	-moz-transform: rotateX(-90deg);
+	-ms-transform: rotateX(-90deg);
+	-o-transform: rotateX(-90deg);
+}
+.nav-pro-lists div{
+	padding-left: 1rem;
+	height: 3rem;
+	line-height: 3rem;
+	text-align: left;
+	background: #0F2571;
+}
+
+.nav-pro-lists-active{
+	transform: rotateX(0deg);
+	-webkit-transform: rotateX(0deg);
+	-moz-transform: rotateX(0deg);
+	-ms-transform: rotateX(0deg);
+	-o-transform: rotateX(0deg);
+}
+.nav-pro-lists-noactive{
+	transform: rotateX(-90deg);
+	-webkit-transform: rotateX(-90deg);
+	-moz-transform: rotateX(-90deg);
+	-ms-transform: rotateX(-90deg);
+	-o-transform: rotateX(-90deg);
+}
+section{
+	overflow: hidden;
+}
+
+#contact {
+	position: relative;
+	width: 100%;
+	border-top: 1px solid #3C4570;
+	border-bottom: 1px solid #3C4570;
+}
+
+.contact-con {
+	padding: 2rem 0;
+}
+
+.contact-con>div {
+	font-size: 1.4rem;
+	color: #979DB8;
+	line-height: 2rem;
+}
+
+.con{
+	position: relative;
+	overflow: hidden;
+	width: 1200px;
+	margin: 0 auto;
+	padding: 3rem 0;
+}
+.copyright-con {
+	padding: 1rem 0 !important;
+	font-size: 1.2rem;
+}
+
+@media screen and (min-width: 1200px) {
+	section{
+		margin-top: 70px;
+	}
+	*{
+		font-size: 1.4rem;
+	}
+	#header{
+		height: 6rem;
+		line-height: 6rem;
+	}
+	.navs .nav{
+		width: 120px;
+		text-align: center;
+	}
+	.navs .nav:first-child{
+		width: 80px;
+	}
+	.code {
+		position: absolute;
+		width: 8rem;
+		height: 10rem;
+		right: 0;
+		top: 2.2rem;
+	}
+	.code>div:first-child {
+		width: 100%;
+		height: 8rem;
+		border: 1px solid #ddd;
+	}
+	.code>div:last-child {
+		width: 100%;
+		height: 2rem;
+	}
+	.code>div:last-child img {
+		float: left;
+		width: 2rem;
+		margin-top: .4rem;
+		margin-left: 1rem;
+		cursor: pointer;
+	}
+	.code>div:last-child img:first-child {
+		margin-left: 0;
+	}
+}
+
+@media screen and (max-width: 1200px) {
+	.con{
+		padding: 2rem 0;
+	}
+	section{
+		margin-top: 70px;
+	}
+	*{
+		font-size: 1rem;
+	}
+	#header{
+		height: 4rem;
+		line-height: 4rem;
+	}
+	.title{
+		font-size: 1.1rem;
+		margin-left: 1rem;
+	}
+	.navs{
+		margin-right: 1rem;
+	}
+	
+	.navs .nav{
+		margin-left: .5rem;
+		font-size: .9rem;
+	}
+	.contact-con>div {
+		font-size: .9rem;
+	}
+	.con{
+		width: 96%;
+	}
+	
+	.code {
+		width: 10rem;
+		height: 12rem;
+		right: 0;
+		top: 1rem;
+	}
+	.code>div:first-child {
+		width: 100%;
+		height: 10rem;
+		border: 1px solid #ddd;
+	}
+	.code>div:last-child {
+		width: 100%;
+		height: 2rem;
+	}
+	.code>div:last-child img {
+		float: left;
+		width: 2rem;
+		margin-top: .4rem;
+		margin-left: 1.8rem;
+		cursor: pointer;
+	}
+	.code>div:last-child img:first-child {
+		margin-left: 0;
+	}
+	
+	#copyright div{
+		font-size: .8rem !important;
+	}
+	
+	#copyright span{
+		font-size: .7rem !important;
+	}
+	
+	.nav-pro-lists{
+		top: 4rem;
+		width: 12rem;
+	}
+	
+	.nav-pro-lists div{
+		padding-left: .4rem;
+		height: 2rem;
+		line-height: 2rem;
+	}
+	
+	.contact-con {
+		padding: 1rem 0 !important;
+	}
+	
+	.contact-con>div{
+		line-height: 1.6rem;
+	}
+		
+}
