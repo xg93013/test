@@ -1,22 +1,25 @@
 <template>
 	<div class="map-box">
+		<!-- <span @click="changeLang">切换</span> -->
+		<span @click="debounces">延时</span>
+		{{ $t("home.title") }}
 		<!-- {{ $t("home.title") }}
 		<span @click="changeLang">切换</span>
 		<span @click="cancelSelect">取消选中</span> -->
 		<!-- <div @click="login">登录</div>
 		<div @click="getUser">获取用户</div> -->
-		<span @click="cancelSelect">取消选中</span>
+		<!-- <span @click="cancelSelect">取消选中</span> -->
 		<div id="map" class="map-area"></div>
 		<div class="dataList"></div>
-		<div class="date-select">
+		<!-- <div class="date-select">
 			<DateSelect></DateSelect>
-		</div>
+		</div> -->
 	</div>
 </template>
 
 <script>
 	import { mapMutations, mapGetters } from 'vuex';
-	import { setStorage } from '@/utils';
+	import { setStorage,debounce } from '@/utils';
 	import Cookies from 'js-cookie';
 	import ol from 'openlayers';
 	import originData from '@/assets/data/area.js';
@@ -62,8 +65,13 @@
 				console.log(this.loginUser.userName)
 			},
 			changeLang () {
+				console.log('12');
 				// Cookies.set('language', 'zh')
-				this.$i18n.locale = 'en'
+				if (this.$i18n.locale == 'en') {
+					this.$i18n.locale = 'zh'
+				} else {
+					this.$i18n.locale = 'en'
+				}
 			},
 			initMap () {
 				let that = this
@@ -105,34 +113,59 @@
 			addMarkers () {
 				this.markerArr = {}
 				// 在地图上添加一个圆
-				let circle = new ol.Feature({
+				let markers = [{
+					id: 1,
 					geometry: new ol.geom.Point([104, 30]),
-					id: 1
-				})
-				circle.setStyle(new ol.style.Style({
-					image: new ol.style.Circle({
-						radius: 4,
-						fill: new ol.style.Fill({
-							color: 'gray'
-						})
-					})
-				}))
-				let circle1 = new ol.Feature({
+					color: 'gray'
+				},{
+					id: 2,
 					geometry: new ol.geom.Point([104, 30.12]),
-					id: 2
-				})
-				circle1.setStyle(new ol.style.Style({
-					image: new ol.style.Circle({
-						radius: 4,
-						fill: new ol.style.Fill({
-							color: 'gray'
-						})
+					color: 'gray'
+				}]
+				// let circle = new ol.Feature({
+				// 	geometry: new ol.geom.Point([104, 30]),
+				// 	id: 1
+				// })
+				// circle.setStyle(new ol.style.Style({
+				// 	image: new ol.style.Circle({
+				// 		radius: 4,
+				// 		fill: new ol.style.Fill({
+				// 			color: 'gray'
+				// 		})
+				// 	})
+				// }))
+				// let circle1 = new ol.Feature({
+				// 	geometry: new ol.geom.Point([104, 30.12]),
+				// 	id: 2
+				// })
+				// circle1.setStyle(new ol.style.Style({
+				// 	image: new ol.style.Circle({
+				// 		radius: 4,
+				// 		fill: new ol.style.Fill({
+				// 			color: 'gray'
+				// 		})
+				// 	})
+				// }))
+				// this.markerArr['1'] = circle
+				// this.markerArr['2'] = circle1
+				// this.markerLayers.getSource().addFeature(circle);
+				// this.markerLayers.getSource().addFeature(circle1);
+				for (let i = 0; i < markers.length; i++) {
+					let circle = new ol.Feature({
+						geometry: markers[i].geometry,
+						id: markers[i].id
 					})
-				}))
-				this.markerArr['1'] = circle
-				this.markerArr['2'] = circle1
-				this.markerLayers.getSource().addFeature(circle);
-				this.markerLayers.getSource().addFeature(circle1);
+					circle.setStyle(new ol.style.Style({
+						image: new ol.style.Circle({
+							radius: 4,
+							fill: new ol.style.Fill({
+								color: markers[i].color
+							})
+						})
+					}))
+					this.markerArr[markers[i].id] = circle;
+					this.markerLayers.getSource().addFeature(circle);
+				}
 			},
 			addEvents () {
 				var that = this
@@ -158,6 +191,11 @@
 				that.map.on('pointermove', function(event){
 					that.map.getTargetElement().style.cursor = that.map.hasFeatureAtPixel(event.pixel) ? 'pointer' : '';
 				})
+			},
+			debounces () {
+				// console.log('1')
+				debounce(function(){
+				},(Date.parse(new Date())),false)
 			}
 		},
 		mounted () {
@@ -169,8 +207,8 @@
 <style lang="scss" scoped>
 .map-box{
 	position: relative;
-	width: 500px;
-	height: 500px;
+	width: 100px;
+	height: 100px;
 	.map-area{
 		position: absolute;
 	}
@@ -181,7 +219,7 @@
 	}
 }
 #map{
-	width: 500px;
-	height: 500px;
+	width: 100px;
+	height: 100px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
 	<div class="echarts">
-		<div id="main" style="width: 400px;height:300px;"></div>
+		<div id="main" style="width: 200px;height:200px;"></div>
 		<!--<div id="out-box">
 			<div class="top">
 				<div class="total-num">
@@ -340,9 +340,105 @@
 	                        }
 	                    ]
 	                } ]
-	            }
+				}
+				
+				let graph = {
+					nodes: [
+						{
+							name: 'node1',
+						},
+						{
+							name: 'node2',
+						},
+						{
+							name: 'node3',
+						},{
+							name: 'node4',
+						},{
+							name: 'node5',
+						},{
+							name: 'node6',
+						}
+					],
+					links: [
+						{
+							source: 'node1',
+							target: 'node2',
+						},{
+							source: 'node1',
+							target: 'node3',
+						},{
+							source: 'node1',
+							target: 'node4',
+						},{
+							source: 'node1',
+							target: 'node5',
+						},{
+							source: 'node1',
+							target: 'node6',
+						}
+					]
+				}
+
+				let options1 = {
+					title: {
+						text: 'Les',
+						subtext: 'Default layout',
+						top: 'bottom',
+						left: 'right'
+					},
+					// tooltip: {},
+					animationDuration: 1500,
+					animationEasingUpdate: 'quinticInOut',
+					series : [
+						{
+							name: 'Les',
+							type: 'graph',
+							layout: 'force',
+							data: graph.nodes,
+							links: graph.links,
+							roam: true,
+							focusNodeAdjacency: true,
+							symbolSize: 14,
+							itemStyle: {
+								normal: {
+									color: '#999',
+									borderColor: '#fff',
+									borderWidth: 1,
+									shadowBlur: 10,
+									shadowColor: 'rgba(0, 0, 0, 0.3)'
+								},
+								emphasis: {
+									color: '#999',
+									borderColor: '#fff',
+									borderWidth: 1,
+									shadowBlur: 10,
+									shadowColor: 'rgba(0, 0, 0, 0.3)'
+								}
+							},
+							force: {
+								repulsion: 300,
+								gravity: 0.8,
+								edgeLength: [10, 50]
+							},
+							label: {
+								position: 'right',
+								formatter: '{b}'
+							},
+							lineStyle: {
+								color: '#ccc',
+								curveness: 0.3
+							},
+							emphasis: {
+								lineStyle: {
+									width: 1
+								}
+							}
+						}
+					]
+				};
 				// 绘制图表
-				myChart.setOption(options)
+				myChart.setOption(options1)
 			}
 		}
 	}
