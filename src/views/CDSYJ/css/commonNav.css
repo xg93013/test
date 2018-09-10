@@ -21,7 +21,7 @@ body, html{
     padding: 0 50px;
     width: 100%;
     margin: 0 auto;
-    z-index: 11;
+    z-index: 999;
     color: #fff;
     background: rgba(0, 0, 0, 0.7);
     /* overflow: hidden; */

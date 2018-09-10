@@ -8,8 +8,9 @@ $(function(){
     })
     $(".secNav span").click(function(){
         var baseUrl = "/productService/";
+        console.log($(this).attr("name"));
         var href = $(this).attr("name");
-        sessionStorage.setItem("pageIndex",$(this).attr("name"));
+        window.sessionStorage.setItem("pageIndex",href);
         // window.location.pathname = baseUrl + "productService/productService.html"
         // window.location.href = window.location.origin
         window.location.href = "../productService/productService.html";

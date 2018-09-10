@@ -65,10 +65,15 @@ $(function(){
 function setVideo(){
     let clientH = window.innerHeight || document.documentElement.clientHeight;
     let vH = $("#video").height();
-    let vTop = -((vH - clientH) / 2);
-    $("#video").css({
-        "margin-top": vTop + "px"
-    })
+    let vTop = 0;
+    console.log(vH);
+    console.log(clientH);
+    if (vH > clientH) {
+    	vTop = -((vH - clientH) / 2);
+    }
+//  $("#video").css({
+//      "margin-top": vTop + "px"
+//  })
 }
 function startAnimate(){
     let clientH = window.innerHeight || document.documentElement.clientHeight;
