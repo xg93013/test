@@ -9,8 +9,9 @@
 		<!-- <div @click="login">登录</div>
 		<div @click="getUser">获取用户</div> -->
 		<!-- <span @click="cancelSelect">取消选中</span> -->
-		<div id="map" class="map-area"></div>
+		<!-- <div id="map" class="map-area"></div> -->
 		<div class="dataList"></div>
+		<time-slot />
 		<!-- <div class="date-select">
 			<DateSelect></DateSelect>
 		</div> -->
@@ -24,10 +25,12 @@
 	import ol from 'openlayers';
 	import originData from '@/assets/data/area.js';
 	import DateSelect from '@/components/DateSelect/DateSelect.vue';
+	import TimeSlot from '@/components/timeSlot';
 	export default {
 		name: 'index',
 		components: {
-			DateSelect
+			DateSelect,
+			TimeSlot
 		},
 		data() {
 			return {
@@ -199,7 +202,7 @@
 			}
 		},
 		mounted () {
-			this.initMap()
+			// this.initMap()
 		}
 	}
 </script>

@@ -20,6 +20,7 @@
     "js-cookie": "^2.2.0",
     "js-md5": "^0.7.3",
     "lodash": "^4.17.10",
+    "maptalks": "^0.41.1",
     "normalize.css": "^8.0.0",
     "openlayers": "^4.6.5",
     "vue": "^2.5.2",
