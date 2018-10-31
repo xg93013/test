@@ -16,7 +16,10 @@
 		<div class="content">
 			<div class="left-nav">
 				<div class="timeSelect">
-					<TimeBox @timeChange="getTime" :currentTime="time" :platFormType="platFormType"/>
+					 <!--<TimeBox @timeChange="getTime" :currentTime="time" :platFormType="platFormType" ref="timeSelect"/>--> 
+					<DateSelect ref="timeSelect" @timeChange="getTime" :currentTime="time" :platFormTypes="platFormTypes.resultNetfood" v-show="platFormType=='resultNetfood'"></DateSelect>
+					<DateSelect ref="timeSelects" @timeChange="getTime" :currentTime="time" :platFormTypes="platFormTypes.foodWaste" v-show="platFormType=='foodWaste'"></DateSelect>
+					<button @click="changeTime">改变时间</button>
 				</div>
 				
 				<div class="btns">
@@ -80,6 +83,7 @@
 
 <script>
 	import TimeBox from '../../components/timeSlot'
+	import DateSelect from '../../components/DateSelect/DateSelect.vue'
 	import axios from 'axios'
 	import apis from '../../unit/apis'
 	const baseUrl = process.env.NODE_ENV == 'development' ? '/api' : ''
@@ -88,7 +92,8 @@
 	} = apis
 	export default {
 		components: {
-			TimeBox
+			TimeBox,
+			DateSelect
 		},
 		data() {
 			return {
@@ -105,7 +110,10 @@
 				showResultModel: false,
 				netfoodUrl: '',
 				foodWasteUrl: '',
-				platFormType: ''
+				platFormTypes: {
+					resultNetfood: 'resultNetfood',
+					foodWaste: 'foodWaste'
+				}
             }
 		},
 		created () {
@@ -129,6 +137,10 @@
 			}
 		},
 		methods:{
+			changeTime(){
+				this.$refs.timeSelect.init('time');
+				this.$refs.timeSelects.init('time');
+			},
 			async getUserInfo() {
 				let res = await http.get("/oidc/user/base-info");
 				if (res) {

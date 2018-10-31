@@ -59,6 +59,7 @@
 	// 	FOOD_DATE
 	// } = apis
 	import allDate from '@/unit/dateInfo.js'
+	import allDate1 from '@/assets/data/dateInfo1.js'
 	export default {
 		data() {
 			return {
@@ -115,12 +116,17 @@
 					this.num = -1;
 				this.active = e;
 			},
-			async init() {
+			async init(time) {
 				// let res = await http.get(FOOD_DATE);
 				let res = allDate;
 				// console.log(res);
+				if(time != 'normal'){
+					res = allDate1;
+				}
+				
 				if(res){
-					this.timeDatas = [...res.data];
+					this.timeDatas = res.data;
+					console.log(this.timeDatas);
 					this.chooseMsg.year = res.data[0].years;
 					for(let i=11;i>-1;i--){
 						if(res.data[0].data.month[i].mark){
@@ -195,7 +201,7 @@
 			}
 		},
 		created() {
-			this.init();
+			this.init('normal');
 		}
 	}
 </script>

@@ -259,7 +259,7 @@ export default {
             }
         },
         initData(){
-            let time = JSON.parse(sessionStorage.getItem('listTime'));
+            let time = JSON.parse(sessionStorage.getItem('foodlistTime'));
             let year = time.year;
             let month = time.msg;
             this.year = year;

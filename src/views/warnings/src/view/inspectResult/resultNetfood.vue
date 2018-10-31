@@ -232,6 +232,8 @@ export default {
             let month = time.msg;
             this.year = year;
             this.month = month.substring(0,month.indexOf('月'));
+            console.log(this.year)
+            console.log(this.month)
             this.showTableData();
             this.getAllStatus();
         }
