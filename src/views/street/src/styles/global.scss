@@ -1,0 +1,102 @@
+@import "./common.scss";
+// Modal instance样式
+.ivu-modal {
+    .ivu-modal-confirm-body-icon {
+        .ivu-icon {
+            // padding-top: 17px;
+        }
+    }
+}
+.ivu-btn{
+    font-size:$mainText;
+}
+.ivu-table {
+    font-size:$mainText;
+}
+
+.ivu-tree ul {
+    font-size:$mainText;
+}
+// 表格common样式
+.tableArea {
+    @include positionStyle(relative);
+    // @include normalStyle(null, 100%);
+    @include edgeStyle(null, 10px 0px);
+    .columnsCommon {
+        text-align: center;
+        &.operte {
+            button,.table-btn {
+                span {
+                    border-bottom: 1px solid;
+                }
+            }
+            .table-btn {
+                display: inline-block;
+                padding: 2px 7px;
+                border: 1px solid transparent;
+                vertical-align: middle;
+            }
+            .exporBtn {
+                color: #495060;
+                cursor: pointer;
+                &:hover {
+                    color: #57a3f3;
+                    // background-color : #1c8de0;
+                    // @include backGroundImg(url("../../img/export-hover.png"),no-repeat);
+                }
+            }
+        }
+    }
+    .pagination {
+        @include edgeStyle(null, 10px 0px);
+    }
+}
+
+// 自定义简易确认对话框
+.customConfirmModal {
+    .ivu-modal-body {
+        position: relative;
+        padding-left: 50px;
+        i{
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translate(0,-50%);
+        }
+    }
+}
+
+// 公共tabpane样式
+.tabpane-common {
+    @include normalStyle(null, 100%);
+    .ivu-tabs {
+        background-color: rgba(255, 255, 255, 1);
+        @include normalStyle(null, 100%);
+        .ivu-tabs-bar {
+            background-color: rgba(237, 241, 242, 1);
+            border: none;
+            .ivu-tabs-tab {
+                border: none !important;
+            }
+        }
+        .ivu-tabs-content {
+            @include normalStyle(null, 90%);
+            overflow : auto;
+            .ivu-tabs-tabpane {
+                @include normalStyle(null, 100%);
+//              overflow-y: auto;
+            }
+        }
+    }
+}
+
+//公用btn样式
+.szl-btn {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-left: 10px;
+}
+//加载样式
+.ivu-spin-fix{
+    background-color: hsla(0,0%,100%,.5);
+}

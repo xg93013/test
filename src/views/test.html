@@ -26,12 +26,24 @@
             right: 0
         }
     </style>
+    
 </head>
 <body>
     <div class="box">
+        <div id="closeWindow" onclick="closeWin()">关闭</div>
         <div class="left">le</div>
         <div class="middle">mid</div>
         <div class="right">ri</div>
     </div>
+    <script>
+        // document.getElementById('closeWindow').click(function(){
+        //     console.log('x')
+        //     window.close();
+        // })
+        function closeWin(){
+            console.log('x')
+            window.close();
+        }
+    </script>
 </body>
 </html>
