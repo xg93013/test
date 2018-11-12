@@ -61,6 +61,7 @@
 	export default {
 		data() {
 			return {
+				totalDatas: [],
 				index: 1,
 				type: 1,
 				district: '', // 当前角色区域权限true区县级false市级
@@ -74,6 +75,7 @@
 				exportUrl: '',
 				selected: {},
 				sortAllData: [],
+				filterArr: ['netfood', 'foodWaste'],
 				allPlatForm: ['netfood', 'foodWaste'],
 				foodTableMsga: {
 					height: 180,
@@ -421,14 +423,16 @@
 					this.cityBarChart.resize();
 				})
 				this.cityBarChart.on('legendselectchanged', (params) => {
-					let filterArr = [];
+					this.filterArr = [];
 					this.selected = params.selected;
 					for(let item in params.selected){
 						if(params.selected[item] == true){
-							filterArr.push(this.switchNameToKey(item));						
+							this.filterArr.push(this.switchNameToKey(item));	
 						}
 					}
-					this.sortAllDatas = this.sortAllArr(this.sortAllData,filterArr);
+//					console.log(filterArr);
+//					this.allPlatForm= filterArr;
+					this.sortAllDatas = this.sortAllArr(this.sortAllData,this.filterArr);
 					this.cityBarData = this.formatterArr(this.sortAllDatas,this.allPlatForm);
 					this.cityBarChart.clear();
 					this.cityBarChart.off('legendselectchanged');
@@ -436,41 +440,48 @@
 				});
 			},
 			async getChartData(){
-				let res = await http.get(GRAPH_CATERING);
-				this.district = res.data.district;
-				let totalData = res.data.datalist;
-				if(res.data){
-					if(res.data.district){
-						// 区县级
-						this.type = 2;
-						let netfood = totalData.netfood;
-						let foodWaste = totalData.foodWaste;
-						this.leftPieData = [];
-						this.rightPieData = [];
-						for	(let i = 0; i < netfood.length; i++) {
-							this.leftPieData.push({
-								name: netfood[i].status,
-								value: netfood[i].percent,
-							})
-						}
-						for	(let j = 0; j < foodWaste.length; j++) {
-							this.rightPieData.push({
-								name: foodWaste[j].status,
-								value: foodWaste[j].percent,
-							})
-						}
-						this.initLeftPie();
-						this.initRightPie();
-						
-					} else {
-						// 市级
-						this.type = 1;
-						this.sortAllData = this.sortAllArr(totalData,this.allPlatForm);
-						let originData = this.formatterArr(this.sortAllData,this.allPlatForm);
-						this.cityBarData = [...originData];
-						this.initCityBar();
-					}
-				}
+//				let res = await http.get(GRAPH_CATERING);
+//				this.district = res.data.district;
+//				let totalData = res.data.datalist;
+//				if(res.data){
+//					if(res.data.district){
+//						// 区县级
+//						this.type = 2;
+//						let netfood = totalData.netfood;
+//						let foodWaste = totalData.foodWaste;
+//						this.leftPieData = [];
+//						this.rightPieData = [];
+//						for	(let i = 0; i < netfood.length; i++) {
+//							this.leftPieData.push({
+//								name: netfood[i].status,
+//								value: netfood[i].percent,
+//							})
+//						}
+//						for	(let j = 0; j < foodWaste.length; j++) {
+//							this.rightPieData.push({
+//								name: foodWaste[j].status,
+//								value: foodWaste[j].percent,
+//							})
+//						}
+//						this.initLeftPie();
+//						this.initRightPie();
+//						
+//					} else {
+//						// 市级
+//						this.type = 1;
+//						this.sortAllData = this.sortAllArr(totalData,this.allPlatForm);
+//						let originData = this.formatterArr(this.sortAllData,this.allPlatForm);
+//						this.cityBarData = [...originData];
+//						this.initCityBar();
+//					}
+//					
+//				}
+				
+				this.sortAllData = this.sortAllArr(this.totalDatas,this.filterArr);
+				let originData = this.formatterArr(this.sortAllData,this.allPlatForm);
+				console.log(originData)
+				this.cityBarData = [...originData];
+				this.initCityBar();
 			},
 			modalShow(){
 				// this.setMoreTableConfig();
@@ -696,8 +707,56 @@
 			}
 		},
 		mounted(){
+			this.totalDatas= [{
+					area: '青羊区',
+					netfood: 11,
+					foodWaste: 1
+				},{
+					area: '青羊区',
+					netfood: 24,
+					foodWaste: 1
+				},{
+					area: '高新区',
+					netfood: 24,
+					foodWaste: 1
+				},{
+					area: '无话说的区',
+					netfood: 24,
+					foodWaste: 1
+				},{
+					area: '无话说的区',
+					netfood: 24,
+					foodWaste: 434
+				}]
+				setTimeout(()=>{
+					
+				})
 			this.init();
 			setInterval(() => {
+				this.totalDatas= [{
+					area: 'asdasd',
+					netfood: 3333,
+					foodWaste: 1
+				},{
+					area: 'sdfd',
+					netfood: 24,
+					foodWaste: 345
+				},{
+					area: 'fgh',
+					netfood: 3333,
+					foodWaste: 1
+				},{
+					area: 'df',
+					netfood: 44,
+					foodWaste: 99
+				},{
+					area: '无话说的区',
+					netfood: 24,
+					foodWaste: 22
+				}]
+				setTimeout(()=>{
+					
+				})
 				this.init();
 			}, TIMING);
 		}
