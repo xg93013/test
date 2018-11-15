@@ -1,0 +1,124 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "微软雅黑";
+    font-size: 14px;
+    list-style: none;
+    text-decoration: none;
+}
+
+
+.el-tooltip__popper.is-dark{
+    background: rgba(142,253,255,0.8);
+    box-shadow: 0px 0px 10px rgba(4,52,76,0.59);
+    color: #fff;
+    font-size: 12px;
+}
+.el-tooltip__popper[x-placement^=top] .popper__arrow::after{
+    border-top-color: rgba(142,253,255,0.8);
+}
+.el-tooltip__popper[x-placement^=bottom] .popper__arrow::after{
+    border-top-color: rgba(142,253,255,0.8);
+    border-bottom-color: rgba(142,253,255,0.8);
+}
+.el-tooltip__popper[x-placement^=right] .popper__arrow::after{
+    // border-left-color: rgba(142,253,255,0.8);
+    border-right-color: rgba(142,253,255,0.8);
+}
+
+.el-table{
+    color: #8FC0EC;
+    font-size: 14px;
+}
+.el-table::before{
+    height: 0
+}
+.el-table, .el-table__expanded-cell{
+    background: none;
+}
+.el-table th, .el-table tr{
+    background-color: transparent;
+}
+.el-table td, .el-table th{
+    padding: 6px 0;
+}
+.el-table td, .el-table th.is-leaf{
+    border-bottom: none;
+}
+.el-table thead{
+    color: #A0D2FF;
+    background: none;
+}
+.el-table .warning-row {
+    background: #01217A;
+}
+.el-table .warning-row:hover {
+    background: #01217A;
+}
+
+.el-table .success-row {
+    background: none;
+}
+.el-table--enable-row-hover .el-table__body tr:hover>td {
+    background: none;
+}
+
+// 下拉框
+.el-dropdown-menu{
+    background-color: #253745;
+    border: none;
+    color: #fff;
+    max-height: 300px;
+    overflow: auto;
+}
+.el-popper[x-placement^=bottom]{
+    margin-top: 10px;
+    margin-left: 0;
+}
+.el-popper[x-placement^=bottom] .popper__arrow{
+    border-bottom-color: #0B3A99;
+}
+.el-popper[x-placement^=bottom] .popper__arrow::after{
+    border-bottom-color: #0B3A99;
+}
+.el-dropdown-menu__item{
+    // width: 116px;
+    padding: 0 15px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 12px;
+    text-align: center;
+    color: #8FBDDD;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.el-dropdown-menu .el-dropdown-menu__item:hover{
+    background: #09f;
+    color: #fff;
+}
+
+// 日期选择框背景
+.el-popover{
+    background: #253745;
+    border: 1px solid #253745;
+    padding: 20px;
+}
+.szl-time-pop .el-popper[x-placement^=bottom] .popper__arrow{
+    border-bottom-color: #253745;
+}
+.szl-time-pop .el-popper[x-placement^=bottom] .popper__arrow::after{
+    border-bottom-color: #253745;
+}
+
+// 地图内modal
+.mapTopModal{
+    position: fixed;
+    top: 160px;
+    width: 600px;
+    left: 400px;
+    right: 0;
+}
+
+

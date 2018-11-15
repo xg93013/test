@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<meta name="format-detection" content="telephone=no">
+		<title>智慧餐饮监管平台</title>
+		<link rel="icon" type="image/x-icon" href="./static/icon.ico">
+		<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&amp;key=c85b169acc3c5472b5f282ec4cfb5198&amp;plugin=AMap.ToolBar"></script>
+		<style>
+			::-webkit-scrollbar{
+				width:6px;
+				height:6px;
+				z-index: 999;
+			}
+			::-webkit-scrollbar-track{
+				background: #fff;
+				border-radius:2px;
+				z-index: 999;
+			}
+			::-webkit-scrollbar-thumb{
+				background: #1b223e;
+				border-radius:2px;
+				z-index: 999;
+			}
+			::-webkit-scrollbar-thumb:hover{
+				background: #1b223e;
+			}
+			::-webkit-scrollbar-corner{
+				background: #fff;
+				z-index: 999;
+			}
+		</style>
+	</head>
+
+	<body ondragstart="return false">
+		<div id="app">
+		</div>
+		<!-- built files will be auto injected -->
+	</body>
+	<script>
+		(function(window) {
+			var theUA = window.navigator.userAgent.toLowerCase();
+			if((theUA.match(/msie\s\d+/) && theUA.match(/msie\s\d+/)[0]) || (theUA.match(/trident\s?\d+/) && theUA.match(
+					/trident\s?\d+/)[0])) {
+				var ieVersion = theUA.match(/msie\s\d+/)[0].match(/\d+/)[0] || theUA.match(/trident\s?\d+/)[0];
+				if(ieVersion < 11) {
+					document.body.innerHTML = '';
+					document.bgColor = '#fff';
+					document.body.style.background = '#fff';
+					var str = "您知道您的Internet Explorer是过时了吗？";
+					var str2 = "<div style='color:#333;font-size:18px;line-height:22px;margin-bottom:30px'>为了得到我们网站更好的体验效果，我们建议您使用Internet Explorer10以上版本，或者使用其他流行web浏览器,流行的web浏览器在下面可以找到</div>" +
+						"<a class='chrome' style='color:#1E9CFA;font-size:18px;margin-right:20px' href='http://www.google.cn/intl/zh-CN/chrome/browser/desktop/index.html' target='_blank' style='color:#036476 ;margin-right:10px;'>谷歌</a>" +
+						"<a class='firefox' style='color:#1E9CFA;font-size:18px;margin-right:20px' href='http://www.mozilla.org/en-US/firefox/new/' target='_blank' style='color:#036476 ;margin-right:10px;'>火狐</a>" +
+						"<a class='safari' style='color:#1E9CFA;font-size:18px;margin-right:20px' href='http://www.apple.com/safari/download/' target='_blank'  style='color:#036476 ;margin-right:10px;'>safari</a>" +
+						"<a class='ie11' style='color:#1E9CFA;font-size:18px' href='http://windows.microsoft.com/en-US/internet-explorer/downloads/ie/' target='_blank' style='color:#036476 ;'>ie11</a>"
+					document.writeln(
+						"<div style='position:absolute;width:600px;height:280px;left:50%;top:50%;transform:translate(-50%,-50%);'>"+
+						"<div style='color:#1E9CFA;font-size:24px;margin-bottom:20px;margin-top:40px'>"+str+"</div><div>"+str2+"</div><div style='color:#333;font-size:18px;margin-top:30px'>如果您使用的是360浏览器或其他双核浏览器，请切换到急速模式访问</div>"+
+						"</div>");
+					document.execCommand("Stop");
+				};
+			}
+		})(window);
+	</script>
+</html>
