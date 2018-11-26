@@ -1,0 +1,264 @@
+
+.abouts {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-width: 1000px;
+    min-height: 700px;
+    :global{
+        .ant-select-open {
+            .ant-select-selection{
+                box-shadow: none;
+            }
+        }
+        .ant-select-selection__placeholder, .ant-select-search__field__placeholder{
+            color: #666;
+        }
+        .ant-select-enabled {
+            .ant-select-selection {
+                box-shadow: none;
+            }
+        }
+        .ant-select-selection {
+            width: 140px;
+            border: none;
+            outline: none;
+            background: #ccc;
+            border-radius: 0;
+            border-color: transparent;
+        }
+    }
+    .leftFilter {
+        .left-search {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            width: 300px;
+            overflow: hidden;
+            z-index: 999;
+            .float-item {
+                float: left;
+            }
+            .leftInput {
+                width: 220px;
+                height: 36px;
+                border: none;
+                border-radius: 0;
+            }
+            .leftBtn {
+                width: 36px;
+                height: 36px;
+                padding: 0;
+                border-radius: 0;
+                text-align: center;
+            }
+        }
+        .left-list {
+            position: absolute;
+            top: 100px;
+            left: 50px;
+            bottom: 50px;
+            z-index: 999;
+            .head {
+                width: 300px;
+                height: 50px;
+                line-height: 50px;
+                padding: 0 10px;
+                // box-sizing: border-box;
+                background: #fff;
+                border-bottom: 1px solid #eee;
+            }
+            .item-box {
+                position: absolute;
+                top: 50px;
+                left: 0;
+                bottom: 0;
+                width: 300px;
+                // padding: 0 5px;
+                overflow: auto;
+                .item {
+                    // width: 100%;
+                    // padding: 5px;
+                    font-size: 14px;
+                    color: #333;
+                    background: #fff;
+                    overflow: hidden;
+                    cursor: pointer;
+                    .left {
+                        width: 220px;
+                        float: left;
+                        padding: 16px;
+                        box-sizing: border-box;
+                        .inItem {
+                            width: 100%;
+                            display: block;
+                        }
+                    }
+                    .right {
+                        width: 60px;
+                        float: left;
+                        margin-top: 16px;
+                    }
+                    &:hover {
+                        background: #f5f5f5;
+                    }
+                }
+            }
+
+        }
+    }
+    .rightFilter {
+        position: absolute;
+        right: 50px;
+        top: 50px;
+        z-index: 999;
+        .color-range {
+            position: absolute;
+            right: 0;
+            top: 100px;
+            width: 20px;
+            .item {
+                width: 100%;
+                height: 20px;
+                background: #999;
+                display: block;
+                cursor: pointer;
+                &:nth-child(1) {
+                    background: #333;
+                }
+                &:nth-child(2) {
+                    background: #666;
+                }
+                &:nth-child(3) {
+                    background: #999;
+                }
+                &:nth-child(4) {
+                    background: #ccc;
+                }
+            }
+        }
+        .select-box {
+            .select-item {
+                margin-right: 10px;
+                
+            }
+        }
+    }
+    .tableList {
+        position: absolute;
+        right: 10px;
+        top: 100px;
+        width: 500px;
+    }
+    .mapCon {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+    .topModal {
+        position: absolute;
+        width: 600px;
+        top: 100px;
+        left: 360px;
+        z-index: 999;
+        background: #f5f5f5;
+        .title {
+            width: 100%;
+            text-align: center;
+            padding: 15px 0;
+        }
+        .infobox {
+            width: 560px;
+            background: #fff;
+            margin: 0 20px 20px;
+            padding: 15px 0;
+            overflow: hidden;
+            .leftTitle {
+                width: 26px;
+                text-align: center;
+                float: left;
+                margin: 20px 10px 0 20px;
+            }
+            .right {
+                width: 500px;
+                float: left;
+                .items {
+                    width: 100%;
+                    overflow: hidden;
+                    margin: 10px 0;
+                    font-size: 16px;
+                    .name {
+                        width: 80px;
+                        float: left;
+                    }
+                    .texts {
+                        width: 380px;
+                        float: left;
+                    }
+                    .img-pos {
+                        float: left;
+                        text-align: center;
+                        margin: 0 10px;
+                    }
+                }
+            }
+            .other-left {
+                width: 150px;
+                text-align: center;
+                float: left;
+                .level {
+                    width: 60px;
+                    height: 60px;
+                    background: #999;
+                    line-height: 60px;
+                    border-radius: 50%;
+                    margin: 20px auto 10px;
+                }
+            }
+            .other-right {
+                width: 410px;
+                float: left;
+                .items {
+                    width: 100%;
+                    // height: 40px;
+                    // line-height: 40px;
+                    overflow: hidden;
+                    margin: 10px 0;
+                    font-size: 16px;
+                    .name {
+                        width: 100px;
+                        float: left;
+                    }
+                    .texts {
+                        width: 300px;
+                        float: left;
+                    }
+                }
+            }
+            .other-links {
+                width: 100%;
+                .more {
+                    float: right;
+                    margin: 10px 20px 0 0;
+                }
+            }
+        }
+        .close {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            cursor: pointer;
+        }
+    }
+    .showModal {
+        display: block;
+    }
+    .hideModal {
+        display: none;
+    }
+
+}
