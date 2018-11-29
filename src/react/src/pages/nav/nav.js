@@ -19,6 +19,11 @@ export default class Sidebar extends Component {
                 label: '3',
                 iconName: 'inspectResult',
                 path: '/next'
+            },{
+                key: '3',
+                label: '4',
+                iconName: 'inspectResult',
+                path: '/next'
             }]
         }
     }

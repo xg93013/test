@@ -5,46 +5,6 @@ import 'antd/dist/antd.css'
 import '../styles/dateSelect.scss'
 import allDate from '../datas/originDate.js'
 
-// function DateTimebox(prop){
-//     // const showBox = prop.
-//     console.log(prop);
-//     // let htmls = '';
-//     if(prop.currentDate.data.length > 0){
-//         return (
-//             <div className="date-item-box">
-//                 {/* <DateTimetype dateType={prop.dateType}/> */}
-//             </div>
-//         )
-//     }
-// }
-// function DateTimetype(prop){
-//     if(prop.dateType === 1){
-//         return (
-//             <div className="type-month" v-show="dateType === 1">
-//                 {
-//                     this.state.currentDate.data.month.map((item, i) => (
-//                         <span key={i} className={`item ${item.mark ? 'disabled' : ''} ${i === this.state.selectItemIndex ? 'active' : ''}`} onClick={this.changeItemStatus.bind(this,(item,i))}>{ item.date }</span>
-//                         // <span className="item" key={i} className={{'disabled' : !item.mark, 'active' : i === this.state.selectItemIndex}} onClick={this.state.changeItemStatus.bind(this,(item,index))}>{ item.date }</span>
-//                     ))
-//                 }
-                
-//             </div>
-//         )
-//     }
-//     if(prop.dateType === 4){
-//         return (
-//             <div className="type-allyear" v-show="dateType === 4">
-//                 {
-//                     this.state.currentDate.data.allYear.map((item, i) => (
-//                         <span key={i} className={`item ${item.mark ? 'disabled' : ''} ${i === this.state.selectItemIndex ? 'active' : ''}`} onClick={this.changeItemStatus.bind(this,(item,i))}>{ item.date }</span>
-//                         // <span className="item" key={i} className={{'disabled' : !item.mark, 'active' : i === this.state.selectItemIndex}} onClick={this.state.changeItemStatus.bind(this,(item,index))}>{ item.date }</span>
-//                     ))
-//                 }
-//             </div>
-//         )
-//     }
-    
-// }
 export default class DateSelect extends Component {
     
     constructor(props){
@@ -64,7 +24,6 @@ export default class DateSelect extends Component {
     async init (time) {
         let urls = '';
         let res = '';
-        this.dateType = 1;
         // if(this.platFormType == 'netfood'){
         //     urls = LISTDATE;
         //     // res = allDate;
@@ -76,27 +35,30 @@ export default class DateSelect extends Component {
         // res = await http.get(urls);
         res = allDate;
         if(res){
-            this.currentIndex = 0;
-            this.state.originDate = res.data;
+            // this.currentIndex = 0;
+            // this.state.originDate = res.data;
+            this.setState({
+                currentIndex: 0,
+                originDate: res.data,
+                dateType: 1
+            })
         }
         let month = '';
         // console.log(res);
-        console.log(this.state.originDate);
-        for(let j = 0;j < this.state.originDate.length;j++){
+        console.log(res.data);
+        for(let j = 0;j < res.data.length;j++){
             for (let i = 11; i > -1; i--) {
-                if (this.state.originDate[j].data.month[i].mark) {
-                    month = this.state.originDate[j].data.month[i].date;
+                if (res.data[j].data.month[i].mark) {
+                    month = res.data[j].data.month[i].date;
                     // this.currentTime = this.currentYear + '年' + month;
                     // this.selectItemIndex = i;
-                    let currentDate = this.state.originDate[this.state.currentIndex];
-                    let currentYear = this.state.originDate[this.state.currentIndex].years;
-                    this.setState({
-                        currentDate: currentDate,
-                        currentYear: currentYear
-                    })
-                    let currenttime = this.state.currentYear + '年' + month;
+                    let currentDate = res.data[this.state.currentIndex];
+                    let currentYear = res.data[this.state.currentIndex].years;
+                    let currenttime = currentYear + '年' + month;
                     
                     this.setState({
+                        currentDate: currentDate,
+                        currentYear: currentYear,
                         currentTime: currenttime,
                         selectItemIndex: i
                     })
@@ -106,8 +68,7 @@ export default class DateSelect extends Component {
                         year: currentYear,
                         msg: month
                     }
-                    console.log(emitTime);
-                    console.log(this.state.currentTime);
+                    this.props.changeTime(emitTime);
                     // if(this.platFormType == 'netfood'){
                     //     sessionStorage.setItem('netfoodTime', JSON.stringify(emitTime));
                     //     this.$emit("timeChange", emitTime);
@@ -221,9 +182,11 @@ export default class DateSelect extends Component {
         // this.state.$emit("timeChange", emitTime);
         
     }
-     
+    componentWillMount(){
+        this.init('normal')
+    }
     componentDidMount(){
-        this.init()
+        
     }
     render(){
         const content = (
@@ -235,24 +198,29 @@ export default class DateSelect extends Component {
                             <span onClick={this.changeDateType.bind(this,4)} className={this.state.dateType === 4 ? 'item active' : 'item' }>年</span>
                         </div>
                          <div className="date-year">
-                            <span onClick={this.changeYear.bind(this,'prev')} className={this.state.currentIndex >= (this.state.originDate.length-1) ? 'item prev-year disabled' : ''}>上一年</span>
+                            <span onClick={this.changeYear.bind(this,'prev')} className={this.state.currentIndex >= (this.state.originDate.length-1) ? 'item prev-year disabled' : 'item'}>上一年</span>
                             <span className="item current-year">{ this.state.currentYear }</span>
-                            <span onClick={this.changeYear.bind(this,'next')} className={this.state.currentIndex <= 0 ? 'item next-year disabled' : ''}>下一年</span>
+                            <span onClick={this.changeYear.bind(this,'next')} className={this.state.currentIndex <= 0 ? 'item next-year disabled' : 'item'}>下一年</span>
                         </div>
-                        {/* <DateTimebox currentDate={this.state.currentDate} dateType={this.state.dateType}/> */}
-                        {
-                            this.state.currentDate && 
-                            <div className="date-item-box">123</div>
-                        }
-                        {/* <div className="date-item-box" v-show="currentDate.data">
+                        <div className="date-item-box" style={{display: this.state.currentDate.data ? 'block' : 'none'}}>
                             日期类型 
-                            <div className="type-month" v-show="dateType === 1">
-                                <span className="item" v-for="(item, index) in currentDate.data.month" :key="index" :className="{'disabled' : !item.mark, 'active' : index === selectItemIndex}" onClick="changeItemStatus(item,index)">{{ item.date }}</span>
+                            <div className="type-month" style={{display: this.state.dateType === 1 ? 'block' : 'none'}}>
+                                {
+                                    this.state.currentDate.data.month.map((item, i) => (
+                                        <span className={['item', !item.mark ? 'disabled' : '', i === this.state.selectItemIndex ? 'active' : ''].join(' ')} key={i} onClick={this.changeItemStatus.bind(this, item, i)}>{item.date}</span>
+                                    ))
+                                }
+                                {/* <span className="item" v-for="(item, index) in currentDate.data.month" :key="index" :className="{'disabled' : !item.mark, 'active' : index === selectItemIndex}" onClick="changeItemStatus(item,index)">{{ item.date }}</span> */}
                             </div>
-                            <div className="type-allyear" v-show="dateType === 4">
-                                <span className="item" v-for="(item, index) in currentDate.data.allYear" :key="index" :className="{'disabled' : !item.mark, 'active' : index === selectItemIndex}" onClick="changeItemStatus(item,index)">{{ item.date }}</span>
+                            <div className="type-allyear" style={{display: this.state.dateType === 4 ? 'block' : 'none'}}>
+                                {
+                                    this.state.currentDate.data.allYear.map((item, i) => (
+                                        <span className={['item', !item.mark ? 'disabled' : '', i === this.state.selectItemIndex ? 'active' : ''].join(' ')} key={i} onClick={this.changeItemStatus.bind(this, item, i)}>{item.date}</span>
+                                    ))
+                                }
+                                {/* <span className="item" v-for="(item, index) in currentDate.data.allYear" :key="index" :className="{'disabled' : !item.mark, 'active' : index === selectItemIndex}" onClick="changeItemStatus(item,index)">{{ item.date }}</span> */}
                             </div>
-                        </div> */}
+                        </div>
                         {/*
                         <div className="date-footer">
                             <div className="left">{{ currentTime }}</div>
