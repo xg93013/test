@@ -4,10 +4,11 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import iView from 'iview'
-import 'iview/dist/styles/iview.css';
+import 'iview/dist/styles/iview.css'
+import './style/pub.scss'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import './style/pub.scss'
+import './mock/mock.js'
 import _ from 'lodash'
 
 import echarts from 'echarts'

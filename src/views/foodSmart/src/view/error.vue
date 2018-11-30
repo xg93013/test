@@ -1,6 +1,6 @@
 <template>
     <div id='error'>
-    	<!-- <img src="../images/image-404.png" alt="" /> -->
+    	<img src="../images/image-404.png" alt="" />
     	<p class="a">很遗憾，您访问的页面找不到了...</p>
     	<p class="b">
     		建议：1.检查您的网址拼写是否正确； <br />

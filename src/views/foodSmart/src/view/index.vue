@@ -1,6 +1,5 @@
 <template>
     <div id="container-warp">
-        <!-- <Header /> -->
         <div id='header'>
             <!-- <div class='logo'></div> -->
             <!-- <img style="position:relative;height:30px;top:6px;margin-right:10px" :src="require('./logo_icon.png')" alt=""> -->
@@ -21,8 +20,8 @@
                 <router-view @closeLoading = "closeLoading" />
             </div>
         </div>
-        <div v-show="isLoading" v-loading.lock="isLoading" :element-loading-text="loadingText" element-loading-background="rgba(15,33,80,0.6)" class="backLoading">
-        </div>
+        <!-- <div v-show="isLoading" v-loading.lock="isLoading" :element-loading-text="loadingText" element-loading-background="rgba(15,33,80,0.6)" class="backLoading">
+        </div> -->
     </div>
 </template>
 <script>
@@ -107,6 +106,7 @@ export default {
             color: #7481a4;
             font-size: 16px;
             cursor: pointer;
+            z-index:999;
 
             img {
                 position: relative;
@@ -116,7 +116,7 @@ export default {
             }
             .pop-lists {
                 position: absolute;
-                top: 50px;
+                top: 60px;
                 background: #27375f;
                 right: 20px;
                 transition: all 0.3s;
@@ -148,7 +148,7 @@ export default {
         overflow: auto;
         .pad-con{
             min-height: 700px;
-            min-width: 1300px;
+            min-width: 1000px;
             // padding: 25px 15px 15px 15px;
             width: 100%;
             height: 100%;

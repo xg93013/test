@@ -9,29 +9,25 @@
             <div class="left-list">
                 <div class="head">TOP10</div>
                 <div class="item-box">
-                    <div class="item" v-for="(item,index) in totalData.list" :class="{'active': item.organizationCode == selectOriginiseCode}" :key="index" v-if="index<10" @click="selectTop(item)">
+                    <div class="item" v-for="(item,index) in leftList" :key="index" @click="selectTopItem(item)">
                         <div class="left">
-                            <span class="inItem">{{item.enterpriseName}}</span>
-                            <span class="inItem area">所属区域：{{item.area}}</span>
-                            <span class="inItem address">{{item.address}}</span>
+                            <span class="inItem">{{item.name}}</span>
+                            <span class="inItem">所属区域：{{item.area}}</span>
+                            <span class="inItem">{{item.address}}</span>
                         </div>
                         <div class="right">
-                            <!-- <el-progress type="circle" :percentage="Number(item.percent)" :width="60"></el-progress> -->
+                            <el-progress type="circle" :percentage="Number(item.percent)" :width="60"></el-progress>
                         </div>
                     </div>
                 </div>
-                <!-- loading -->
-                <Spin fix v-show="showLoading">
-                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
-                    <div>Loading</div>
-                </Spin>
+               
             </div>
         </div>
         <!--右侧筛选-->
         <div class="rightFilter">
             <div class="select-box">
                 <DateSelect @timeChange="timeChange" :platFormType="timeType"></DateSelect>
-                <el-select v-model="rightFilter.selectArea" placeholder="请选择区域" @change="areaSelect">
+                <el-select v-model="rightFilter.selectArea" placeholder="请选择区域" @select="areaSelect">
                     <el-option
                     v-for="item in rightFilter.areaList"
                     :key="item.value"
@@ -39,7 +35,7 @@
                     :value="item.value">
                     </el-option>
                 </el-select>
-                <el-select v-model="rightFilter.selectRange" placeholder="请选择等级" @change="rangeSelect">
+                <el-select v-model="rightFilter.selectRange" placeholder="请选择" @select="rangeSelect">
                     <el-option
                     v-for="item in rightFilter.rangeList"
                     :key="item.value"
@@ -47,7 +43,7 @@
                     :value="item.value">
                     </el-option>
                 </el-select>
-                <el-select v-model="rightFilter.selectProject" placeholder="请选择项目" @change="projectSelect">
+                <el-select v-model="rightFilter.selectProject" placeholder="请选择" @select="projectSelect">
                     <el-option
                     v-for="item in rightFilter.projectList"
                     :key="item.value"
@@ -172,36 +168,19 @@
 
             </div>
         </el-dialog> -->
-        <div  ref="infoWindowRefs">
-            <div class="infoWindow">
-                <p class="title">{{modalInfo.enterpriseName}}</p>
-                <div class="content">
-                    <p>{{modalInfo.area}}</p>
-                    <p>{{modalInfo.address}}</p>
-                </div>
-            </div>
-            
-        </div>
     </div>
 </template>
 <script>
 import DateSelect from '@/components/DateSelect/DateSelect.vue'
 import AMap from 'AMap'
-import mapData from '@/unit/mapData.json'
 export default {
     components: {
         DateSelect
     },
     data () {
         return{
-            timeType: '',
-            selectOriginiseCode: '0',
-            mapObj: {
-                mapCon: '',
-                markers: {},
-                infoWindow: '',
-                finishInit: false
-            },
+        	timeType: '',
+            maps: '',
             leftFilter: {
                 keyWork: ''
             },
@@ -209,7 +188,6 @@ export default {
                 selectArea: '',
                 selectRange: '',
                 selectProject: '',
-                riskLevel: '',
                 areaList: [{
                     value: '成都市',
                     label: '成都市'
@@ -223,13 +201,13 @@ export default {
                     label: ''
                 }]
             },
-            time: {},
-            mapObj: {
+            riskLevel: '',
+            leftList: [], // top10列表
+            mapDatas: {
                 finishInit: false,
                 markers: {}
             },
-            totalData: [],
-            showLoading: false,
+            totalDatas: [],
             showTopModal: false,
             modalInfo: {
                 enterpriseName: '成都大风炊餐饮管理有限责任公司',
@@ -251,54 +229,42 @@ export default {
     },
     methods: {
         initMap(){
-            this.mapObj.mapCon = new AMap.Map('centerMap', {
-                // mapStyle: "amap://styles/grey",
+            this.maps = new AMap.Map('centerMap', {
                 resizeEnable: true, //是否监控地图容器尺寸变化
                 zoom:11, //初始化地图层级
-                // center: [104.222588, 30.816479] //初始化地图中心点
+                center: [116.397428, 39.90923] //初始化地图中心点
             });
-            this.mapObj.finishInit = true;
-            this.mapObj.mapCon.on('click',()=>{
+            this.mapDatas.finishInit = true;
+            this.maps.on('click',()=>{
                 this.showTopModal = false;
-                this.setNormalMarker();
-                if(this.mapObj.infoWindow){
-                    this.mapObj.infoWindow.close();
-                }
             })
         },
         timeChange(e){
             console.log(e);
-            this.time = e;
         },
         selectLevel(level){
             this.riskLevel = level
         },
-        getData(){
-            let data = {
-                date: this.time,
-                keyWork: this.keyWork,
-                selectArea: this.rightFilter.selectArea,
-                selectRange: this.rightFilter.selectRange,
-                selectProject: this.rightFilter.selectProject
-            };
-            console.log(data);
-            this.showLoading = true;
-            setTimeout(() => {
-                this.totalData = mapData.data;
-                console.log(this.totalData);
-                this.addInfoWindow();
-                this.addMapMarkers(this.totalData);
-                this.showLoading = false
-            }, 2000)
+        getLeftList(){
+            for(let i=0;i<2;i++){
+                this.leftList.push({
+                    name: '成都大风炊餐饮管理有限责任公司',
+                    address: '金牛区-XX街道',
+                    area: '金牛区',
+                    percent: '10'
+                })
+            }
         },
-        getSelectData(){
-            this.rightFilter.areaList = [{
-                value: '1',
-                label: '青羊区'
-            },{
-                value: '2',
-                label: '高新区'
-            }]
+        getTotalDatas(){
+            this.totalDatas = [{
+                id: '1',
+                lng: '116.397428',
+                lat: '39.90923',
+                riskLevel: 1,
+                title: '',
+                name: ''
+            }];
+            this.addMapMarks(this.totalDatas);
         },
         getModalInfo(){
         	this.modalInfo = {
@@ -315,89 +281,47 @@ export default {
                 updatetime: '2017-10-20'
             }
         },
-        addInfoWindow(){
-            this.mapObj.infoWindow = new AMap.InfoWindow({
-                isCustom: 'true',
-                content: "",
-                offset: new AMap.Pixel(0, -35)
-                // position: new AMap.LngLat(infoObj.longitude, infoObj.latitude)
-            })
-        },
         keyWorkSearch(){
-            this.getData();
-            // this.addMapMarkers(this.totalData);
+            this.getLeftList();
+            this.getTotalDatas();
+            this.addMapMarks(this.totalDatas);
         },
-        areaSelect(){
-            this.getData();
-        },
-        rangeSelect(){
-            console.log('rangeSelect')
-            this.getData();
-        },
-        projectSelect(){
-            this.getData();
-        },
-        addMapMarkers(data){
-            let maps = this.mapObj.mapCon;
-            if(!this.mapObj.finishInit) {
+        areaSelect(){},
+        rangeSelect(){},
+        projectSelect(){},
+        addMapMarks(data){
+            let maps = this.maps;
+            if(!this.mapDatas.finishInit) {
                 return;
             }
             // 删除地图上已经存在的点
-            if(!_.isEmpty(this.mapObj.markers)) {
-                maps.remove(_.map(this.mapObj.markers, function(markerItem) {
+            if(!_.isEmpty(this.mapDatas.markers)) {
+                maps.remove(_.map(this.mapDatas.markers, function(markerItem) {
                     markerItem.setMap(null);
                     return markerItem;
                 }));
                 // 清空保存点对象
-                this.mapObj.markers = {};
+                this.mapDatas.markers = {};
             }
-            _.map(data.list, (item,index)=>{
-                if(item.longitude != null && item.latitude != null){
-                    let iconImg = ["A", "B", "C", "D"].includes(item.grade) ?
-                        require(`../../images/float-${item.grade}.png`)
-                    :   require(`../../images/float-A.png`);
-                    let largeIcon = ["A", "B", "C", "D"].includes(item.grade) ?
-                        require(`../../images/float-${item.grade}.png`)
-                    :   require(`../../images/float-A.png`);
-                        // console.log(iconImg);
-                    let marker = new AMap.Marker({
-                        map: maps,
-                        title: item.enterpriseName,
-                        extData: {
-                            enterpriseName: item.enterpriseName,
-                            index: index,
-                            organizationCode: item.organizationCode,
-                            grade: item.grade
-                        },
-                        position: new AMap.LngLat(item.longitude, item.latitude),
-                        icon: iconImg,
-                        offset: new AMap.Pixel(-13, -30)
-                    });
-                    marker.on('click', (e)=>{
-                        this.setNormalMarker();
-                        this.mapObj.markers[e.target.getExtData().index].setIcon(largeIcon);
-                        this.selectOriginiseCode = e.target.getExtData().organizationCode;
-                        console.log(this.selectOriginiseCode)
-                        // this.mapObj.infoWindow.setContent(this.$refs.infoWindowRefs.innerHTML);
-                        // this.mapObj.infoWindow.open(this.mapObj.mapCon, e.target.getPosition());
-                        // maps.panTo(e.target.getPosition());
-                    })
-                    this.mapObj.markers[index] = marker;
-                }
-                
+            _.map(data, (item,index)=>{
+                let marker = new AMap.Marker({
+                    map: maps,
+                    title: item.title,
+                    extData: {
+
+                    },
+                    position: new AMap.LngLat(item.lng, item.lat),
+                    icon: require('../../images/float-1.png'),
+                    offset: new AMap.Pixel(-13, -30)
+                });
+                marker.on('click', (e)=>{
+                    console.log(e);
+                })
+                this.mapDatas.markers[item.id] = marker;
             })
         },
-        setNormalMarker(){
-            _.map(this.totalData.list, (item, index) => {
-                let iconImg = ["A", "B", "C", "D"].includes(item.grade) ?
-                        require(`../../images/float-${item.grade}.png`)
-                    :   require(`../../images/float-A.png`);
-                this.mapObj.markers[index].setIcon(iconImg);
-            })
-        },
-        selectTop(item){
+        selectTopItem(item){
             console.log(item);
-            // this.getData();
             this.showTopModal = true;
         },
         closeModal(){
@@ -405,9 +329,9 @@ export default {
         }
     },
     mounted () {
-        // this.$emit('closeLoading');
+        this.$emit('closeLoading');
         this.initMap();
-        this.getData();
+        this.getLeftList();
         // document.getElementById('mouseModal').addEventListener('mouseleave',(e)=>{
         //     this.showTopModal = false;
         // })
@@ -419,8 +343,6 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
-    // min-width: 1000px;
-    // min-height: 600px;
     .centerMap{
         position: absolute;
         width: 100%;
@@ -454,14 +376,13 @@ export default {
             left: 50px;
             bottom: 50px;
             z-index: 999;
-            background: #fff;
             .head{
                 width: 300px;
                 height: 50px;
                 line-height: 50px;
                 padding: 0 10px;
                 // box-sizing: border-box;
-                // background: #fff;
+                background: #fff;
                 border-bottom: 1px solid #eee;
             }
             .item-box{
@@ -477,24 +398,17 @@ export default {
                     // padding: 5px;
                     font-size: 14px;
                     color: #333;
-                    // background: #fff;
+                    background: #fff;
                     overflow: hidden;
                     cursor: pointer;
                     .left{
                         width: 220px;
                         float: left;
-                        padding: 15px;
+                        padding: 16px;
                         box-sizing: border-box;
                         .inItem{
                             width: 100%;
                             display: block;
-                            .area{
-                                font-size: 12px;
-                                margin-top: 4px;
-                            }
-                            .address{
-                                font-size: 12px;
-                            }
                         }
                     }
                     .right{
@@ -505,9 +419,6 @@ export default {
                     &:hover{
                         background: #f5f5f5;
                     }
-                }
-                .active{
-                    background: #f5f5f5;
                 }
             }
             
@@ -640,13 +551,6 @@ export default {
             text-align: center;
             cursor: pointer;
         }
-    }
-    .infoWindow{
-        background: #fff;
-        overflow: hidden;
-        padding: 20px;
-        border-radius: 4px;
-        position: relative;
     }
 }
 

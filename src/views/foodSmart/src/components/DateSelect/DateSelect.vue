@@ -113,7 +113,6 @@ export default {
                         }
                         if(this.platFormType == 'others'){
                             this.$emit("timeChange", emitTime);
-                            console.log(this.currentTime)
                         }
 	                    
 	                    return false

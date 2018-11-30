@@ -20,12 +20,12 @@ const handleResponse = res => {
 			}else if(res.data.code==302){
 				window.location.replace(res.data.data)
 			}else{
-				errAlert(res.data.msg)
+				// errAlert(res.data.msg)
 			}
 		} else if(res.status == 500) {
-			errAlert('请求无响应');
+			// errAlert('请求无响应');
 		} else {
-			errAlert('请求超时');
+			// errAlert('请求超时');
 		}
 	}
 };
@@ -53,12 +53,12 @@ const pubHttp = (type, url, params, contentType) => {
 		} catch(err) {
 			if(err.response){
 				if(err.response.statusText){
-					errAlert(err.response.statusText)
+					// errAlert(err.response.statusText)
 				}else{
-					errAlert(err)
+					// errAlert(err)
 				}
 			}else{
-				errAlert(err);
+				// errAlert(err);
 			}
 		}
 	})()

@@ -12,6 +12,10 @@
 					path: "home"
 				},{
 					path: "riskMap"
+				},{
+					path: "inspectResult"
+				},{
+					path: "warningAnalysis"
 				}],
 				path: []
 			}

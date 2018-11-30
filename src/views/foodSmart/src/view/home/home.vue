@@ -2,23 +2,23 @@
     <div id="home">
         <div class="top">
             <div class="item">
-                <router-link :to="{path:'home'}"><img src="../../images/u73.png" class="imgs"/></router-link>
+                <router-link :to="{path:'/home'}"><img src="../../images/u73.png" class="imgs"/></router-link>
                 <span>全息档案</span>
             </div>
             <div class="item">
-                <router-link :to="{path:'riskMap'}"><img src="../../images/u73.png" class="imgs"/></router-link>
+                <router-link :to="{path:'/riskMap'}"><img src="../../images/u73.png" class="imgs"/></router-link>
                 <span>监管地图</span>
             </div>
             <div class="item">
-                <router-link :to="{path:'home'}"><img src="../../images/u73.png" class="imgs"/></router-link>
+                <router-link :to="{path:'/home'}"><img src="../../images/u73.png" class="imgs"/></router-link>
                 <span>预警分析</span>
             </div>
             <div class="item">
-                <router-link :to="{path:'home'}"><img src="../../images/u73.png" class="imgs"/></router-link>
+                <router-link :to="{path:'/home'}"><img src="../../images/u73.png" class="imgs"/></router-link>
                 <span>核查结果</span>
             </div>
             <div class="item">
-                <router-link :to="{path:'home'}"><img src="../../images/u73.png" class="imgs"/></router-link>
+                <router-link :to="{path:'/home'}"><img src="../../images/u73.png" class="imgs"/></router-link>
                 <span>量化分级</span>
             </div>
         </div>
@@ -93,7 +93,7 @@ export default {
         }
     },
     mounted () {
-        this.$emit('closeLoading');
+        this.$emit('closeLoading', false);
     }
 }
 </script>
