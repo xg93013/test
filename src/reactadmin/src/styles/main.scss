@@ -1,0 +1,129 @@
+@import '../static/css/reset.css';
+.header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    text-align: center;
+    height: 50px;
+    right: 0;
+}
+.main{
+    position: fixed;
+    top: 50px;
+    left: 60px;
+    right: 0;
+    font-size: 14px;
+    bottom: 0;
+    overflow: auto;
+    
+    // 下拉框
+    .ant-select-open {
+        .ant-select-selection{
+            box-shadow: none;
+        }
+    }
+    .ant-select-selection__placeholder, .ant-select-search__field__placeholder{
+        color: #999;
+    }
+    .ant-select-enabled {
+        .ant-select-selection {
+            box-shadow: none;
+        }
+    }
+    .ant-select-selection {
+        width: 140px;
+        border: none;
+        outline: none;
+        background: #eee;
+        border-radius: 0;
+        border-color: transparent;
+    }
+    // 表格重构
+    .ant-tabs-nav .ant-tabs-tab:active{
+        background-color: #eee;
+    }
+    .ant-tabs-nav .ant-tabs-tab-active{
+        background-color: #eee;
+    }
+    .ant-table-thead > tr > th{
+        background: #eee;
+        height: 50px;
+        padding: 0 10px;
+    }
+    .ant-table-tbody > tr > td{
+        background: #ccc;
+        height: 42px;
+        padding: 0 10px;
+        line-height: 42px;
+        border-bottom: 1px solid #ccc;
+    }
+    .ant-table-thead > tr.ant-table-row-hover > td, .ant-table-tbody > tr.ant-table-row-hover > td, .ant-table-thead > tr:hover > td, .ant-table-tbody > tr:hover > td{
+        background: #ccc;
+    }
+    .ant-tabs-ink-bar{
+        height: 0;
+        border-bottom: none;
+    }
+}
+.mainWrapper{
+    min-width: 1000px;
+    min-height: 350px;
+    position: relative;
+}
+.sidebar{
+    position: fixed;
+    top: 50px;
+    left: 0;
+    width: 60px;
+    bottom: 0;
+    background: #1b223e;
+    color: #fff;
+    .nav{
+        width: 100%;
+        height: 60px;
+        .normalStyle{
+            width: 100%;
+            height: 60px;
+            // background: #1b223e;
+            text-align: center;
+            a{
+                width: 60px;
+                height: 60px;
+                // background-position: 0 0;
+                background-repeat: no-repeat;
+                background-position: center;
+                display: inline-block;
+                color: #fff;
+            }
+        }
+        .currentStyle{
+            // background: #343f69;
+            a{
+                color: #fff;
+            }
+            
+        }
+    }
+}
+.w100{
+    width: 100px;
+}
+.w200{
+    width: 200px;
+}
+.overText{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: relative;
+    // background: #333;
+}
+.toolTips{
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: 300px;
+    white-space: normal;
+    word-break: break-all;
+    word-wrap: break-word;
+}

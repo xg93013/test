@@ -1,0 +1,17 @@
+.tableBox{
+    width: 100%;
+    padding: 20px;
+    background: #eee;
+    overflow: hidden;
+    min-height: 300px;
+    position: relative;
+    .loadings{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        text-align: center;
+        width: 500px;
+        // line-height: 300px;
+    }
+}
