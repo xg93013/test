@@ -1,0 +1,351 @@
+* {
+    padding:0;
+    margin:0;
+    box-sizing: border-box;
+    color white
+    // 滚动条样式
+    &::-webkit-scrollbar{
+        background-color:rgba(20, 20, 37,1);
+        width:16px;
+    }
+    // &::-webkit-scrollbar-track {
+    //     background-color:rgba(44, 44, 77,0.1)
+    // }
+    // &::-webkit-scrollbar-track-piece {
+    //     background-color:rgba(44, 44, 77,0.2)
+    // }
+    &::-webkit-scrollbar-thumb {
+        border-radius:3px;
+        height: 30px;
+        background-color:rgba(44,44,77,0.5);
+        &:hover{
+            background-color:rgba(44,44,77,1);
+            cursor :pointer
+        }
+    }
+    // height 5400px
+}
+html {
+    height:100%;
+    width:100%;
+    min-height: 1080px;
+    min-width 1600px;
+    body {
+        height:100%;
+        width:100%;
+    }
+}
+
+.floatL {
+    float:left;
+}
+
+.floatR {
+    float:right;
+}
+
+.clearFloat
+    &:after
+        display block
+        clear both
+        content ""
+
+.tableCommon 
+    .el-table 
+        background-color transparent
+        outline none
+        &:before{
+            // border-bottom 1px solid rgba(255,255,255,.2)
+            background-color rgba(255,255,255,.2)
+
+        }
+        .el-table__row{
+            // tr {
+            //     background-color transparent
+            // }
+            &.current-row,&:hover{
+                td {
+                    trans()
+                    background-color rgba(69, 103, 204, .3)
+                }
+            }
+            &.el-table__row--striped{
+                td {
+                    background-color rgba(69, 103, 204, .2)
+                }
+            }
+        }
+        tr,th
+            background-color transparent
+            // border-bottom none
+            .cell{
+                padding 0px 6px
+            }
+        tr 
+            td
+                border-bottom none
+                padding 5px 0px
+                .cell{
+                    padding 0px 6px
+                }
+            th
+                border-bottom 1px solid RGBA(255, 255, 255, .1)
+                border-top 1px solid RGBA(255, 255, 255, .1)
+                padding 1px 0px
+#app
+    .el-loading-mask
+        background-color rgba(69, 103, 204, .7)
+
+.el-popover
+    background-color rgba(69, 103, 204, .7)
+    color white
+    border none
+
+// 复选框样式
+.el-checkbox{
+    .el-checkbox__input{
+        &.is-checked{
+            .el-checkbox__inner{
+                background-color rgba(69, 103, 204,1)
+                border-color rgba(69, 103, 204,1)
+            }
+        }
+        &.is-focus{
+            .el-checkbox__inner{
+                border-color rgba(69, 103, 204,1)
+            }
+        }
+        .el-checkbox__inner{
+            background-color transparent
+        }
+    }
+    &.is-checked{
+        
+        .el-checkbox__label{
+            color rgba(69, 103, 204,1)
+        }
+    }
+}
+
+.selectOptionCommon.el-select-dropdown{
+    background-color RGBA(27, 27, 38, .9)
+    border none
+    .el-select-dropdown__wrap{
+        .el-select-dropdown__list{
+            li{
+                trans()
+                &.selected{
+                    background-color RGBA(57, 89, 166, .3)
+                }
+                &:hover{
+                    background-color RGBA(69, 103, 204, .3)
+                }
+            }
+        }
+    }
+    .popper__arrow{
+        border-bottom-color RGBA(27, 27, 38, .9);
+        &:after{
+            border-bottom-color RGBA(27, 27, 38, .9);
+        }
+    }
+}
+.el-select {
+    .el-input{
+        .el-input__inner{
+            background-color rgba(7, 14, 32,.85)
+            // border-color rgba(7, 14, 32,.85)
+            border none
+            color white
+        }
+        &.is-focus{
+            .el-input__inner{
+                background-color rgba(1,156,255,0.85)
+            }
+        }
+    }
+    .el-select__tags{
+        .el-tag--small{
+            background-color rgba(7, 14, 32,.85)
+        }
+    }
+}
+.el-select-dropdown.el-popper[x-placement^=bottom]{
+    background-color rgba(7, 14, 32,.85)
+    border none
+    .el-select-dropdown__item{
+        &.selected{
+            background-color transparent
+        }
+        &.hover,&:hover,&.hover.selected{
+            background-color rgba(1,133,217,.2)
+        }
+        // &:hover{
+        //     background-color transparent
+        // }
+    }
+    .popper__arrow{
+        border none
+        &:after{
+            border-bottom-color rgba(7, 14, 32,.85)
+        }
+    }
+}
+
+.el-collapse {
+    background transparent
+    border-color rgba(1,156,255,0.5)
+    .el-collapse-item {
+        .el-collapse-item__header {
+            &:not(.is-active) {
+                border-color rgba(1,156,255,0.5)
+            }
+            background transparent
+            color white
+            clf()
+            .prefix,.suffix {
+                float left
+                width calc((100% - 21px) / 2)
+                overflow hidden
+                text-overflow ellipsis
+                white-space nowrap
+            }
+            .prefix {
+                padding-left 10px
+            }
+            .suffix {
+                text-align right
+                padding-right 15px
+            }
+        }
+        .el-collapse-item__wrap {
+            background transparent
+            border-color rgba(1,156,255,0.5)
+            .el-collapse-item__content{
+                padding 0
+            }
+        }
+    }
+}
+
+.el-progress {
+    .el-progress-circle__track{
+        stroke transparent
+    }
+}
+
+
+@keyframes loadingFloat {
+    0% {
+        transform translate(-10px,-5px)
+    }
+    25% {
+        transform translate(-5px,5px)
+    }
+    50% {
+        transform translate(0px,-5px)
+    }
+    75% {
+        transform translate(5px,5px)
+    }
+    100% {
+        transform translate(10px,-5px)
+    }
+    // 转圈
+    // 0% {
+    //     transform translate(0px,0px)
+    // }
+    // 25% {
+    //     transform translate(10px,5px)
+    // }
+    // 50% {
+    //     transform translate(20px,0px)
+    // }
+    // 75% {
+    //     transform translate(10px,-5px)
+    // }
+    // 100% {
+    //     transform translate(0px,0px)
+    // }
+}
+.analyzing-loading{
+    background url('./image/loading-ufo.png') no-repeat
+    base(50px,80px)
+    display inline-block
+    animation loadingFloat 4s linear infinite alternate
+    // animation-iteration-count 
+}
+
+.detail_box{
+    position relative
+    .leftTopCorner{
+        content ''
+        display block
+        border-style solid
+        border-color transparent transparent rgba(0,146,254, 1) transparent
+        border-width 0 25px 25px 25px
+        height 0
+        width 50px
+        position absolute
+        margin 20px 0 50px 0
+        transform rotate(-45deg)
+        top -27px
+        left -19px
+        &:before{
+            content ''
+            display block
+            position absolute
+            top 24px
+            left -25px
+            width 0
+            height 0
+            border-style solid
+            border-color rgba(0,146,254, 1) transparent transparent transparent
+            border-width 41px 25px 0 25px
+        }
+    }
+    .detailbox_common{
+        $w = 300px
+        width $w
+        font-size 14px  
+        padding 20px
+        // background-color rgba(9, 43, 120, 1)
+        gradientStyle(bottom,rgba(9,43,120,1),rgba(11,12,33,1));
+        border 1px solid rgba(0,146,254, 1)
+        border-radius 4px
+        position relative
+        .title{
+            font-size 18px
+            font-weight bold
+            margin-bottom 12px
+        }
+        
+        .arrow{
+            $arrowW = 10px
+            position absolute
+            display block
+            border-top:$arrowW solid rgba(0,146,254, 1)
+            border-right: $arrowW solid transparent
+            border-left: $arrowW solid transparent
+            width 0
+            height 0
+            calcM(top,100%,0px)
+            calcM(left,$w/2,$arrowW)
+            &:after{
+                content ""
+                position absolute
+                display block
+                border-top: ($arrowW - 2px) solid rgba(11,12,33,1)
+                border-right: ($arrowW - 2px) solid transparent
+                border-left: ($arrowW - 2px) solid transparent
+                width 0
+                height 0
+                top - $arrowW
+                left - $arrowW + 2px
+                // calcM(top,100%,1px)
+                // calcM(left,$w/2,$arrowW-2px)
+            }
+        }
+        
+    }
+}
