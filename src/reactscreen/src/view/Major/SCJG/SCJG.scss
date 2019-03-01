@@ -1,0 +1,49 @@
+@import '~@/style/common.scss';
+:local {
+    .scjg-area {
+        display: flex;
+        flex: 1;
+        flex-flow: row;
+        height: 100%;
+        .content-area {
+            margin: 100px 70px;
+            width: 1350px;
+            height: 750px;
+        }
+        .button-area {
+            position: absolute;
+            bottom: 40px;
+            right: 150px;
+            display: flex;
+            flex-flow: row;
+            .button {
+                position: relative;
+                cursor: pointer;
+                width: 207px;
+                height: 44px;
+                $buttons : (('link-button'),('next-button'),('prev-button'));
+                @for $i from 1 through 3 {
+                    &:nth-child(#{$i}) {
+                        @if $i == 1 {
+                            margin-right: 40px;
+                        }
+                        background: url('../images/#{nth($buttons, $i)}.png');
+                    }
+                }
+                &::after {
+                    position: absolute;
+                    top:0px;
+                    left: 0px;
+                    border-radius: 10px;
+                    box-shadow: 5px 5px 8px 2px rgba(0, 0, 0, 0.2);
+                    content: '';
+                    width: 88%;
+                    height: 100%;
+                    display: block;
+                    transform: skew(-31deg);
+                    transform-origin: 0% 100%;
+                }
+            }
+        }
+    }
+}

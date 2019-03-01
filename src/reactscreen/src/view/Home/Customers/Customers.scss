@@ -1,0 +1,109 @@
+@import '~@/style/common.scss';
+.system-area {
+    width: 100%;
+    top: 40px;
+    height: calc(100% - 193px);
+    position: relative;
+    .center-map {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .link-a1 {
+        bottom: 167px;
+        left: 699px;
+    }
+}
+
+.detail-box {
+    width: 100%;
+    height: 100%;
+}
+
+.customer-detail {
+    width: 100%;
+    height: 100%;
+    // position: fixed;
+    .detail-con {
+        position: fixed;
+        width: 1600px;
+        top: 100px;
+        bottom: 100px;
+        left: 50%;
+        background: rgba(13, 87, 232, 1);
+        border: 2px solid rgba(148, 184, 255, 1);
+        border-radius: 10px;
+        transform: translateX(-50%);
+        z-index: 999;
+        .inner-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            .inner-title {
+                width: 100%;
+                position: absolute;
+                top: 0;
+                right: 0;
+                height: 100px;
+                text-align: center;
+                .title-name {
+                    display: block;
+                    width: 100%;
+                    height: 100px;
+                    line-height: 100px;
+                    text-align: center;
+                    margin: 10px 0 26px 0;
+                    font-size: 26px;
+                    background: url(./images/title-lightbar.png) center 36px no-repeat;
+                }
+                .close-icon {
+                    position: absolute;
+                    right: 30px;
+                    top: 30px;
+                    width: 49px;
+                    height: 49px;
+                    background: url(./images/close.png) center no-repeat;
+                    cursor: pointer;
+                }
+            }
+            .contents {
+                position: absolute;
+                top: 100px;
+                left: 50px;
+                right: 50px;
+                bottom: 50px;
+                overflow: auto;
+                // padding: 30px 50px;
+                .projects {
+                    width: 100%;
+                }
+            }
+        }
+    }
+    .detail-back {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 990;
+        background: rgba(14, 14, 14, 0.4);
+    }
+    .project-detail {
+        width: 100%;
+        width: 100%;
+        h2 {
+            margin: 20px 0;
+        }
+        p {
+            line-height: 30px;
+        }
+        .imgs {
+            width: 80%;
+            margin: 50px 10%;
+        }
+    }
+}

@@ -1,0 +1,36 @@
+@mixin trans($a:all, $t:.5s, $s:ease-in-out) {
+    -webkit-transition: $a $t $s;
+    transition: $a $t $s;
+    -moz-transition: $a $t $s; /* Firefox 4 */
+    -o-transition: $a $t $s; /* Opera */
+}
+
+// 给自定义属性加计算属性值
+@mixin calcM($attr, $per, $px){
+    // {$attr} 'calc(%s - %s)' % (per px)
+    $attr: calc($per - $px);
+}
+// @mixin calcP($attr, $per, $px){
+//     {$attr} 'calc(%s + %s)' % (per px)
+//     {$attr} '-moz-calc(%s + %s)' % (per px)
+//     {$attr} '-webkit-calc(%s + %s)' (per px)
+// }
+
+// @mixin calcDivision($attr, $per, $px, $divn) {
+//     {$attr} 'calc((%s - %s) / %s )' % (per px divn)
+//     {$attr} '-moz-calc((%s - %s) / %s )' % (per px divn)
+//     {$attr} '-webkit-calc((%s - %s) / %s )' (per px divn)
+// }
+// @mixin calcDivisionP($attr, $per, $px, $divn, $ex) {
+//     {$attr} 'calc((%s - %s) / %s + %s)' % (per px divn ex)
+//     {$attr} '-moz-calc((%s - %s) / %s + %s)' % (per px divn ex)
+//     {$attr} '-webkit-calc((%s - %s) / %s + %s)' (per px divn ex)
+// }
+
+@mixin clf() {
+    &:after {
+        display: block;
+        clear: both;
+        content: "";
+    }
+}
