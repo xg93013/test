@@ -1,7 +1,7 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import next from '../pages/next/next';
 import * as nextAction from '../actions/next';
-import {bindActionCreators} from 'redux';
+import { bindActionCreators } from 'redux';
 const mapStateToProps = (state) => {
     console.log(state)
     return {

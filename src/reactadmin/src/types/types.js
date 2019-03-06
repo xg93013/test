@@ -1,1 +1,0 @@
-const type_add = 'TYPE_ADD'

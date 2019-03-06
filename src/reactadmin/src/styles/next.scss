@@ -1,11 +1,11 @@
-.nexts{
-    .ant-tabs-bar{
+.nexts {
+    .ant-tabs-bar {
         border-bottom: none;
     }
-    .ant-tabs-nav{
+    .ant-tabs-nav {
         width: 100%;
     }
-    .ant-tabs-tab{
+    .ant-tabs-tab {
         width: 20%;
         text-align: center;
     }
@@ -16,33 +16,26 @@
     // min-height: 700px;
     // background: #004094;
     // overflow: hidden;
-    .chart-x{
+    .chart-x {
         width: 100%;
         padding: 20px;
         overflow: hidden;
         // background: #eee;
-        
-        .chart-box{
+        .chart-box {
             width: 50%;
             // margin-left: 5%;
             height: 300px;
             float: left;
         }
-        
     }
-    
-    .panels{
+    .panels {
         width: 100%;
         padding: 0 20px;
-        background: #eee;
+        // background: #f5f5f5;
         overflow: hidden;
         min-height: 300px;
         position: relative;
-        
-        .spins{
-            
-        }
+        .spins {}
     }
     // display: flex;
 }
-

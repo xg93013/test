@@ -1,5 +1,5 @@
-@import '../static/css/reset.css';
-.header{
+@import "../static/css/reset.css";
+.header {
     position: fixed;
     top: 0;
     left: 0;
@@ -7,22 +7,24 @@
     height: 50px;
     right: 0;
 }
-.main{
+
+.main {
     position: fixed;
     top: 50px;
-    left: 60px;
+    left: 200px;
     right: 0;
     font-size: 14px;
     bottom: 0;
     overflow: auto;
-    
+    background: #f5f5f5;
     // 下拉框
     .ant-select-open {
-        .ant-select-selection{
+        .ant-select-selection {
             box-shadow: none;
         }
     }
-    .ant-select-selection__placeholder, .ant-select-search__field__placeholder{
+    .ant-select-selection__placeholder,
+    .ant-select-search__field__placeholder {
         color: #999;
     }
     .ant-select-enabled {
@@ -39,54 +41,59 @@
         border-color: transparent;
     }
     // 表格重构
-    .ant-tabs-nav .ant-tabs-tab:active{
-        background-color: #eee;
+    .ant-tabs-nav .ant-tabs-tab:active {
+        background-color: #fff;
     }
-    .ant-tabs-nav .ant-tabs-tab-active{
-        background-color: #eee;
+    .ant-tabs-nav .ant-tabs-tab-active {
+        background-color: #fff;
     }
-    .ant-table-thead > tr > th{
-        background: #eee;
+    .ant-table-thead>tr>th {
+        background: #f5f5f5;
         height: 50px;
         padding: 0 10px;
     }
-    .ant-table-tbody > tr > td{
-        background: #ccc;
+    .ant-table-tbody>tr>td {
+        background: #fff;
         height: 42px;
-        padding: 0 10px;
-        line-height: 42px;
-        border-bottom: 1px solid #ccc;
+        padding: 10px;
+        // line-height: 42px;
+        border-bottom: 1px solid #f5f5f5;
     }
-    .ant-table-thead > tr.ant-table-row-hover > td, .ant-table-tbody > tr.ant-table-row-hover > td, .ant-table-thead > tr:hover > td, .ant-table-tbody > tr:hover > td{
-        background: #ccc;
+    .ant-table-thead>tr.ant-table-row-hover>td,
+    .ant-table-tbody>tr.ant-table-row-hover>td,
+    .ant-table-thead>tr:hover>td,
+    .ant-table-tbody>tr:hover>td {
+        background: #fff;
     }
-    .ant-tabs-ink-bar{
+    .ant-tabs-ink-bar {
         height: 0;
         border-bottom: none;
     }
 }
-.mainWrapper{
+
+.mainWrapper {
     min-width: 1000px;
     min-height: 350px;
     position: relative;
 }
-.sidebar{
+
+.sidebar {
     position: fixed;
     top: 50px;
     left: 0;
-    width: 60px;
+    width: 300px;
     bottom: 0;
-    background: #1b223e;
-    color: #fff;
-    .nav{
+    background: #f5f5f5;
+    color: #999;
+    .nav {
         width: 100%;
         height: 60px;
-        .normalStyle{
+        .normalStyle {
             width: 100%;
             height: 60px;
             // background: #1b223e;
             text-align: center;
-            a{
+            a {
                 width: 60px;
                 height: 60px;
                 // background-position: 0 0;
@@ -96,29 +103,32 @@
                 color: #fff;
             }
         }
-        .currentStyle{
+        .currentStyle {
             // background: #343f69;
-            a{
+            a {
                 color: #fff;
             }
-            
         }
     }
 }
-.w100{
+
+.w100 {
     width: 100px;
 }
-.w200{
+
+.w200 {
     width: 200px;
 }
-.overText{
+
+.overText {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     position: relative;
     // background: #333;
 }
-.toolTips{
+
+.toolTips {
     position: absolute;
     top: 0;
     left: 0;
@@ -126,4 +136,23 @@
     white-space: normal;
     word-break: break-all;
     word-wrap: break-word;
+}
+
+.ant-carousel .slick-slide {
+    text-align: center;
+    height: 180px;
+    line-height: 160px;
+    background: #5773a8;
+    overflow: hidden;
+}
+
+// loading
+.loadings {
+    position: fixed;
+    top: 50px;
+    left: 200px;
+    right: 0;
+    bottom: 0;
+    background: rgba($color: #fff, $alpha: 0.7);
+    z-index: 9999;
 }

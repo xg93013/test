@@ -1,37 +1,45 @@
-.indexContent{
-    .left{
+.indexContent {
+    .left {
         position: fixed;
         left: 0;
         top: 50px;
         bottom: 0;
         width: 200px;
+        overflow-x: none;
+        overflow-y: auto;
+        box-sizing: border-box;
+        .menus {
+            width: 100%;
+            height: 100%;
+        }
     }
-    .right{
+    .right {
         position: fixed;
         top: 50px;
         left: 200px;
         right: 0;
         bottom: 0;
+        overflow: auto;
         display: flex;
-        .formItem{
-            float: 0 0 600px;
+        .wrapper {
+            min-width: 1000px;
+            min-height: 600px;
+        }
+        .formItem {
+            flex: 0 0 600px;
             width: 600px;
         }
-        .item{
-            flex: 0 0 50%;
-            width: 50%;
-            height: 100%;
-        }
-        .tableList{
+        .tableList {
             width: 100%;
         }
     }
-  }
-  .mainCon{
+}
+
+.mainCon {
     position: fixed;
     top: 50px;
     left: 100px;
     right: 0;
     bottom: 0;
     // display: flex;
-  }
+}

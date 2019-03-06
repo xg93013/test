@@ -1,0 +1,113 @@
+// :local {
+#warning {
+    background: #f5f5f5;
+    width: 100%;
+    .top {
+        width: 100%;
+        overflow: hidden;
+        .item {
+            width: 50%;
+            padding: 10px;
+            float: left;
+            >div {
+                width: 100%;
+                height: 300px;
+                background: #fff;
+                position: relative;
+                .title {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    height: 50px;
+                    line-height: 50px;
+                    padding: 0 30px;
+                }
+                .chart {
+                    position: absolute;
+                    top: 50px;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                }
+                .filter {
+                    position: absolute;
+                    top: 20px;
+                    left: 20px;
+                    width: 120px;
+                    height: 46px;
+                    z-index: 999;
+                }
+            }
+        }
+        .aleft {
+            width: 60%;
+        }
+        .aright {
+            width: 40%;
+        }
+    }
+    .bot {
+        width: 100%;
+        overflow: hidden;
+        .item {
+            // width: 50%;
+            padding: 10px;
+            float: left;
+            height: 300px;
+            overflow: hidden;
+            >div {
+                width: 100%;
+                height: 300px;
+                // overflow: hidden;
+                .animateCircle {
+                    // transition: all 2s;
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 50%;
+                    border: 1px solid #ccc;
+                    animation: myanimate 20s infinite;
+                }
+                &.heightBox {
+                    height: 900px;
+                    // transition: all 2s;
+                    margin-top: 0;
+                    position: relative;
+                    .inners {
+                        position: absolute;
+                        height: 300px;
+                        left: 0;
+                        width: 100%;
+                        &:nth-child(1) {
+                            top: 0;
+                        }
+                        &:nth-child(2) {
+                            top: 300px;
+                        }
+                        &:nth-child(3) {
+                            top: 600px;
+                        }
+                    }
+                }
+            }
+            &:nth-child(1) {
+                width: 30%
+            }
+            &:nth-child(2) {
+                width: 30%
+            }
+            &:nth-child(3) {
+                width: 40%
+            }
+        }
+    }
+}
+
+// }
+@keyframes myanimate {
+    from {
+        transform: rotate(0deg)
+    }
+    to {
+        transform: rotate(360deg)
+    }
+}

@@ -1,5 +1,5 @@
-import {combineReducers} from 'redux';
-import nextList from './nextList';
+import { combineReducers } from 'redux';
+import isLoading from './is-loading'
 export default combineReducers({
-    nextList
+    isLoading
 })

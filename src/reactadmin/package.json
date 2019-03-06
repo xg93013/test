@@ -77,9 +77,11 @@
   ],
   "devDependencies": {
     "bundle-loader": "^0.5.6",
+    "events": "^3.0.0",
     "mockjs": "^1.0.1-beta3",
     "node-sass": "^4.9.4",
     "sass-loader": "^7.1.0",
+    "screenfull": "^4.0.0",
     "webpack-cli": "^3.1.2"
   },
   "jest": {
@@ -122,6 +124,5 @@
     "presets": [
       "react-app"
     ]
-  },
-  "proxy": "http://172.27.178:9989"
+  }
 }

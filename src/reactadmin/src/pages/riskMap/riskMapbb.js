@@ -256,7 +256,7 @@ export default class RiskMap extends Component {
   render() {
     return (
       <div className="containers">
-        <Header />
+        <Header headTitle={this.state.headTitle} />
         <Nav {...this.props} />
         <div className="main">
           <div className="mainWrapper riskMap">
