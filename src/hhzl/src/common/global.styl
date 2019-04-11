@@ -1,0 +1,348 @@
+* {
+    padding:0;
+    margin:0;
+    box-sizing: border-box;
+    color white
+    // 滚动条样式
+    &::-webkit-scrollbar{
+        background-color:rgba(20, 20, 37, .8);
+        width: 16px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius:3px;
+        height: 30px;
+        background-color:rgba(89,222,238,.5);
+        &:hover{
+            background-color:rgba(89,222,238,1);
+            cursor :pointer;
+        }
+    }
+    
+}
+
+#yg_html {
+    height:100%;
+    width:100%;
+    
+    // min-height: fitPx(1080px);
+    min-height $minHeight
+    min-width 1920px
+    body {
+        height:100%;
+        width:100%;
+    }
+}
+
+.floatL {
+    float:left;
+}
+
+.floatR {
+    float:right;
+}
+
+.clearFloat
+    &:after
+        display block
+        clear both
+        content ""
+
+.tableCommon 
+    .el-table 
+        background-color transparent
+        outline none
+        font-size fitPx(14px)
+        &:before{
+            // border-bottom fitPx(1px) solid rgba(255,255,255,.2)
+            background-color rgba(255,255,255,.2)
+
+        }
+        .el-table__row{
+            // tr {
+            //     background-color transparent
+            // }
+            &.current-row,&:hover{
+                td {
+                    trans()
+                    background-color rgba($mainColor, .3)
+                }
+            }
+            &.el-table__row--striped{
+                td {
+                    background-color rgba(19, 150, 219, .2)
+                }
+            }
+        }
+        tr,th
+            background-color transparent
+            // border-bottom none
+            .cell{
+                padding fitPx(0px) fitPx(6px)
+            }
+        tr 
+            td
+                border-bottom none
+                padding fitPx(5px) fitPx(0px)
+                .cell{
+                    padding fitPx(0px) fitPx(6px)
+                }
+            th
+                border-bottom fitPx(1px) solid RGBA(255, 255, 255, .1)
+                border-top fitPx(1px) solid RGBA(255, 255, 255, .1)
+                padding fitPx(1px) fitPx(0px)
+
+.el-loading-mask
+    background-color rgba(19, 150, 219, .7) !important
+
+.el-popover
+    background-color rgba(19, 150, 219, .7)
+    color white
+    border none
+
+// 复选框样式
+.el-checkbox{
+    .el-checkbox__input{
+        &.is-checked{
+            .el-checkbox__inner{
+                background-color rgba(19, 150, 219,1)
+                border-color rgba(19, 150, 219,1)
+            }
+        }
+        &.is-focus{
+            .el-checkbox__inner{
+                border-color rgba(19, 150, 219,1)
+            }
+        }
+        .el-checkbox__inner{
+            background-color transparent
+        }
+    }
+    &.is-checked{
+        
+        .el-checkbox__label{
+            color rgba(19, 150, 219,1)
+        }
+    }
+}
+
+.selectOptionCommon.el-select-dropdown{
+    background-color RGBA(27, 27, 38, .9)
+    border none
+    .el-select-dropdown__wrap{
+        .el-select-dropdown__list{
+            li{
+                trans()
+                &.selected{
+                    background-color RGBA(57, 89, 166, .3)
+                }
+                &:hover{
+                    background-color RGBA(19, 150, 219, .3)
+                }
+            }
+        }
+    }
+    .popper__arrow{
+        border-bottom-color RGBA(27, 27, 38, .9);
+        &:after{
+            border-bottom-color RGBA(27, 27, 38, .9);
+        }
+    }
+}
+.el-select {
+    .el-input{
+        .el-input__inner{
+            background-color rgba(7, 14, 32,.85)
+            // border-color rgba(7, 14, 32,.85)
+            border none
+            color white
+        }
+        &.is-focus{
+            .el-input__inner{
+                background-color rgba($mainColor,0.85)
+            }
+        }
+    }
+    .el-select__tags{
+        .el-tag--small{
+            background-color rgba(7, 14, 32,.85)
+        }
+    }
+}
+.el-select-dropdown.el-popper[x-placement^=bottom]{
+    background-color rgba(7, 14, 32,.85)
+    border none
+    .el-select-dropdown__item{
+        &.selected{
+            background-color transparent
+        }
+        &.hover,&:hover,&.hover.selected{
+            background-color rgba(1,255,255,.2)
+        }
+        // &:hover{
+        //     background-color transparent
+        // }
+    }
+    .popper__arrow{
+        border none
+        &:after{
+            border-bottom-color rgba(7, 14, 32,.85)
+        }
+    }
+}
+
+.el-collapse {
+    background transparent
+    border-color rgba($mainColor,0.5)
+    .el-collapse-item {
+        .el-collapse-item__header {
+            &:not(.is-active) {
+                border-color rgba($mainColor,0.5)
+            }
+            background transparent
+            color white
+            clf()
+            .prefix,.suffix {
+                float left
+                // width calc((100% - fitPx(21px)) / 2)
+                calcM(width, 50%, fitPx(21px) / 2)
+                overflow hidden
+                text-overflow ellipsis
+                white-space nowrap
+            }
+            .prefix {
+                padding-left fitPx(10px)
+            }
+            .suffix {
+                text-align right
+                padding-right fitPx(15px)
+            }
+        }
+        .el-collapse-item__wrap {
+            background transparent
+            border-color rgba($mainColor,0.5)
+            .el-collapse-item__content{
+                padding 0
+            }
+        }
+    }
+}
+
+.el-progress {
+    .el-progress-circle__track{
+        stroke transparent
+    }
+}
+
+
+@keyframes loadingFloat {
+    0% {
+        transform translate(-fitPx(10px),-fitPx(5px))
+    }
+    25% {
+        transform translate(-fitPx(5px),fitPx(5px))
+    }
+    50% {
+        transform translate(fitPx(0px),-fitPx(5px))
+    }
+    75% {
+        transform translate(fitPx(5px),fitPx(5px))
+    }
+    100% {
+        transform translate(fitPx(10px),-fitPx(5px))
+    }
+    // 转圈
+    // 0% {
+    //     transform translate(fitPx(0px),fitPx(0px))
+    // }
+    // 25% {
+    //     transform translate(fitPx(10px),fitPx(5px))
+    // }
+    // 50% {
+    //     transform translate(fitPx(20px),fitPx(0px))
+    // }
+    // 75% {
+    //     transform translate(fitPx(10px),-fitPx(5px))
+    // }
+    // 100% {
+    //     transform translate(fitPx(0px),fitPx(0px))
+    // }
+}
+
+.detail_box{
+    position relative
+    .leftTopCorner{
+        content ''
+        display block
+        border-style solid
+        border-color transparent transparent rgba($mainColor, 1) transparent
+        border-width 0 25px 25px 25px
+        height 0
+        width 50px
+        position absolute
+        margin 20px 0 50px 0
+        transform rotate(-45deg)
+        top -27px
+        left -19px
+        &:before{
+            content ''
+            display block
+            position absolute
+            top 24px
+            left -25px
+            width 0
+            height 0
+            border-style solid
+            border-color rgba($mainColor, 1) transparent transparent transparent
+            border-width 41px 25px 0 25px
+        }
+    }
+
+    .detailbox_common{
+        $w = 300px
+        width $w
+        font-size 14px
+        padding 20px
+        gradientStyle(bottom,rgba(9,43,120,1),rgba(11,12,33,1));
+        border 1px solid rgba($mainColor, 1)
+        border-radius 4px
+        position relative
+        .title{
+            position relative
+            top 0px
+            left 0px
+            font-size 18px
+            font-weight bold
+            margin-bottom 12px
+        }
+        
+        .arrow{
+            $arrowW = 10px
+            position absolute
+            display block
+            border-top:$arrowW solid rgba($mainColor, 1)
+            border-right: $arrowW solid transparent
+            border-left: $arrowW solid transparent
+            width 0
+            height 0
+            calcM(top,100%,0px)
+            calcM(left,$w/2,$arrowW)
+            &:after{
+                content ""
+                position absolute
+                display block
+                border-top: ($arrowW - 2px) solid rgba(11,12,33,1)
+                border-right: ($arrowW - 2px) solid transparent
+                border-left: ($arrowW - 2px) solid transparent
+                width 0
+                height 0
+                top - $arrowW
+                left - $arrowW + 2px
+                // calcM(top,100%,1px)
+                // calcM(left,$w/2,$arrowW-2px)
+            }
+        }
+        
+    }
+}
+
