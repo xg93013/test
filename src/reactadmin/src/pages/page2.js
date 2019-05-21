@@ -15,7 +15,7 @@ export default class Page2 extends Component {
     render(){
         return (
             <div className="about">
-                {this.props.parentData}
+                {this.props.parentData}aasdsd
             </div>
         );
     }
