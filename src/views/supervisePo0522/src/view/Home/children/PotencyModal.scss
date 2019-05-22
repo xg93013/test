@@ -1,0 +1,97 @@
+.ant-modal-wrap {
+    .modal-box {
+        .modal_title {
+            width: 100%;
+        }
+        overflow: hidden;
+        .modal-chart {
+            width: 50%;
+            height: 300px;
+            float: left;
+            position: relative;
+            transform: rotate(0deg);
+            .title {
+                position: absolute;
+                top: 0;
+                left: 20px;
+                height: 40px;
+                line-height: 40px;
+            }
+            .main-chart {
+                position: absolute;
+                top: 40px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                height: calc(100% - 40px);
+            }
+            .circle-box {
+                width: 240px;
+                height: 240px;
+                border-radius: 50%;
+                overflow: hidden;
+                margin: 0 auto;
+                position: relative;
+                .cirleft,
+                .cirright {
+                    float: left;
+                    width: 50%;
+                    height: 100%;
+                    position: relative;
+                    background: #eee;
+                    .bar {
+                        position: absolute;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        span {
+                            position: absolute;
+                            top: 30%;
+                            font-size: 12px;
+                            white-space: nowrap;
+                            transform: translateY(-50%);
+                        }
+                    }
+                    .leftbar {
+                        background: #ddd;
+                        span {
+                            right: 10px;
+                        }
+                    }
+                    .rightbar {
+                        background: #999;
+                        span {
+                            left: 10px;
+                        }
+                    }
+                }
+                .cirleft {
+                    background: #eee;
+                }
+                .lines {
+                    position: absolute;
+                    top: -20px;
+                    left: 50%;
+                    bottom: 0;
+                    width: 0.5px;
+                    transform: translateX(-50%);
+                    background: #ccc;
+                }
+            }
+        }
+    }
+    .modal-compare {
+        .top {
+            width: 100%;
+            span {
+                display: inline-block;
+                width: 50%;
+                padding-left: 20px;
+            }
+        }
+        .bottom {
+            margin-top: 20px;
+        }
+    }
+}
