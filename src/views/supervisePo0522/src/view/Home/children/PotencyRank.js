@@ -2,7 +2,7 @@ import React from "react";
 import echarts from "echarts"
 import { throttle } from "../../../unit/pub";
 
-const color = ["#DF6562", "#EFC235", "#4EA739", "#2A6BAF", "#805CCA"];
+const color = ["#0F6CD4", "#2C8FEC", "#71C2FA", "#A8DDFF"];
 
 class Index extends React.Component {
     constructor(props) {
@@ -13,17 +13,32 @@ class Index extends React.Component {
         let chart = echarts.init(document.getElementById('potency-rank'));
         let data = [{
             name: '高',
-            value: 20,
+            value: 100,
             props: [{
                 name: '高新区',
                 value: 10
-            }]
+            }],
+            label: {
+                show: true,
+                formatter: "等级：{b}\n占比：{c}%"
+            },
+            labelLine: {
+                show: true
+            },
+            emphasis: {
+                label: {
+                    show: true
+                },
+                labelLine: {
+                    show: true,
+                }
+            }
         }, {
             name: '较高',
             value: 20,
             props: [{
                 name: '高新区',
-                value: 10
+                value: 100000
             }]
         }, {
             name: '一般',
@@ -72,6 +87,11 @@ class Index extends React.Component {
                     let html = "";
                     html += '等级：' + params
                     return html
+                },
+                itemWidth: 14,
+                itemHeight: 14,
+                textStyle: {
+                    color: "#323232"
                 }
             },
             toolbox: {

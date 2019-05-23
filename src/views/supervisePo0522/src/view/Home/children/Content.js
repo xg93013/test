@@ -49,7 +49,7 @@ class Index extends React.Component {
                 data[i].count = i;
                 data[i].city = [{
                     area: '高新区',
-                    count: 20
+                    count: 300
                 }, {
                     area: '武侯区',
                     count: 20
@@ -62,7 +62,7 @@ class Index extends React.Component {
 
             this.refs.mapRefs.getCharts([{
                 name: '高新区',
-                value: 20
+                value: 300
             }])
             this.refs.sortRefs.getCharts()
             this.refs.compareRefs.getCharts()

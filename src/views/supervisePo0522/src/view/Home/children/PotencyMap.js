@@ -7,7 +7,7 @@ import PotencyModal from "./PotencyModal";
 
 echarts.registerMap('chengdu', chengdu);
 
-const color = ["#DF6562", "#EFC235", "#4EA739", "#2A6BAF", "#805CCA"];
+const color = ["#0F6CD4", "#2C8FEC", "#71C2FA", "#A8DDFF"];
 
 class Index extends React.Component {
     constructor(props) {
@@ -56,13 +56,13 @@ class Index extends React.Component {
                 type: "piecewise",
                 min: 0,
                 max: 500,
+                bottom: 10,
                 right: 10,
-                top: 10,
                 align: 'left',
                 showLabel: true,
                 color: color,
-                itemWidth: 10,
-                itemHeight: 10,
+                itemWidth: 14,
+                itemHeight: 14,
                 textGap: 5,
                 pieces: [{
                     min: 300,
@@ -81,7 +81,7 @@ class Index extends React.Component {
                     label: '等级：低'
                 }],
                 textStyle: {
-                    color: "#111"
+                    color: "#323232"
                 }
             },
             series: [
@@ -91,7 +91,8 @@ class Index extends React.Component {
                     mapType: "chengdu",
                     roam: false,
                     itemStyle: {
-                        normal: { label: { show: true } },
+
+                        normal: { borderColor: 'rgba(0,0,0,0)', label: { show: true }, areaColor: "#A8DDFF" },
                         emphasis: { label: { show: true }, areaColor: "#b5d5ff" }
                     },
                     label: {

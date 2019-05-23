@@ -31,34 +31,37 @@ class Index extends React.Component {
                         <span>本年度</span>
                     </div>
                 </div>
-                {
-                    topData.map((item, i) => (
-                        <div className="top-item" key={i}>
-                            <div>
-                                <div className="left">
-                                    <p>{item.name}（{item.unit}）</p>
-                                    <p>{item.count}</p>
-                                </div>
-                                <div className="right">
-                                    <Popover placement="rightTop" title={''} content={
-                                        (
-                                            <div>
-                                                {
-                                                    item.city && item.city.length > 0 ? item.city.map((itema, ia) => (
-                                                        <p key={i + '' + ia}>{itema.area}&emsp;{itema.count}</p>
-                                                    )) : ''
-                                                }
-                                            </div>
-                                        )
-                                    } trigger="hover">
-                                        <Icon type="right" />
-                                    </Popover>
+                <div>
+                    {
+                        topData.map((item, i) => (
+                            <div className="top-item" key={i}>
+                                <div className="item-con">
+                                    <div className="left">
+                                        <span></span>
+                                        <span>{item.name}（{item.unit}）</span>
+                                    </div>
+                                    <span className="text">{item.count}</span>
+                                    <div className="right">
+                                        <Popover placement="rightTop" title={''} content={
+                                            (
+                                                <div>
+                                                    {
+                                                        item.city && item.city.length > 0 ? item.city.map((itema, ia) => (
+                                                            <p key={i + '' + ia}>{itema.area}&emsp;{itema.count}</p>
+                                                        )) : ''
+                                                    }
+                                                </div>
+                                            )
+                                        } trigger="hover">
+                                            <Icon type="right" />
+                                        </Popover>
 
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))
-                }
+                        ))
+                    }
+                </div>
 
                 {/* <div className="top-item">
                     <div>
@@ -80,8 +83,8 @@ class Index extends React.Component {
                             </Popover>
                         </div>
                     </div>
-                </div>
-                */}
+                </div> */}
+
             </div>
         )
     }

@@ -24,18 +24,57 @@ class Index extends React.Component {
             // stack: 'a',
             yAxisIndex: 0,
             data: [1, 3, 4, 5, 2],
-            barWidth: 20
+            barWidth: 10,
+            z: 3,
+            itemStyle: {
+                color: {
+                    type: "linear",
+                    x: 0,
+                    y: 0,
+                    x2: 0,
+                    y2: 1,
+                    colorStops: [
+                        {
+                            offset: 0,
+                            color: "#1282FF" // 0% 处的颜色
+                        },
+                        {
+                            offset: 1,
+                            color: "#6ACBF6" // 100% 处的颜色
+                        }
+                    ]
+                },
+                barBorderRadius: [5, 5, 0, 0]
+            },
+            emphasis: {}
+        }, {
+            name: 'c',
+            type: 'bar',
+            // stack: 'a',
+            color: '#E7EBEE',
+            yAxisIndex: 0,
+            data: [5, 5, 5, 5, 5],
+            barWidth: 10,
+            z: 2,
+            barGap: "-100%",
+            emphasis: {
+                itemStyle: {
+                    color: '#E7EBEE'
+                }
+            }
         }, {
             name: 'b',
             type: 'line',
+            color: '#FABD0D',
             // stack: 'a',
+            z: 4,
             yAxisIndex: 1,
             data: [-5, 3, 4, 5, 4],
             areaStyle: {
-                color: color[1],
+                color: "#FABD0D",
                 opacity: 0.1,
             },
-            smooth: true,
+            smooth: false,
         }];
         let xData = ['青羊区', '武侯区', '高新区', '金牛区', '双流区'];
 
@@ -47,7 +86,7 @@ class Index extends React.Component {
                     html += `<span>${yAxisName}：${params[0].data}</span><br/>`;
                     html += `<span>较上期提升：${params[1].data}</span>`;
                     return html;
-                },
+                }
             },
             // legend: [{
             //     type: 'plain',
@@ -63,11 +102,11 @@ class Index extends React.Component {
             //         return params
             //     }
             // }],
-            color: color,
+            // color: color,
             grid: {
                 left: 50,
                 right: 50,
-                bottom: 50,
+                bottom: 10,
                 top: 50,
                 containLabel: true,
             },
@@ -82,30 +121,40 @@ class Index extends React.Component {
                     show: false,
                 },
                 axisLine: {
-                    show: false,
+                    show: true,
+                    lineStyle: {
+                        color: '#BDBDBD'
+                    }
                 },
                 axisPointer: {
                     lineStyle: {
                         color: "#eee"
                     }
+                },
+                axisLabel: {
+                    rotate: -90,
+                    color: "#111",
+                    fontSize: 12
                 }
             },
             yAxis: [{
                 type: 'value',
-                name: `{b|${yAxisName}}{a|}`,
+                name: `{b|${yAxisName} }{a|}`,
                 nameLocation: 'middle',
                 nameTextStyle: {
+                    color: '#333',
                     rich: {
                         a: {
                             display: 'inline-block',
-                            width: 14,
-                            height: 14,
+                            width: 10,
+                            height: 10,
                             // backgroundColor: {
                             //     image: require('./images/export.png')
                             // },
-                            backgroundColor: color[0],
+                            backgroundColor: "#1282FF",
                             color: 'red',
-                            lineHeight: 14,
+                            borderRadius: 2,
+                            lineHeight: 10,
                         },
                         b: {
                             height: 14
@@ -119,36 +168,68 @@ class Index extends React.Component {
                 },
                 min: -2,
                 axisLine: {
-                    show: false,
+                    show: true,
+                    lineStyle: {
+                        color: '#BDBDBD'
+                    }
                 },
                 splitLine: {
                     show: true,
                     lineStyle: {
-                        color: '#eee',
-                    },
+                        type: 'dashed',
+                        color: '#DEDEDE'
+                    }
                 },
+                axisLabel: {
+                    color: '#323232',
+                }
             }, {
                 type: 'value',
-                name: '较上期变化率',
+                name: `{b|}{a| 较上期变化率%}`,
                 nameLocation: 'middle',
                 nameGap: 30,
+                nameTextStyle: {
+                    color: '#333',
+                    rich: {
+                        b: {
+                            display: 'inline-block',
+                            width: 10,
+                            height: 4,
+                            // backgroundColor: {
+                            //     image: require('./images/export.png')
+                            // },
+                            backgroundColor: "#FABD0D",
+                            color: 'red',
+                            borderRadius: 2,
+                            lineHeight: 10,
+                        },
+                        a: {
+                            height: 14
+                        }
+                    }
+                },
                 position: 'right',
                 nameRotate: -90,
                 axisTick: {
                     show: false,
                 },
                 axisLine: {
-                    show: false,
+                    show: true,
+                    lineStyle: {
+                        color: '#BDBDBD'
+                    }
                 },
                 splitLine: {
                     show: true,
                     lineStyle: {
-                        color: '#eee',
-                    },
+                        type: 'dashed',
+                        color: '#DEDEDE'
+                    }
                 },
                 axisLabel: {
                     show: true,
-                    // formatter: '{value}%'
+                    color: '#323232',
+                    formatter: '{value}%'
                 }
             }],
 

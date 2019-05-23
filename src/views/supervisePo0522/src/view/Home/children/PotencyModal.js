@@ -28,6 +28,7 @@ class Index extends React.Component {
             name: name
         })
         this.refs.abilityChartRefs.getCharts();
+        this.refs.actionsChartRefs.getCharts();
         this.refs.EffectChartRefs.getCharts();
         this.refs.OtherChartRefs.getCharts();
     }

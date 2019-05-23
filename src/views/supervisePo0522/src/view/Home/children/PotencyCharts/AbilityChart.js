@@ -11,40 +11,41 @@ class Index extends React.Component {
 
     getCharts() {
         let data = [];
+        let color = ['#F9BE0C', '#BEDC46', '#547CAC', '#67C1FD'];
         data = [{
             name: '1级a',
             itemStyle: {
-                color: '#da0d68'
+                color: color[0]
             },
             children: [{
                 name: '2bla',
                 value: 10,
                 itemStyle: {
-                    color: '#975e6d'
+                    color: color[0]
                 }
             }, {
                 name: '2blaa',
                 value: 20,
                 itemStyle: {
-                    color: '#e0719c'
+                    color: color[0]
                 }
             }]
         }, {
             name: '1级a',
             itemStyle: {
-                color: '#da0d68'
+                color: color[1]
             },
             children: [{
                 name: '2bla',
                 value: 10,
                 itemStyle: {
-                    color: '#975e6d'
+                    color: color[1]
                 }
             }, {
                 name: '2blaa',
                 value: 20,
                 itemStyle: {
-                    color: '#e0719c'
+                    color: color[1]
                 }
             }]
         }];
@@ -70,7 +71,7 @@ class Index extends React.Component {
                 sort: null,
                 levels: [{}, {
                     r0: '20%',
-                    r: '60%',
+                    r: '50%',
                     itemStyle: {
                         borderWidth: 2
                     },
@@ -79,8 +80,8 @@ class Index extends React.Component {
                         rotate: 'tangential'
                     }
                 }, {
-                    r0: '60%',
-                    r: '90%',
+                    r0: '55%',
+                    r: '70%',
                     label: {
                         fontSize: 12,
                         rotate: 'tangential'

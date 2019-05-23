@@ -15,9 +15,12 @@
                 top: 0;
                 left: 20px;
                 height: 40px;
-                line-height: 40px;
+                font-size: 14px;
+                font-weight: 400;
+                color: rgba(50, 50, 50, 1);
             }
-            .main-chart {
+            .main-chart,
+            .out-box {
                 position: absolute;
                 top: 40px;
                 left: 0;
@@ -79,6 +82,25 @@
                     background: #ccc;
                 }
             }
+            .out-box {
+                .in-box {
+                    width: 200px;
+                    height: 200px;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    .point {
+                        position: absolute;
+                        width: 13px;
+                        height: 13px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        border: 3px solid #79CDF7;
+                        background: #fff;
+                    }
+                }
+            }
         }
     }
     .modal-compare {
@@ -92,6 +114,21 @@
         }
         .bottom {
             margin-top: 20px;
+        }
+    }
+    .ant-modal-header {
+        background: #2D2D2D;
+        // height: 50px;
+        padding: 10px 24px;
+        .ant-modal-title {
+            color: #fff;
+        }
+    }
+    .ant-modal-close {
+        color: #fff;
+        .ant-modal-close-x {
+            height: 45px;
+            line-height: 45px;
         }
     }
 }
