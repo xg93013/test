@@ -18,6 +18,17 @@
                 font-size: 14px;
                 font-weight: 400;
                 color: rgba(50, 50, 50, 1);
+                span {
+                    font-size: 12px;
+                    color: #666;
+                }
+            }
+            .bar-name {
+                position: absolute;
+                top: 82px;
+                left: 108px;
+                font-size: 12px;
+                color: #666;
             }
             .main-chart,
             .out-box {
@@ -28,6 +39,12 @@
                 bottom: 0;
                 width: 100%;
                 height: calc(100% - 40px);
+            }
+            .chart-title {
+                position: absolute;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
             }
             .circle-box {
                 width: 240px;
@@ -89,7 +106,9 @@
                     position: absolute;
                     top: 50%;
                     left: 50%;
-                    transform: translate(-50%, -50%);
+                    // transform: translate(-50%, -50%);
+                    margin-top: -100px;
+                    margin-left: -100px;
                     .point {
                         position: absolute;
                         width: 13px;
@@ -98,22 +117,94 @@
                         cursor: pointer;
                         border: 3px solid #79CDF7;
                         background: #fff;
+                        transform: translate(-50%, -50%);
                     }
                 }
+            }
+            .fillgauge {
+                width: 170px;
+                height: 170px;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
             }
         }
     }
     .modal-compare {
         .top {
             width: 100%;
-            span {
-                display: inline-block;
+            overflow: hidden;
+            margin-top: 20px;
+            .top-item {
                 width: 50%;
-                padding-left: 20px;
+                float: left;
+                font-size: 14px;
+                color: #323232;
+                overflow: hidden;
+                padding: 0 20px;
+                position: relative;
+                &:last-child {
+                    &::before {
+                        content: ' ';
+                        position: absolute;
+                        left: -1px;
+                        width: 2px;
+                        height: 50px;
+                        top: 50%;
+                        background: #eee;
+                        transform: translateY(-50%);
+                    }
+                }
+                >div {
+                    overflow: hidden;
+                    span {
+                        display: block;
+                        height: 50px;
+                        float: left;
+                        &.num {
+                            font-size: 40px;
+                            color: #323232;
+                            font-weight: 400;
+                        }
+                        &.tips {
+                            position: relative;
+                            label {
+                                position: absolute;
+                                display: block;
+                                left: 0;
+                                bottom: 0;
+                                height: 24px;
+                                line-height: 24px;
+                                padding-left: 10px;
+                                font-size: 14px;
+                                font-weight: 400;
+                                white-space: nowrap;
+                                background: url("./images/down.png") center left no-repeat;
+                                &.up {
+                                    background: url("./images/down.png") center left no-repeat;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         .bottom {
-            margin-top: 20px;
+            margin-top: 50px;
+            >div {
+                overflow: hidden;
+                p {
+                    float: left;
+                    line-height: 30px;
+                    color: #323232;
+                    &:nth-child(1) {
+                        font-weight: bold;
+                        width: 120px;
+                        padding-left: 20px;
+                    }
+                }
+            }
         }
     }
     .ant-modal-header {
@@ -130,5 +221,16 @@
             height: 45px;
             line-height: 45px;
         }
+    }
+}
+
+.potencyContainer {
+    .ant-popover-inner {
+        background: rgba(0, 0, 0, 0.55);
+        // color: #fff;
+    }
+    .ant-popover-inner-content {
+        color: #eee;
+        padding: 10px;
     }
 }

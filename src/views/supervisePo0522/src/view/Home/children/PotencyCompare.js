@@ -13,17 +13,51 @@ class Index extends React.Component {
         this.state = {
             visible: false,
             index: 0,
-            tabNav: ['监管能力', '监管行为', '监管效果', '其他指标']
+            tabNav: [{ 
+                key: 'ability',
+                name: '监管能力'
+            }, { 
+                key: 'actions',
+                name: '监管行为'
+            },{ 
+                key: 'effect',
+                name: '监管效果'
+            },{ 
+                key: 'others',
+                name: '其他指标'
+            }],
+            originData: [],
+            yAxisName: "监管能力值",
+            modalData: {}
         }
     }
     getCharts(data) {
-        let yAxisName = this.state.tabNav[this.state.index] + '值';
+        let yAxisName = this.state.tabNav[this.state.index].name + '值';
+        let key = this.state.tabNav[this.state.index].key;
+        let abilityData = [];
+        let percentData = [];
+        let xData = [];
+        let shadowData = [];
+        data[key].forEach(item => {
+            abilityData.push(item.account);
+            percentData.push(item.percent);
+            xData.push(item.name);
+        })
+        let arr = [...abilityData].sort((a, b) => {
+            return b - a
+        })
+        let arr1 = [...percentData].sort((a, b) => {
+            return a - b
+        })
+        data[key].forEach(itema => {
+            shadowData.push(arr[0]);
+        })
         let seriesData = [{
             name: 'a',
             type: 'bar',
             // stack: 'a',
             yAxisIndex: 0,
-            data: [1, 3, 4, 5, 2],
+            data: abilityData,
             barWidth: 10,
             z: 3,
             itemStyle: {
@@ -36,11 +70,11 @@ class Index extends React.Component {
                     colorStops: [
                         {
                             offset: 0,
-                            color: "#1282FF" // 0% 处的颜色
+                            color: "#6ACBF6" // 0% 处的颜色
                         },
                         {
                             offset: 1,
-                            color: "#6ACBF6" // 100% 处的颜色
+                            color: "#1282FF" // 100% 处的颜色
                         }
                     ]
                 },
@@ -48,35 +82,33 @@ class Index extends React.Component {
             },
             emphasis: {}
         }, {
+            name: 'b',
+            type: 'line',
+            color: '#FABD0D',
+            z: 4,
+            yAxisIndex: 1,
+            data: percentData,
+            smooth: false,
+        }, {
             name: 'c',
             type: 'bar',
-            // stack: 'a',
             color: '#E7EBEE',
             yAxisIndex: 0,
-            data: [5, 5, 5, 5, 5],
+            data: shadowData,
             barWidth: 10,
             z: 2,
             barGap: "-100%",
+            itemStyle: {
+                color: "#E7EBEE",
+                barBorderRadius: [5, 5, 0, 0]
+            },
             emphasis: {
                 itemStyle: {
                     color: '#E7EBEE'
                 }
             }
-        }, {
-            name: 'b',
-            type: 'line',
-            color: '#FABD0D',
-            // stack: 'a',
-            z: 4,
-            yAxisIndex: 1,
-            data: [-5, 3, 4, 5, 4],
-            areaStyle: {
-                color: "#FABD0D",
-                opacity: 0.1,
-            },
-            smooth: false,
         }];
-        let xData = ['青羊区', '武侯区', '高新区', '金牛区', '双流区'];
+        
 
         let option = {
             tooltip: {
@@ -84,7 +116,7 @@ class Index extends React.Component {
                 formatter: params => {
                     let html = `<span>${params[0].name}</span><br/>`;
                     html += `<span>${yAxisName}：${params[0].data}</span><br/>`;
-                    html += `<span>较上期提升：${params[1].data}</span>`;
+                    html += `<span>较上期${ (params[1].data > 0 ? '提升：' : '下降：') + Math.abs(params[1].data) + '%' }</span>`;
                     return html;
                 }
             },
@@ -104,10 +136,10 @@ class Index extends React.Component {
             // }],
             // color: color,
             grid: {
-                left: 50,
-                right: 50,
-                bottom: 10,
-                top: 50,
+                left: 30,
+                right: 30,
+                bottom: 15,
+                top: 15,
                 containLabel: true,
             },
             toolbox: {
@@ -115,7 +147,7 @@ class Index extends React.Component {
             },
             xAxis: {
                 type: 'category',
-                boundaryGap: [10, 20],
+                boundaryGap: [10, 10],
                 data: xData,
                 axisTick: {
                     show: false,
@@ -139,34 +171,13 @@ class Index extends React.Component {
             },
             yAxis: [{
                 type: 'value',
-                name: `{b|${yAxisName} }{a|}`,
                 nameLocation: 'middle',
-                nameTextStyle: {
-                    color: '#333',
-                    rich: {
-                        a: {
-                            display: 'inline-block',
-                            width: 10,
-                            height: 10,
-                            // backgroundColor: {
-                            //     image: require('./images/export.png')
-                            // },
-                            backgroundColor: "#1282FF",
-                            color: 'red',
-                            borderRadius: 2,
-                            lineHeight: 10,
-                        },
-                        b: {
-                            height: 14
-                        }
-                    }
-                },
-                nameGap: 30,
+                nameTextStyle: {},
                 position: 'left',
                 axisTick: {
                     show: false,
                 },
-                min: -2,
+                min: arr1[0],
                 axisLine: {
                     show: true,
                     lineStyle: {
@@ -185,29 +196,9 @@ class Index extends React.Component {
                 }
             }, {
                 type: 'value',
-                name: `{b|}{a| 较上期变化率%}`,
                 nameLocation: 'middle',
-                nameGap: 30,
-                nameTextStyle: {
-                    color: '#333',
-                    rich: {
-                        b: {
-                            display: 'inline-block',
-                            width: 10,
-                            height: 4,
-                            // backgroundColor: {
-                            //     image: require('./images/export.png')
-                            // },
-                            backgroundColor: "#FABD0D",
-                            color: 'red',
-                            borderRadius: 2,
-                            lineHeight: 10,
-                        },
-                        a: {
-                            height: 14
-                        }
-                    }
-                },
+                nameGap: 0,
+                nameTextStyle: {},
                 position: 'right',
                 nameRotate: -90,
                 axisTick: {
@@ -239,12 +230,31 @@ class Index extends React.Component {
         chart.setOption(option);
         window.addEventListener("resize", throttle(chart.resize));
         chart.on('click', (e) => {
-            this.setState({
-                visible: true
-            })
+            this.showModal(e.name);
+        })
+        this.setState({
+            originData: data,
+            yAxisName: yAxisName
         })
     }
-
+    showModal(name){
+        let modalData = {};
+        this.setState({
+            visible: true,
+            modalData: {
+                effect: 30,
+                effectDesc: -10,
+                rank: 10,
+                rankDesc: -10,
+                people: 20,
+                percent: "30%",
+                peopleMain: 100,
+                area: 30,
+                perLength: 40
+            },
+            currentArea: name
+        })
+    }
     hideModal() {
         this.setState({
             visible: false
@@ -259,13 +269,12 @@ class Index extends React.Component {
         this.setState({
             index: index
         }, () => {
-            this.getCharts();
+            this.getCharts(this.state.originData);
         })
     }
 
     render() {
-        let index = this.state.index;
-        let tabNav = this.state.tabNav;
+        let { index, tabNav, currentArea, yAxisName, modalData} = this.state;
         return (
             <div className="chart">
                 <div className="title">各区县监管指标对比</div>
@@ -273,15 +282,17 @@ class Index extends React.Component {
                     {
                         tabNav.map((item, i) => (
                             (
-                                <span className={i === index ? 'current' : ''} onClick={() => { this.changeNav(i) }} key={i}>监管能力</span>
+                                <span className={i === index ? 'current' : ''} onClick={() => { this.changeNav(i) }} key={item.key}>{item.name}</span>
                             )
                         ))
                     }
                 </div>
+                <div className="leftTitle">{yAxisName}<span></span></div>
+                <div className="rightTitle">较上期变化率%<span></span></div>
                 <div className="box" id="potency-compare"></div>
                 <Modal
-                    width={500}
-                    title="青羊区监管能力"
+                    width={560}
+                    title={currentArea + "监管能力"}
                     bodyStyle={{ background: '#f5f5f5' }}
                     visible={this.state.visible}
                     onOk={() => { this.hideModal() }}
@@ -291,19 +302,31 @@ class Index extends React.Component {
                 >
                     <div className="modal-compare">
                         <div className="top">
-                            <span>监管能力值：10</span>
-                            <span>较上期下降5%</span>
-                            <span>本期排名：10</span>
-                            <span> 较上期排名下降：1位</span>
+                            <div className="top-item">
+                                <p>监管能力值</p>
+                                <div>
+                                    <span className="num">{ modalData.effect }</span>
+                                    <span className="tips"><label className={ modalData.effectDesc < 0 ? 'up' : '' }>较上期{ (modalData.effectDesc > 0 ? '上升：' : '下降：') + Math.abs(modalData.effectDesc)}</label></span>
+                                </div>
+                            </div>
+                                
+                            <div className="top-item">
+                                <p>本期排名</p>
+                                <div>
+                                    <span className="num">{ modalData.rank }</span>
+                                    <span className="tips"><label className={ modalData.rankDesc < 0 ? 'up' : '' }>较上期排名{ (modalData.rankDesc > 0 ? '上升：' : '下降：') + Math.abs(modalData.rankDesc) }</label></span>
+                                </div>
+                            </div>
                         </div>
                         <div className="bottom">
-                            <p>①基础人力指标</p>
-                            <p>监管人员数量：45</p>
-                            <p>监管人员持证占比：30%</p>
-                            <br />
-                            <p>①基础人力指标</p>
-                            <p>监管人员数量：45</p>
-                            <p>监管人员持证占比：30%</p>
+                            <div>
+                                <p>监管能力值：</p>
+                                <p>监管人员数量：{ modalData.people }<br/>监管人员持证占比：{ modalData.percent }</p>
+                            </div>
+                            <div>
+                                <p>人员配比指标：</p>
+                                <p>人均监管主体数：{ modalData.peopleMain }<br/>人均监管辖区面积：{ modalData.effect }30km2<br/>人均巡检路程长度：{ modalData.perLength }21KM</p>
+                            </div>
                         </div>
                     </div>
                 </Modal>

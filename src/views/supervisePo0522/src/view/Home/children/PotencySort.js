@@ -12,20 +12,27 @@ class Index extends React.Component {
             visible: false
         }
     }
-    getCharts() {
+    getCharts(arr) {
         let chart = echarts.init(document.getElementById('potency-sort'));
+        let sorta = [...arr[0].data].sort((a, b) => {
+            return b.value - a.value
+        })
+        let sortb = [...arr[1].data].sort((a, b) => {
+            return b.value - a.value
+        })
+        let max = sorta[0].value > sortb[0].value ? sorta[0].value : sortb[0].value;
+        let xData = [];
+        let maxArr = [];
+        arr[0].data.forEach(item => {
+            maxArr.push(max);
+            xData.push(item.name);
+        })
         let data = [{
             name: '本期综合效能值',
             type: 'bar',
             barWidth: 10,
             xAxisIndex: 0,
-            data: [{
-                name: '高新区',
-                value: 1000
-            }, {
-                name: '青羊区',
-                value: 600
-            }],
+            data: arr[0].data,
             z: 3,
             itemStyle: {
                 color: {
@@ -37,11 +44,11 @@ class Index extends React.Component {
                     colorStops: [
                         {
                             offset: 0,
-                            color: "#1282FF" // 0% 处的颜色
+                            color: "#6ACBF6" // 0% 处的颜色
                         },
                         {
                             offset: 1,
-                            color: "#6ACBF6" // 100% 处的颜色
+                            color: "#1282FF" // 100% 处的颜色
                         }
                     ]
                 },
@@ -54,13 +61,7 @@ class Index extends React.Component {
             xAxisIndex: 0,
             z: 4,
             barGap: "100%",
-            data: [{
-                name: '高新区',
-                value: 20
-            }, {
-                name: '青羊区',
-                value: 800
-            }],
+            data: arr[1].data,
             itemStyle: {
                 color: {
                     type: "linear",
@@ -71,54 +72,62 @@ class Index extends React.Component {
                     colorStops: [
                         {
                             offset: 0,
-                            color: "#FD973C" // 0% 处的颜色
+                            color: "#FFD050" // 0% 处的颜色
                         },
                         {
                             offset: 1,
-                            color: "#FFD050" // 100% 处的颜色
+                            color: "#FD973C" // 100% 处的颜色
                         }
                     ]
                 },
                 barBorderRadius: [5, 5, 0, 0]
             }
         }, {
-            name: 'c',
+            name: '本期综合效能值',
             type: 'bar',
-            // stack: 'a',
-            color: '#E7EBEE',
-            data: [1000, 1000],
+            data: maxArr,
             barWidth: 10,
             xAxisIndex: 1,
             z: 2,
+            itemStyle: {
+                color: '#E7EBEE',
+                barBorderRadius: [5, 5, 0, 0]
+            },
             emphasis: {
                 itemStyle: {
                     color: '#E7EBEE'
                 }
             }
         }, {
-            name: 'd',
+            name: '上期综合效能值',
             type: 'bar',
-            // stack: 'a',
             color: '#E7EBEE',
             xAxisIndex: 1,
-            data: [1000, 1000],
+            data: maxArr,
             barWidth: 10,
             barGap: "100%",
             z: 2,
+            itemStyle: {
+                color: '#E7EBEE',
+                barBorderRadius: [5, 5, 0, 0]
+            },
             emphasis: {
                 itemStyle: {
                     color: '#E7EBEE'
                 }
             }
         }];
-        let xData = ['高新区', '青羊区'];
         let option = {
             tooltip: {
                 trigger: 'axis',
                 formatter: params => {
                     let html = `<span>${params[0].name}</span><br/>`;
-                    html += `<span>本期效能综合：90&emsp;排名：10</span><br/>`;
-                    html += `<span>上期效能综合：90&emsp;排名：10</span><br/>`;
+                    if(params.length == 2) {
+                        html += `<span>${params[0].seriesName}：${params[0].data.others ? params[0].data.others.sum : 0}&emsp;排名：${params[0].data.others ? params[0].data.others.rank : 0}</span><br/>`;
+                    } else {
+                        html += `<span>本期效能综合：${params[0].data.others ? params[0].data.others.sum : 0}&emsp;排名：${params[0].data.others ? params[0].data.others.rank : 0}</span><br/>`;
+                        html += `<span>上期效能综合：${params[1].data.others ? params[1].data.others.sum : 0}&emsp;排名：${params[1].data.others ? params[1].data.others.rank : 0}</span><br/>`;
+                    }
                     return html;
                 }
             },
@@ -137,6 +146,7 @@ class Index extends React.Component {
                 show: true,
                 data: ['本期综合效能值', '上期综合效能值'],
                 color: color,
+                // selectedMode: false,
                 itemWidth: 14,
                 itemHeight: 14,
                 textStyle: {

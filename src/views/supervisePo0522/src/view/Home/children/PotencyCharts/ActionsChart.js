@@ -9,7 +9,7 @@ class Index extends React.Component {
         this.state = {}
     }
 
-    getCharts() {
+    getCharts(data) {
         let option = {
             angleAxis: {
                 axisLine: {
@@ -43,7 +43,7 @@ class Index extends React.Component {
             polar: {},
             series: [{
                 type: 'bar',
-                data: [1, 1],
+                data: data,
                 barWidth: 15,
                 coordinateSystem: 'polar',
                 name: 'A',
@@ -51,11 +51,14 @@ class Index extends React.Component {
                 itemStyle: {
                     color: "#1F9CF9",
                     barBorderRadius: [5, 5, 0, 0]
+                },
+                label: {
+                    show: true,
+                    color: "#333"
                 }
-                // stack: 'a'
             }, {
                 type: 'bar',
-                data: [2, 2],
+                data: [100, 100],
                 coordinateSystem: 'polar',
                 name: 'B',
                 z: 1,
@@ -63,8 +66,12 @@ class Index extends React.Component {
                 barGap: "-100%",
                 itemStyle: {
                     color: '#E4E7EC'
+                },
+                emphasis: {
+                    itemStyle: {
+                        color: '#E4E7EC'
+                    }
                 }
-                // stack: 'a'
             }]
         }
         let chart = echarts.init(document.getElementById('actions-chart'));
@@ -73,13 +80,14 @@ class Index extends React.Component {
     }
 
     componentDidMount() {
-        this.getCharts();
+        // this.getCharts();
     }
 
     render() {
+        let titleData = this.props.titleData;
         return (
             <div className="modal-chart">
-                <div className="title">各区县综合效能等级分布</div>
+                <div className="title">各区县综合效能等级分布<span>（本期排名：{titleData.rank}，较上期{ (titleData.desc > 0 ? '上升' : '下降') + Math.abs(titleData.desc) }位）</span></div>
                 <div className="main-chart" id="actions-chart">
                     {/* <div className="circle-box">
                         <div className="cirleft">
@@ -91,6 +99,7 @@ class Index extends React.Component {
                         <div className="lines"></div>
                     </div> */}
                 </div>
+                <span className="bar-name">日常巡检指标</span>
             </div>
         )
     }

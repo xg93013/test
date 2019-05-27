@@ -13,14 +13,19 @@ const menu = (
 );
 
 class Index extends React.Component {
-
+    constructor(props) {
+        super(props)
+        this.state = {
+            userName: "admin"
+        }
+    }
     render() {
         return (
             <div id="Header">
                 <div className="left">监管效能辅助评价系统</div>
-                <div className="right">欢迎回来！
+                <div className="right">欢迎回来！{this.state.userName}
                     <Dropdown overlay={menu} trigger={['click']}>
-                        <span>admin</span>
+                        <img src={require("./images/heada.png")} alt=""/>
                     </Dropdown>
                 </div>
             </div>

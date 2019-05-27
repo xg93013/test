@@ -9,60 +9,31 @@ class Index extends React.Component {
         super(props)
         this.state = {}
     }
-    getCharts() {
+    getCharts(data) {
         let chart = echarts.init(document.getElementById('potency-rank'));
-        let data = [{
-            name: '高',
-            value: 100,
-            props: [{
-                name: '高新区',
-                value: 10
-            }],
+        data[0].label = {
+            show: true,
+            formatter: "等级：{b}\n占比：{c}%"
+        }
+        data[0].labelLine = {
+            show: true
+        }
+        data[0].emphasis = {
             label: {
-                show: true,
-                formatter: "等级：{b}\n占比：{c}%"
-            },
-            labelLine: {
                 show: true
             },
-            emphasis: {
-                label: {
-                    show: true
-                },
-                labelLine: {
-                    show: true,
-                }
+            labelLine: {
+                show: true,
             }
-        }, {
-            name: '较高',
-            value: 20,
-            props: [{
-                name: '高新区',
-                value: 100000
-            }]
-        }, {
-            name: '一般',
-            value: 20,
-            props: [{
-                name: '高新区',
-                value: 10
-            }]
-        }, {
-            name: '低',
-            value: 20,
-            props: [{
-                name: '高新区',
-                value: 10
-            }]
-        }];
+        }
         let option = {
             tooltip: {
                 trigger: 'item',
                 formatter: params => {
                     let html = `综合效能等级：<span>${params.name}</span><br/>`;
                     html += `区县数量：<span>${params.value}</span><br/>`;
-                    if (params.data.props && params.data.props.length > 0) {
-                        params.data.props.forEach((item, index) => {
+                    if (params.data.areas && params.data.areas.length > 0) {
+                        params.data.areas.forEach((item, index) => {
                             html += `<span>${item.name}：${item.value}</span><br/>`;
                         })
                     }

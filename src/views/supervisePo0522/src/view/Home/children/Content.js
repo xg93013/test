@@ -51,7 +51,7 @@ class Index extends React.Component {
                     area: '高新区',
                     count: 300
                 }, {
-                    area: '武侯区',
+                    area: '青羊区',
                     count: 20
                 }]
             }
@@ -59,19 +59,183 @@ class Index extends React.Component {
                 topData: data,
                 loading: false
             })
-
-            this.refs.mapRefs.getCharts([{
-                name: '高新区',
+            let mapData = [{
+                name: '武侯区',
                 value: 300
-            }])
-            this.refs.sortRefs.getCharts()
-            this.refs.compareRefs.getCharts()
-            this.refs.rankRefs.getCharts()
+            },{
+                name: '青羊区',
+                value: 200
+            }]
+
+            let sortData = [{
+                type: 'current',
+                data: [{
+                    name: '武侯区',
+                    value: 300,
+                    others: {
+                        sum: 200,
+                        rank: 10
+                    }
+                },{
+                    name: '青羊区',
+                    value: 200,
+                    others: {
+                        sum: 300,
+                        rank: 50
+                    }
+                },{
+                    name: '天府新区',
+                    value: 200,
+                    others: {
+                        sum: 300,
+                        rank: 50
+                    }
+                },{
+                    name: '高新区',
+                    value: 200,
+                    others: {
+                        sum: 300,
+                        rank: 50
+                    }
+                },{
+                    name: '成华区',
+                    value: 200,
+                    others: {
+                        sum: 300,
+                        rank: 50
+                    }
+                }],
+                
+            },{
+                type: 'prev',
+                data: [{
+                    name: '武侯区',
+                    value: 300,
+                    others: {
+                        sum: 100,
+                        rank: 10
+                    }
+                },{
+                    name: '青羊区',
+                    value: 200,
+                    others: {
+                        sum: 100,
+                        rank: 10
+                    }
+                },{
+                    name: '天府新区',
+                    value: 300,
+                    others: {
+                        sum: 300,
+                        rank: 50
+                    }
+                },{
+                    name: '高新区',
+                    value: 200,
+                    others: {
+                        sum: 300,
+                        rank: 50
+                    }
+                },{
+                    name: '成华区',
+                    value: 200,
+                    others: {
+                        sum: 300,
+                        rank: 50
+                    }
+                }]
+            }]
+            let compareData = {
+                'ability': [{
+                    name: '武侯区',
+                    account: 300,
+                    percent: 10
+                },{
+                    name: '高新区',
+                    account: 400,
+                    percent: 30
+                },{
+                    name: '高新区',
+                    account: 300,
+                    percent: 10
+                },{
+                    name: '青羊区',
+                    account: 600,
+                    percent: 30
+                }],
+                'actions': [{
+                    name: '武侯区',
+                    account: 3,
+                    percent: 10
+                },{
+                    name: '高新区',
+                    account: 234,
+                    percent: 30
+                }],
+                'effect': [{
+                    name: '武侯区',
+                    account: 345,
+                    percent: -50
+                },{
+                    name: '高新区',
+                    account: 300,
+                    percent: 30
+                }],
+                'others': [{
+                    name: '武侯区',
+                    account: 5467,
+                    percent: 10
+                },{
+                    name: '高新区',
+                    account: 500,
+                    percent: 30
+                },{
+                    name: '天府新区',
+                    account: 600,
+                    percent: 30
+                }]
+            }
+
+            let rankData = [{
+                name: '高',
+                value: 100,
+                areas: [{
+                    name: '高新区',
+                    value: 10
+                }]
+            }, {
+                name: '较高',
+                value: 20,
+                areas: [{
+                    name: '高新区',
+                    value: 100000
+                }]
+            }, {
+                name: '一般',
+                value: 20,
+                areas: [{
+                    name: '高新区',
+                    value: 10
+                }]
+            }, {
+                name: '低',
+                value: 20,
+                areas: [{
+                    name: '高新区',
+                    value: 10
+                }]
+            }];
+
+            this.refs.mapRefs.getCharts(mapData);
+            this.refs.sortRefs.getCharts(sortData);
+            this.refs.compareRefs.getCharts(compareData);
+            this.refs.rankRefs.getCharts(rankData);
 
         }, 300)
     }
 
-    changeTime(type) {
+    changeTime(time) {
+        // console.log(time);
         this.getData();
     }
 
@@ -86,7 +250,7 @@ class Index extends React.Component {
         return (
             <div id="Content">
                 <div className="wrapper">
-                    <Top topData={topData} changeTime={(type) => { this.changeTime(type) }} />
+                    <Top topData={topData} changeTime={(time) => { this.changeTime(time) }} />
                     <div className="main">
                         <div className="main-left">
                             <div><PotencyMap ref="mapRefs" /></div>

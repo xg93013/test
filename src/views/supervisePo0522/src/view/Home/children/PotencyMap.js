@@ -18,13 +18,28 @@ class Index extends React.Component {
     }
     getCharts(data) {
         let chart = echarts.init(document.getElementById('potency-map'));
-        // let seriesData = [{
-        //     name: '高新区',
-        //     value: 20
-        // }];
-        let seriesData = data;
+        let arr = data.sort((a, b) => {
+            return b.value - a.value
+        })
+        let max = arr[0].value;
+        let piecesData = [{
+            lte: max,
+            gte: parseInt(max * 3 / 4),
+            label: '等级：高'
+        }, {
+            gt: parseInt(max * 2 / 4),
+            lt: parseInt(max * 3 / 4),
+            label: '等级：较高'
+        }, {
+            gt: parseInt(max * 1 / 4),
+            lte: parseInt(max * 2 / 4),
+            label: '等级：一般'
+        }, {
+            gte: 0,
+            lte: parseInt(max * 1 / 4),
+            label: '等级：低'
+        }];
         let option = {
-            // backgroundColor: "#1F2F3C",
             title: {
                 text: "",
                 top: 10,
@@ -38,24 +53,20 @@ class Index extends React.Component {
             tooltip: {
                 trigger: "item",
                 formatter: function (params, ticket, callback) {
-                    //x轴名称
                     var name = params.name;
-                    //图表title名称
                     var seriesName = params.seriesName;
-                    //值
                     var value = params.value;
                     if (isNaN(value)) {
                         return name + "<br />暂无";
                     } else {
                         return name + "<br />" + seriesName + ":" + value;
                     }
-                    // var valueFliter = formatter(value)
                 }
             },
             visualMap: {
                 type: "piecewise",
                 min: 0,
-                max: 500,
+                max: max,
                 bottom: 10,
                 right: 10,
                 align: 'left',
@@ -64,22 +75,8 @@ class Index extends React.Component {
                 itemWidth: 14,
                 itemHeight: 14,
                 textGap: 5,
-                pieces: [{
-                    min: 300,
-                    label: '等级：高'
-                }, {
-                    min: 200,
-                    max: 300,
-                    label: '等级：较高'
-                }, {
-                    min: 100,
-                    max: 200,
-                    label: '等级：一般'
-                }, {
-                    min: 0,
-                    max: 100,
-                    label: '等级：低'
-                }],
+                selectedMode: false,
+                pieces: piecesData,
                 textStyle: {
                     color: "#323232"
                 }
@@ -91,7 +88,6 @@ class Index extends React.Component {
                     mapType: "chengdu",
                     roam: false,
                     itemStyle: {
-
                         normal: { borderColor: 'rgba(0,0,0,0)', label: { show: true }, areaColor: "#A8DDFF" },
                         emphasis: { label: { show: true }, areaColor: "#b5d5ff" }
                     },
@@ -100,14 +96,14 @@ class Index extends React.Component {
                             show: false
                         }
                     },
-                    data: seriesData
+                    data: data,
+                    color: color
                 }
             ]
         }
         chart.setOption(option);
         window.addEventListener("resize", throttle(chart.resize));
         chart.on('click', (e) => {
-            console.log(e);
             this.refs.modalRefs.showModal(e.name);
         })
     }

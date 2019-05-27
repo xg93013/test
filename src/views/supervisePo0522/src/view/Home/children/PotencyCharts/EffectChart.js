@@ -8,15 +8,21 @@ class Index extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            pointData: [200, 240, 140],
+            pointData: [],
             maxData: 300
         }
     }
 
-    getCharts() {
-        // let data = []; 
-        let max = this.state.maxData;
-        let pointData = this.state.pointData;
+    getCharts(data) {
+        let max = 0;
+        let arr = [...data].sort((a, b) => {
+            return b - a
+        });
+        max = arr[0];
+        this.setState({
+            maxData: max,
+            pointData: data
+        })
         let option = {
             radar: {
                 indicator: [
@@ -51,21 +57,11 @@ class Index extends React.Component {
                 }
             },
             tooltip: {
-                trigger: 'item',
-                confine: true,
-                formatter: function (params) {
-                    // console.log(params);
-                    let html = "";
-                    params.data.others.forEach(item => {
-                        html += `<span>${item.name}：${item.value}</span><br />`
-                    })
-                    return html
-                }
+                show: false
             },
-
             series: [
                 {
-                    name: '2018',
+                    name: 'radar',
                     type: 'radar',
                     lineStyle: {
                         normal: {
@@ -74,45 +70,14 @@ class Index extends React.Component {
                         }
                     },
 
-                    data:
-                        [{
-                            name: '2018',
-                            value: pointData,
-
-                            others: [{
-                                name: '投诉数量',
-                                value: 30
-                            }, {
-                                name: '投诉人数',
-                                value: 20
-                            }, {
-                                name: '罚没金额（万元）',
-                                value: 30
-                            }, {
-                                name: '罚没企业数（个）',
-                                value: 20
-                            }, {
-                                name: '监督抽检样品不合格率',
-                                value: 30
-                            }, {
-                                name: '优良率',
-                                value: 30
-                            }, {
-                                name: '符合率',
-                                value: 30
-                            }, {
-                                name: '基本符合率',
-                                value: 30
-                            }, {
-                                name: '通过率',
-                                value: 30
-                            }]
-                        }]
-                    ,
+                    data: [data],
                     symbol: 'none',
                     itemStyle: {
                         normal: {
                             color: '#6B8693'
+                        },
+                        label: {
+                            color: '#666'
                         }
                     },
                     areaStyle: {
@@ -147,7 +112,6 @@ class Index extends React.Component {
     }
 
     componentDidMount() {
-        console.log(Math.sin(2*Math.PI/360*30).toFixed(2))
         // this.getCharts();
     }
 
@@ -156,26 +120,41 @@ class Index extends React.Component {
             pointData,
             maxData
         } = this.state;
+        let {
+            titleData,
+            tooltipData
+        }
+        = this.props;
         return (
             <div className="modal-chart">
-                <div className="title">监管效果指标（本期排名：10，较上期下降1位）</div>
+                <div className="title">监管效果指标<span>（本期排名：{titleData.rank}，较上期{ (titleData.desc > 0 ? '上升' : '下降') + Math.abs(titleData.desc) }位）</span></div>
                 <div className="main-chart" id="effect-chart"></div>
                 <div className="out-box">
                     <div className="in-box">
-                        <Popover content={(
-                            <div></div>
+                        <Popover overlayClassName="potencyContainer" content={(
+                            <div className="radar-tip">
+                                <p>投诉数量：{ tooltipData.complaintsNum }</p>
+                                <p>投诉人数：{ tooltipData.complaintsPeople }</p>
+                            </div>
                         )} placement="bottom" title="" trigger="hover">
-                            <div className="point one" style={{ top: (maxData - pointData[0]) / (maxData * 2) * 100 + '%', left: '50%', transform: 'translate(-50%, -50%)' }}></div>
+                            <div className="point" style={{ top: (maxData - pointData[0]) / (maxData * 2) * 100 + '%', left: '50%'}}></div>
                         </Popover>
-                        <Popover content={(
-                            <div></div>
+                        <Popover overlayClassName="potencyContainer" content={(
+                            <div className="radar-tip">
+                                <p>监督抽检样品不合格率：{ tooltipData.unqualified }</p>
+                            </div>
                         )} placement="bottom" title="" trigger="hover">
-                            <div className="point one" style={{ top: (maxData + pointData[1] * Math.sin(2*Math.PI/360*30).toFixed(2)) / (maxData * 2) * 100 + '%', left: (maxData - (pointData[1]*Math.cos(2*Math.PI/360*30).toFixed(2))) / (maxData * 2) * 100 + '%', transform: 'translate(-50%, -50%)' }}></div>
+                            <div className="point" style={{ top: (maxData + pointData[1] * Math.sin(2*Math.PI/360*30).toFixed(2)) / (maxData * 2) * 100 + '%', left: (maxData - (pointData[1]*Math.cos(2*Math.PI/360*30).toFixed(2))) / (maxData * 2) * 100 + '%' }}></div>
                         </Popover>
-                        <Popover content={(
-                            <div></div>
+                        <Popover overlayClassName="potencyContainer" content={(
+                            <div className="radar-tip">
+                                <p>优良率：{ tooltipData.excellent }</p>
+                                <p>符合率：{ tooltipData.coincidence }</p>
+                                <p>基本符合率：{ tooltipData.simpleCoincidence }</p>
+                                <p>通过率：{ tooltipData.pass }</p>
+                            </div>
                         )} placement="bottom" title="" trigger="hover">
-                            <div className="point one" style={{ top: (maxData + pointData[2] * Math.sin(2*Math.PI/360*30).toFixed(2)) / (maxData * 2) * 100 + '%', left: (maxData + (pointData[2]*Math.cos(2*Math.PI/360*30).toFixed(2))) / (maxData * 2) * 100 + '%', transform: 'translate(-50%, -50%)' }}></div>
+                            <div className="point" style={{ top: (maxData + pointData[2] * Math.sin(2*Math.PI/360*30).toFixed(2)) / (maxData * 2) * 100 + '%', left: (maxData + (pointData[2]*Math.cos(2*Math.PI/360*30).toFixed(2))) / (maxData * 2) * 100 + '%' }}></div>
                         </Popover>
                     </div>
 
