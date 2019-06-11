@@ -4,7 +4,6 @@ const throttle = (fn, delay = 200) => {
     //节流
     let handle;
     return e => {
-        console.log('resize')
         clearTimeout(handle);
         handle = setTimeout(() => {
             fn(e);

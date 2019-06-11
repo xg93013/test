@@ -9,20 +9,32 @@ export default {
   data() {
     return {
       myChart: "",
-      interval: "auto"
+      interval: "auto",
+      datas: []
     };
+  },
+  props: {
+    gldatas: {
+      type: Array,
+      default: []
+    }
+  },
+  watch: {
+    gldatas(a) {
+      if (a) {
+        this.datas = a;
+        this.$nextTick(() => {
+          this.initChart(a);
+        });
+      }
+    }
   },
   created() {},
   methods: {
     init() {
       this.myChart = echarts.init(document.getElementById("3d-chart"));
-      // window.addEventListener("resize", () => {
-      //   setTimeout(() => {
-      //     this.myChart.resize();
-      //   }, 20);
-      // });
     },
-    initChart() {
+    initChart(data) {
       // 区域
       var areas = [
         "高新区",
@@ -63,6 +75,7 @@ export default {
         "2019.01.12",
         "2019.01.12"
       ];
+      times = data;
 
       // 巡查频次
       var data = [
@@ -75,7 +88,33 @@ export default {
         [5, 4, 5],
         [6, 5, 5],
         [7, 5, 5],
-        [8, 5, 5]
+        [8, 5, 5],
+        [6, 4, 5],
+        [7, 3, 5],
+        [8, 2, 5],
+        [6, 1, 5],
+        [7, 2, 5],
+        [2, 3, 5],
+        [5, 5, 5],
+        [3, 2, 5],
+        [4, 5, 5],
+        [7, 5, 5],
+        [5, 1, 5],
+        [6, 6, 5],
+        [8, 5, 5],
+        [9, 3, 5],
+        [10, 2, 5],
+        [11, 2, 5],
+        [12, 2, 5],
+        [13, 2, 5],
+        [14, 2, 5],
+        [15, 2, 5],
+        [16, 2, 5],
+        [17, 2, 5],
+        [18, 2, 5],
+        [19, 2, 5],
+        [20, 2, 5],
+        [21, 2, 5]
       ];
       let options = {
         tooltip: {},
@@ -166,18 +205,20 @@ export default {
     },
     resizeChart() {
       this.interval = 0;
-      this.initChart();
+      this.initChart(this.datas);
       this.myChart.resize();
     },
     serDefaultChart() {
       this.interval = "auto";
-      this.initChart();
+      this.initChart(this.datas);
       this.myChart.resize();
+    },
+    clearChart() {
+      this.myChart.clear();
     }
   },
   mounted() {
     this.init();
-    this.initChart();
   }
 };
 </script>

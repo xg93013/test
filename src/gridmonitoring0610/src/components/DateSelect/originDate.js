@@ -12,7 +12,7 @@ export default {
                 },
                 {
                     "date": "03月",
-                    "mark": false
+                    "mark": true
                 },
                 {
                     "date": "04月",
@@ -48,7 +48,7 @@ export default {
                 },
                 {
                     "date": "12月",
-                    "mark": false
+                    "mark": true
                 }
             ],
             "allYear": [{

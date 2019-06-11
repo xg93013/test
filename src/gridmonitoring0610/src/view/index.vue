@@ -1,9 +1,12 @@
 <template>
   <div id="main">
     <div class="header">
-      <p>网格化监管数据分析系统</p>
+      <p>
+        网格化监管数据分析系统
+        <button @click="clearTimer()" id="clickBtn" style="display:none;">清除定时器</button>
+      </p>
     </div>
-    <div class="content">
+    <div class="content" v-loading="loading">
       <div class="maps" id="maps"></div>
       <div class="left">
         <div class="time">
@@ -63,12 +66,13 @@
               </p>
             </div>
           </div>
-          <div class="item chart" :class="{'fullscreen': fullscreen}" id="targetC">
-            <div class="box">
+          <div class="item chart">
+            <div class="box" :class="{'fullscreens': fullscreen}" id="targetC">
+              <div class="titles">网格员巡查频次对比</div>
               <span @click="openScreen()" v-show="!fullscreen">screen</span>
               <span @click="exitOutFullScreen()" v-show="fullscreen">exit</span>
               <!-- <div class="3dchart"></div> -->
-              <bar-chart ref="barChartRefs"></bar-chart>
+              <bar-chart ref="barChartRefs" :gldatas="gldatas"></bar-chart>
             </div>
           </div>
         </div>
@@ -77,25 +81,31 @@
         <div class="wrapper">
           <div class="item warning">
             <div>
+              <div class="titles">事件预警</div>
               <div class="pages">
                 <i
                   class="el-icon-caret-left"
                   :class="{'disabled' : currentWarning === 0}"
                   @click="prevWarning()"
+                  id="prevBtn"
                 ></i>
                 <i
                   class="el-icon-caret-right"
-                  :class="{'disabled' : currentWarning === warningList.length-1}"
-                  @click="nextWarning()"
+                  :class="{'disabled' : currentWarning === warningList.length-1 || warningList.length === 0}"
+                  id="nextBtn"
+                  @click="nextWarning('click')"
                 ></i>
               </div>
-              <div class="out-box">
+              <div class="out-box" id="pageBox">
                 <div
                   class="page-box"
                   :style="{width: warningList.length*boxWidth + 'px',marginLeft: -boxWidth*currentWarning + 'px'}"
-                  id="pageBox"
                 >
-                  <div class="page-item" v-for="item in warningList" :key="item.name">
+                  <div
+                    class="page-item"
+                    v-for="(item, index) in warningList"
+                    :key="item.name+index"
+                  >
                     <div class="inner">
                       <div class="icon">img</div>
                       <div class="text">
@@ -116,7 +126,7 @@
                   <div class="page-item" v-show="warningList.length ==0">
                     <div class="inner">
                       <div class="icon">empty</div>
-                      <div class="impty">本月暂无预警数据</div>
+                      <div class="empty">本月暂无预警数据</div>
                     </div>
                   </div>
                 </div>
@@ -125,16 +135,20 @@
           </div>
           <div class="item rank">
             <div>
-              <el-table
-                :data="listData"
-                style="width: 100%"
-                show-overflow-tooltip="true"
-                @row-click="rowClick"
-              >
-                <el-table-column prop="num" label="序号" width="50"></el-table-column>
-                <el-table-column prop="name" label="事件"></el-table-column>
-                <el-table-column prop="per" label="频次" width="50"></el-table-column>
-              </el-table>
+              <div class="titles">高频事件TOP10</div>
+              <div class="table-box">
+                <el-table
+                  :data="listData"
+                  style="width: 100%;height: 100%"
+                  height="100%"
+                  show-overflow-tooltip="true"
+                  @row-click="rowClick"
+                >
+                  <el-table-column prop="num" label="序号" width="50"></el-table-column>
+                  <el-table-column prop="name" label="事件"></el-table-column>
+                  <el-table-column prop="per" label="频次" width="50"></el-table-column>
+                </el-table>
+              </div>
             </div>
           </div>
         </div>
@@ -153,6 +167,7 @@
       :visible.sync="listDialog"
       width="1200px"
       custom-class="listDialog"
+      :before-close="handleListClose"
     >
       <div>
         <el-table
@@ -187,10 +202,12 @@ import city from "@/unit/city.json";
 import barChart from "./children/barChart.vue";
 import DateSelect from "@/components/DateSelect/DateSelect.vue";
 import * as screenfull from "screenfull";
+import { throttle } from "@/unit/pub.js";
 
 export default {
   data() {
     return {
+      loading: true,
       fullscreen: false,
       mapObj: "",
       polygonObj: "",
@@ -257,19 +274,27 @@ export default {
         // }
       ],
       listTitle: "",
-      timer: ""
+      timer: "",
+      gldatas: []
     };
   },
   components: {
     barChart,
     DateSelect
   },
-  created() {
-    this.getData();
-  },
+  created() {},
   methods: {
-    getData() {
-      for (let i = 0; i < 25; i++) {
+    clearTimer() {
+      clearInterval(this.timer);
+    },
+    getData(time) {
+      document.getElementById("clickBtn").click();
+      this.timer = "";
+      this.currentWarning = 0;
+      this.allList = [];
+      this.warningList = [];
+      this.loading = true;
+      for (let i = 0; i < 10; i++) {
         this.allList.push({
           num: 1,
           companyName: "企业名称",
@@ -287,22 +312,32 @@ export default {
           name: "ab" + i,
           area: ""
         });
+        this.listData.push({
+          num: 2,
+          name:
+            "5.3 在岗从事接触直接入口食品工作的食品经营人员是否存在患有国务院卫生行政部门规定的有碍食品安全疾病的情况。",
+          per: 100
+        });
       }
+      this.gldatas = ["2019.01.14", "2019.01.13", "2019.01.12"];
+      if (time.msg == "12月") {
+        this.gldatas = ["2019.01.24"];
+      }
+      setTimeout(() => {
+        this.loading = false;
+        this.setTimer();
+      }, 3000);
     },
     openScreen() {
       let target = document.getElementById("targetC");
       this.fullscreen = true;
       if (screenfull.enabled) {
         screenfull.request(target);
-        screenfull.on("change", () => {
-          if (!screenfull.isFullscreen) {
-            this.exitFull();
-          }
-        });
+        // this.$refs.barChartRefs.resizeChart();
       }
-      this.$refs.barChartRefs.resizeChart();
     },
     exitOutFullScreen() {
+      this.fullscreen = false;
       if (screenfull.enabled) {
         screenfull.exit();
       }
@@ -329,8 +364,6 @@ export default {
       });
     },
     selectProvince() {
-      this.selectCity = "";
-      this.selectSupervision = "";
       this.selectRegion("成都市");
     },
     changeCity(item) {
@@ -353,6 +386,8 @@ export default {
           }
         }
       } else {
+        this.selectCity = "";
+        this.selectSupervision = "";
         path = chengdu.features[0].geometry.coordinates[0];
         this.polygonObj.setPath(path);
         this.mapObj.setFitView();
@@ -363,21 +398,31 @@ export default {
         this.currentWarning--;
       }
     },
-    nextWarning() {
+    nextWarning(flag) {
       if (this.currentWarning < this.warningList.length - 1) {
         this.currentWarning++;
       } else {
-        this.currentWarning = 0;
+        if (!flag) {
+          this.currentWarning = 0;
+        }
       }
     },
     goDetail() {
+      console.log("details");
+      clearInterval(this.timer);
       this.dialogVisible = true;
     },
     handleClose() {
+      this.setTimer();
       this.dialogVisible = false;
+    },
+    handleListClose() {
+      this.setTimer();
+      this.listDialog = false;
     },
     rowClick(row) {
       console.log(row);
+      clearInterval(this.timer);
       this.listTitle =
         "2019年4月事件明细：5.3 在岗从事接触直接入口食品工作的食品经营人员是否存在患有国务院卫生行政部门规定的有碍食品安全疾病的情况";
       this.listDialog = true;
@@ -387,26 +432,63 @@ export default {
     },
     timeChange(time) {
       console.log(time);
+      this.$nextTick(() => {
+        this.getData(time);
+        this.selectRegion("成都市");
+      });
+    },
+    addScreenListen() {
+      if (screenfull.enabled) {
+        screenfull.on("change", () => {
+          this.$refs.barChartRefs.clearChart();
+          let timer = "";
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            if (!screenfull.isFullscreen) {
+              this.exitFull();
+            } else {
+              this.$refs.barChartRefs.resizeChart();
+            }
+          }, 10);
+        });
+      }
+    },
+    setTimer() {
+      if (this.warningList.length > 1) {
+        this.timer = setInterval(() => {
+          this.nextWarning();
+        }, 3000);
+      }
     }
   },
   mounted() {
     this.initMap();
-    if (screenfull.enabled) {
-      screenfull.off("change", () => {});
-    }
-    if (this.warningList.length > 1) {
-      this.timer = setInterval(() => {
-        this.nextWarning();
-      }, 2000);
-    }
+    this.addScreenListen();
     document.getElementById("pageBox").addEventListener("mouseover", () => {
       clearInterval(this.timer);
     });
-    document.getElementById("pageBox").addEventListener("mouseout", () => {
-      this.timer = setInterval(() => {
-        this.nextWarning();
-      }, 2000);
+    document.getElementById("pageBox").addEventListener("mouseleave", () => {
+      if (!this.listDialog && !this.dialogVisible) {
+        this.setTimer();
+      }
     });
+    document.getElementById("prevBtn").addEventListener("mouseover", () => {
+      clearInterval(this.timer);
+    });
+    document.getElementById("nextBtn").addEventListener("mouseover", () => {
+      clearInterval(this.timer);
+    });
+    document.getElementById("prevBtn").addEventListener("mouseleave", () => {
+      this.setTimer();
+    });
+    document.getElementById("nextBtn").addEventListener("mouseleave", () => {
+      this.setTimer();
+    });
+  },
+  destroyed() {
+    if (screenfull.enabled) {
+      screenfull.off("change", () => {});
+    }
   }
 };
 </script>
@@ -431,6 +513,14 @@ $boxWidth: 290px;
       font-size: 20px;
       margin-left: 10px;
     }
+  }
+  .loading {
+    position: fixed;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
   }
   .content {
     position: absolute;
@@ -509,6 +599,11 @@ $boxWidth: 290px;
                 }
               }
             }
+            .titles {
+              position: absolute;
+              left: 10px;
+              top: 10px;
+            }
           }
           &.chart {
             height: 36%;
@@ -522,15 +617,9 @@ $boxWidth: 290px;
               width: 100%;
               height: 100%;
             }
-          }
-          &.fullscreen {
-            height: 100%;
-            > div {
+            .fullscreens {
               background: #fff;
             }
-          }
-          &.exitfullscreen {
-            height: 36%;
           }
 
           &.warning {
@@ -544,10 +633,6 @@ $boxWidth: 290px;
               bottom: 10px;
               overflow: hidden;
               .page-box {
-                // position: absolute;
-                // top: 30px;
-                // left: 20px;
-                // bottom: 10px;
                 transition: all 0.4s;
                 height: 100%;
 
@@ -618,7 +703,11 @@ $boxWidth: 290px;
                       }
                     }
                     .empty {
-                      width: 200px;
+                      width: 190px;
+                      height: 100px;
+                      line-height: 100px;
+                      text-align: center;
+                      float: left;
                     }
                   }
                 }
@@ -641,6 +730,13 @@ $boxWidth: 290px;
           }
           &.rank {
             height: 70%;
+            .table-box {
+              position: absolute;
+              top: 40px;
+              left: 0;
+              right: 0;
+              bottom: 0;
+            }
           }
         }
       }
