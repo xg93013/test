@@ -160,7 +160,10 @@ export default {
           data: areas,
           name: "",
           axisLabel: {
-            interval: this.interval
+            interval: this.interval,
+            textStyle: {
+              color: "#ccc"
+            }
           }
         },
         yAxis3D: {
@@ -168,12 +171,20 @@ export default {
           data: times,
           name: "",
           axisLabel: {
-            interval: this.interval
+            interval: this.interval,
+            textStyle: {
+              color: "#ccc"
+            }
           }
         },
         zAxis3D: {
           type: "value",
-          name: ""
+          name: "",
+          axisLabel: {
+            textStyle: {
+              color: "#ccc"
+            }
+          }
         },
         grid3D: {
           boxWidth: 180,
@@ -203,7 +214,8 @@ export default {
               distance: 1,
               textStyle: {
                 fontSize: 16,
-                borderWidth: 1
+                borderWidth: 1,
+                color: "#eee"
               }
             },
 

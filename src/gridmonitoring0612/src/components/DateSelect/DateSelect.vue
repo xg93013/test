@@ -57,7 +57,7 @@
     </div>
     <div slot="reference" size="small" class="szl-time">
       {{ currentTime }}
-      <img :src="require('./images/arrow.png')" alt>
+      <!-- <img :src="require('../../images/calendar.png')" alt> -->
     </div>
   </el-popover>
 </template>
@@ -242,12 +242,12 @@ $btnOk: #0fa063;
 
 .szl-time {
   display: inline-block;
-  background: #0099ff;
-  border: 1px solid #0099ff;
-  color: #c5e6fe;
+  // background: #0099ff;
+  // border: 1px solid #0099ff;
+  color: #1ad6d8;
   padding: 0 16px;
-  height: 32px;
-  line-height: 32px;
+  height: 42px;
+  line-height: 42px;
   cursor: pointer;
   border-radius: 6px;
   img {

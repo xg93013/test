@@ -2,7 +2,6 @@
   <div id="main">
     <div class="header">
       <p>
-        网格化监管数据分析系统
         <button @click="clearTimer()" id="clickBtn" style="display:none;">清除定时器</button>
       </p>
     </div>
@@ -10,11 +9,20 @@
       <div class="maps" id="maps"></div>
       <div class="left">
         <div class="time">
-          <DateSelect @timeChange="timeChange"/>
+          <div>
+            <DateSelect @timeChange="timeChange" class="time-box"/>
+            <div class="icon">
+              <img :src="require('../images/calendar.png')" alt>
+            </div>
+          </div>
         </div>
         <div class="filter">
           <div class="item">
-            <span @click="selectProvince()">成都市-</span>
+            <span @click="selectProvince()" class="province">
+              成都市
+              <i class="el-icon-arrow-right"></i>
+            </span>
+            <span class="line"></span>
             <el-select v-model="selectCity" placeholder="请选择区域" @change="changeCity">
               <el-option
                 v-for="item in cityList"
@@ -23,6 +31,7 @@
                 :value="item.value"
               ></el-option>
             </el-select>
+            <span class="line"></span>
             <el-select v-model="selectSupervision" placeholder="请选择监管所" @change="changeSupervision">
               <el-option
                 v-for="item in supervisionList"
@@ -34,45 +43,76 @@
           </div>
         </div>
         <div class="wrapper">
-          <div class="item">
+          <div class="item navtit">
             <div class="sum">
-              <p>
-                <span class="title">网格数量</span>
-                <span>{{statistics.gridNum}}</span>
-              </p>
+              <div class="top">
+                <div class="tit">网格数量</div>
+              </div>
+              <div class="middle">
+                <div class="nums">
+                  <span class="big">{{statistics.gridNum}}</span>
+                  <span class="unit">个</span>
+                </div>
+              </div>
+              <div class="bottom"></div>
             </div>
           </div>
-          <div class="item">
+          <div class="item navtit">
             <div class="sum">
-              <p>
-                <span class="title">网格员数量</span>
-                <span>{{statistics.inspectorNum}}</span>
-              </p>
+              <div class="top">
+                <div class="tit">网格员数量</div>
+              </div>
+              <div class="middle">
+                <div class="nums">
+                  <span class="big">{{statistics.inspectorNum}}</span>
+                  <span class="unit">人</span>
+                </div>
+              </div>
+              <div class="bottom"></div>
             </div>
           </div>
-          <div class="item">
+          <div class="item navtit">
             <div class="sum">
-              <p>
-                <span class="title">区域巡查次数</span>
-                <span>{{statistics.regulatoryCount}}</span>
-              </p>
+              <div class="top">
+                <div class="tit">区域巡查次数</div>
+              </div>
+              <div class="middle">
+                <div class="nums">
+                  <span class="big">{{statistics.regulatoryCount}}</span>
+                  <span class="unit">次</span>
+                </div>
+              </div>
+              <div class="bottom"></div>
             </div>
           </div>
-          <div class="item">
+          <div class="item navtit">
             <div class="sum">
-              <p>
-                <span class="title">巡查频次</span>
-                <span>{{statistics.regulatoryFrequency}}</span>
-              </p>
+              <div class="top">
+                <div class="tit">巡查频次</div>
+              </div>
+              <div class="middle">
+                <div class="nums">
+                  <span class="big">{{statistics.regulatoryFrequency}}</span>
+                  <span class="unit">次/月</span>
+                </div>
+              </div>
+              <div class="bottom"></div>
             </div>
           </div>
           <div class="item chart">
             <div class="box" :class="{'fullscreens': fullscreen}" id="targetC">
-              <div class="titles">网格员巡查频次对比</div>
-              <span @click="openScreen()" v-show="!fullscreen">screen</span>
+              <div class="top">
+                <div class="tit">网格员巡查频次对比</div>
+              </div>
+              <div class="middle">
+                <bar-chart ref="barChartRefs" :gldatas="gldatas"></bar-chart>
+                <span @click="openScreen()" v-show="!fullscreen"></span>
+                <span @click="exitOutFullScreen()" v-show="fullscreen" class="exit-full"></span>
+              </div>
+              <div class="bottom"></div>
+              <!-- <div class="titles">网格员巡查频次对比</div>
               <span @click="exitOutFullScreen()" v-show="fullscreen">exit</span>
-              <!-- <div class="3dchart"></div> -->
-              <bar-chart ref="barChartRefs" :gldatas="gldatas"></bar-chart>
+              <bar-chart ref="barChartRefs" :gldatas="gldatas"></bar-chart>-->
             </div>
           </div>
         </div>
@@ -81,52 +121,69 @@
         <div class="wrapper">
           <div class="item warning">
             <div>
-              <div class="titles">事件预警</div>
-              <div class="pages">
-                <i
-                  class="el-icon-caret-left"
-                  :class="{'disabled' : currentWarning === 0}"
-                  @click="prevWarning()"
-                  id="prevBtn"
-                ></i>
-                <i
-                  class="el-icon-caret-right"
-                  :class="{'disabled' : currentWarning === warningList.length-1 || warningList.length === 0}"
-                  id="nextBtn"
-                  @click="nextWarning('click')"
-                ></i>
+              <div class="top">
+                <div class="tit">事件预警</div>
               </div>
-              <div class="out-box" id="pageBox">
-                <div
-                  class="page-box"
-                  :style="{width: warningList.length*boxWidth + 'px',marginLeft: -boxWidth*currentWarning + 'px'}"
-                >
-                  <div class="page-item" v-for="(item, index) in warningList" :key="index+'warns'">
-                    <div class="inner">
-                      <div class="icon">img</div>
-                      <div class="text">
-                        <div class="des">
-                          事件名称：{{item.event}}经营食品标签、说明书是否涉及疾病预防、治疗功能。事件名称：经营食品标签。、治疗功能。事件名称：经营食品标签。、治疗功能。事件名称：经营食品标签。、治疗功能。事件名称：经营食品标签。
-                          <span
-                            v-show="item.event.length > 40"
-                          >...</span>
+              <div class="middle">
+                <div class="pages">
+                  <!-- <i class="el-icon-caret-left" id="prevBtn"></i> -->
+                  <!-- <i class="el-icon-caret-right"></i> -->
+                  <span
+                    class="icon lefticon"
+                    :class="{'disabled' : currentWarning === 0}"
+                    @click="prevWarning()"
+                    prevBtn
+                  ></span>
+                  <span
+                    class="icon righticon"
+                    :class="{'disabled' : currentWarning === warningList.length-1 || warningList.length === 0}"
+                    id="nextBtn"
+                    @click="nextWarning('click')"
+                  ></span>
+                </div>
+                <div class="out-box" id="pageBox">
+                  <div
+                    class="page-box"
+                    :style="{width: warningList.length*boxWidth + 'px',marginLeft: -boxWidth*currentWarning + 'px'}"
+                  >
+                    <div
+                      class="page-item"
+                      v-for="(item, index) in warningList"
+                      :key="index+'warns'"
+                    >
+                      <div class="inner">
+                        <!-- <div class="icon">img</div> -->
+                        <div class="text">
+                          <div class="des">
+                            <label class="left-title">事件名称：</label>
+                            {{item.event}}经营食品标签、说明书是否涉及疾病预防、治疗功能。事件名称：经营食品标签。、治疗功能。事件名称：经营食品标签。、治疗功能。事件名称：经营食品标签。、治疗功能。事件名称：经营食品标签。
+                            <span
+                              v-show="item.event.length > 40"
+                            >...</span>
+                          </div>
+                          <br>
+                          <p>
+                            <label class="left-title">涉及区域：</label>
+                            {{item.relatedDistrictCount}}个区县
+                          </p>
                         </div>
-                        <br>
-                        <p>涉及区域：{{item.relatedDistrictCount}}个区县</p>
                       </div>
+                      <p class="detail" @click="goDetail(item)">详情》</p>
                     </div>
-                    <p class="detail" @click="goDetail(item)">详情》</p>
-                  </div>
-                  <!-- <div class="page-item">b</div>
-                  <div class="page-item">c</div>-->
-                  <div class="page-item" v-show="warningList.length ==0">
-                    <div class="inner">
-                      <div class="icon">empty</div>
-                      <div class="empty">本月暂无预警数据</div>
+                    <!-- <div class="page-item">b</div>
+                    <div class="page-item">c</div>-->
+                    <div class="page-item" v-show="warningList.length ==0">
+                      <div class="inner">
+                        <!-- <div class="icon">empty</div> -->
+                        <div class="empty">本月暂无预警数据</div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div class="bottom"></div>
+
+              <!-- <div class="titles">事件预警</div> -->
             </div>
           </div>
           <div class="item rank">
@@ -701,9 +758,9 @@ $boxWidth: 290px;
     top: 0;
     left: 0;
     right: 0;
-    height: 50px;
-    line-height: 50px;
-    background: #eee;
+    height: 83px;
+    line-height: 83px;
+    background: url("../images/top.png") center no-repeat;
     p {
       font-size: 20px;
       margin-left: 10px;
@@ -711,7 +768,7 @@ $boxWidth: 290px;
   }
   .loading {
     position: fixed;
-    top: 50px;
+    top: 83px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -719,12 +776,12 @@ $boxWidth: 290px;
   }
   .content {
     position: absolute;
-    top: 50px;
+    top: 83px;
     left: 0;
     right: 0;
     bottom: 0;
     min-width: 1366px;
-    min-height: 768px;
+    min-height: 800px;
     .maps {
       position: absolute;
       width: 100%;
@@ -735,31 +792,89 @@ $boxWidth: 290px;
     .right {
       position: absolute;
       top: 10px;
-      width: 350px;
+      width: 299px;
       bottom: 0;
       z-index: 12;
+      .time {
+        width: 100%;
+        // height: 42px;
+        padding: 10px;
+        > div {
+          height: 42px;
+          background: rgba(17, 39, 105, 0.8);
+          border: 1px solid rgba(7, 187, 189, 0.36);
+          box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.14),
+            0px 0px 1px 0px rgba(0, 0, 0, 0.15);
+          border-radius: 2px;
+          position: relative;
+          .time-box {
+            display: block;
+            width: 200px;
+            text-align: center;
+            margin: 0 auto;
+          }
+          .icon {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+          }
+        }
+      }
       .filter {
         position: absolute;
         width: 100%;
-        height: 70px;
-        top: 30px;
+        // height: 50px;
+        top: 44px;
         padding: 10px;
+        font-size: 14px;
+        color: #03b7b8;
+        overflow: hidden;
+        .province {
+          margin: 10px 0 0 10px;
+          float: left;
+        }
+        .line {
+          width: 1px;
+          height: 14px;
+          float: left;
+          display: block;
+          margin: 12px 10px 0 10px;
+          background: rgba(32, 253, 250, 1);
+          opacity: 0.1;
+        }
         > div {
           width: 100%;
-          height: 100%;
-          background: rgba($color: #fff, $alpha: 0.8);
+          height: 42px;
+          background: rgba(17, 39, 105, 0.8);
+          border: 1px solid rgba(7, 187, 189, 0.36);
+          box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.14),
+            0px 0px 1px 0px rgba(0, 0, 0, 0.15);
+          border-radius: 2px;
         }
         .el-select {
-          width: 120px;
+          width: 80px;
           height: 30px;
-          margin-top: 10px;
+          margin-top: 4px;
           line-height: 30px;
+          float: left;
+          // border-left: 1px solid #20fdfa;
+          input::-webkit-input-placeholder {
+            color: #03b7b8;
+          }
           .el-input__inner {
             height: 30px;
             line-height: 30px;
+            font-size: 14px;
+            background-color: transparent;
+            border-color: transparent;
+            color: #03b7b8;
+            padding: 0 20px 0 0;
           }
           .el-input__icon {
             line-height: 30px;
+            width: 15px;
+            transform: rotate(90deg);
+            color: #03b7b8;
           }
         }
       }
@@ -772,13 +887,65 @@ $boxWidth: 290px;
         .item {
           width: 100%;
           height: 16%;
-          padding: 10px;
+          padding: 4px 10px;
 
           > div {
             width: 100%;
             height: 100%;
-            background: rgba($color: #fff, $alpha: 0.8);
+            // background: rgba($color: #fff, $alpha: 0.8);
+            // background: url("../images/grid.png");
+            background-size: 100% 100%;
             position: relative;
+            .top {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              height: 52px;
+              line-height: 52px;
+              color: #fff;
+              background: url(../images/toptitle.png) center no-repeat;
+              background-size: 100%;
+              .tit {
+                width: 100%;
+                height: 100%;
+                color: #13fcff;
+                font-size: 16px;
+                text-align: center;
+                // background: url(../images/tit.png) center no-repeat;
+              }
+            }
+            .middle {
+              position: absolute;
+              top: 52px;
+              left: 0;
+              right: 0;
+              bottom: 20px;
+              background: url(../images/middle.png) center repeat-y;
+              background-size: 100%;
+              .big {
+                font-size: 40px;
+                font-style: italic;
+                font-family: LcdD;
+                // transform: skewX(-60deg);
+                font-weight: bold;
+                color: #20fdfa;
+              }
+              .unit {
+                font-style: italic;
+                color: #20fdfa;
+              }
+            }
+            .bottom {
+              position: absolute;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              height: 20px;
+              background: url(../images/bot.png) center no-repeat;
+              background-size: 100%;
+            }
+
             &.sum {
               text-align: center;
               position: relative;
@@ -802,24 +969,52 @@ $boxWidth: 290px;
           }
           &.chart {
             height: 36%;
+
+            .tit {
+              text-align: center;
+              background: url(../images/tit_05.png) center no-repeat;
+            }
             span {
+              display: inline-block;
+              width: 22px;
+              height: 22px;
               position: absolute;
               right: 10px;
               top: 10px;
               z-index: 20;
+              cursor: pointer;
+              background: url(../images/fullscreen.png) center no-repeat;
+              &.exit-full {
+                width: 48px;
+                height: 48px;
+                background: url(../images/exit.png) center no-repeat;
+              }
             }
             .box {
               width: 100%;
               height: 100%;
             }
             .fullscreens {
-              background: #fff;
+              .top,
+              .middle,
+              .bottom {
+                background: #151320;
+              }
             }
           }
 
           &.warning {
             height: 30%;
             overflow: hidden;
+            > div {
+              .top {
+                .tit {
+                  text-align: center;
+                  color: #fede2c;
+                  background: url(../images/tit_06.png) center no-repeat;
+                }
+              }
+            }
             .out-box {
               position: absolute;
               top: 30px;
@@ -856,9 +1051,10 @@ $boxWidth: 290px;
                     .text {
                       // flex: 1;
                       float: left;
-                      width: 190px;
+                      width: 100%;
                       p {
-                        line-height: 28px;
+                        line-height: 32px;
+                        color: #fede2c;
                       }
                       .des {
                         width: 100%;
@@ -866,6 +1062,10 @@ $boxWidth: 290px;
                         line-height: 20px;
                         position: relative;
                         overflow: hidden;
+                        color: #fede2c;
+                        .left-title {
+                          font-weight: bold;
+                        }
                         span {
                           display: inline-block;
                           height: 30px;
@@ -873,7 +1073,9 @@ $boxWidth: 290px;
                           position: absolute;
                           bottom: 0;
                           right: 0;
+                          // color: #fede2c;
                           padding-left: 20px;
+
                           background: -webkit-linear-gradient(
                             left,
                             transparent,
@@ -915,11 +1117,28 @@ $boxWidth: 290px;
             }
             .pages {
               position: absolute;
-              right: 10px;
-              top: 10px;
+              bottom: 0;
+              left: 50%;
+              overflow: hidden;
+              transform: translateX(-50%);
               .disabled {
                 cursor: not-allowed;
                 color: #eee;
+              }
+              // .el-icon-caret-left {
+              //   background: url(../images/left.png) center no-repeat;
+              // }
+              .icon {
+                display: block;
+                float: left;
+                width: 22px;
+                height: 22px;
+                margin: 0 10px;
+                cursor: pointer;
+                background: url(../images/left.png) center no-repeat;
+                &.righticon {
+                  background: url(../images/right.png) center no-repeat;
+                }
               }
             }
           }
@@ -978,17 +1197,28 @@ $boxWidth: 290px;
                 color: #ccc;
                 font-size: 12px;
               }
-              // .el-table {
-              //   height: 100%;
-              //   // overflow: auto;
-              // }
-              // .el-table__body-wrapper {
-              //   height: 100%;
-              //   overflow: auto;
-              //   table {
-              //     width: 310px;
-              //   }
-              // }
+            }
+          }
+        }
+        .navtit {
+          &:nth-child(1) {
+            .tit {
+              background: url(../images/tit_01.png) center no-repeat;
+            }
+          }
+          &:nth-child(2) {
+            .tit {
+              background: url(../images/tit_02.png) center no-repeat;
+            }
+          }
+          &:nth-child(3) {
+            .tit {
+              background: url(../images/tit_03.png) center no-repeat;
+            }
+          }
+          &:nth-child(4) {
+            .tit {
+              background: url(../images/tit_03.png) center no-repeat;
             }
           }
         }
@@ -1020,5 +1250,26 @@ $boxWidth: 290px;
       }
     }
   }
+}
+.el-select-dropdown {
+  background: #0f2155;
+  border: none;
+}
+.el-select-dropdown__item {
+  color: #03b7b8;
+  font-size: 14px;
+}
+.el-select-dropdown__item.selected {
+  color: #03b7b8;
+}
+.el-select-dropdown__item.hover,
+.el-select-dropdown__item:hover {
+  background-color: #153c6f;
+}
+.el-popper[x-placement^="bottom"] .popper__arrow::after {
+  border-bottom-color: #0f2155;
+}
+.el-popper[x-placement^="bottom"] .popper__arrow {
+  border-bottom-color: #0f2155;
 }
 </style>
