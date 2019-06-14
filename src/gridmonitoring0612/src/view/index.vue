@@ -6,7 +6,9 @@
       </p>
     </div>
     <div class="content" v-loading="loading">
+      <!-- <Amap></Amap> -->
       <div class="maps" id="maps"></div>
+
       <div class="left">
         <div class="time">
           <div>
@@ -32,12 +34,13 @@
               ></el-option>
             </el-select>
             <span class="line"></span>
-            <el-select v-model="selectSupervision" placeholder="请选择监管所" @change="changeSupervision">
+            <el-select v-model="selectSupervision" placeholder="请选择监管所">
               <el-option
                 v-for="item in supervisionList"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
+                @click.native="changeSupervision(item)"
               ></el-option>
             </el-select>
           </div>
@@ -110,9 +113,6 @@
                 <span @click="exitOutFullScreen()" v-show="fullscreen" class="exit-full"></span>
               </div>
               <div class="bottom"></div>
-              <!-- <div class="titles">网格员巡查频次对比</div>
-              <span @click="exitOutFullScreen()" v-show="fullscreen">exit</span>
-              <bar-chart ref="barChartRefs" :gldatas="gldatas"></bar-chart>-->
             </div>
           </div>
         </div>
@@ -125,12 +125,11 @@
                 <div class="tit">事件预警</div>
               </div>
               <div class="middle">
-                <div class="pages">
-                  <!-- <i class="el-icon-caret-left" id="prevBtn"></i> -->
-                  <!-- <i class="el-icon-caret-right"></i> -->
+                <div class="pages" v-show="warningList.length !==0">
                   <span
                     class="icon lefticon"
                     :class="{'disabled' : currentWarning === 0}"
+                    id="prevBtn"
                     @click="prevWarning()"
                     prevBtn
                   ></span>
@@ -152,14 +151,10 @@
                       :key="index+'warns'"
                     >
                       <div class="inner">
-                        <!-- <div class="icon">img</div> -->
                         <div class="text">
                           <div class="des">
-                            <label class="left-title">事件名称：</label>
-                            {{item.event}}经营食品标签、说明书是否涉及疾病预防、治疗功能。事件名称：经营食品标签。、治疗功能。事件名称：经营食品标签。、治疗功能。事件名称：经营食品标签。、治疗功能。事件名称：经营食品标签。
-                            <span
-                              v-show="item.event.length > 40"
-                            >...</span>
+                            <label class="left-title">事件名称：{{item.event}}</label>
+                            <span v-show="item.event.length > 46">...</span>
                           </div>
                           <br>
                           <p>
@@ -168,14 +163,14 @@
                           </p>
                         </div>
                       </div>
-                      <p class="detail" @click="goDetail(item)">详情》</p>
+                      <p class="detail" @click="goDetail(item)">详情&gt;</p>
                     </div>
-                    <!-- <div class="page-item">b</div>
-                    <div class="page-item">c</div>-->
                     <div class="page-item" v-show="warningList.length ==0">
-                      <div class="inner">
-                        <!-- <div class="icon">empty</div> -->
-                        <div class="empty">本月暂无预警数据</div>
+                      <div class="inner empty">
+                        <p>
+                          <img src="../images/empty.png" alt>
+                        </p>
+                        <p class="txt">本月暂无预警数据</p>
                       </div>
                     </div>
                   </div>
@@ -188,9 +183,12 @@
           </div>
           <div class="item rank">
             <div>
-              <div class="titles">高频事件TOP10</div>
-              <div class="table-box">
-                <!-- <el-table
+              <div class="top">
+                <div class="tit">高频事件TOP10</div>
+              </div>
+              <div class="middle">
+                <div class="table-box">
+                  <!-- <el-table
                   :data="topData"
                   style="width: 100%"
                   :height="tableHeight"
@@ -200,62 +198,102 @@
                   <el-table-column prop="num" label="序号" width="50"></el-table-column>
                   <el-table-column prop="name" label="事件"></el-table-column>
                   <el-table-column prop="per" label="频次" width="50"></el-table-column>
-                </el-table>-->
-                <div class="row header">
-                  <div>
-                    <span>序号</span>
-                    <span>事件</span>
-                    <span>频次</span>
+                  </el-table>-->
+                  <div class="row table-header">
+                    <div>
+                      <span>序号</span>
+                      <span>事件</span>
+                      <span>频次</span>
+                    </div>
                   </div>
-                </div>
-                <div class="row body" v-show="topData.length>0">
-                  <div v-for="(item, index) in topData" @click="rowClick(item)" :key="index+'top'">
-                    <span>{{index+1}}</span>
-                    <span>{{item.event}}</span>
-                    <span>{{item.eventCount}}</span>
+                  <div class="row body" v-show="topData.length>0">
+                    <div
+                      v-for="(item, index) in topData"
+                      @click="rowClick(item)"
+                      :key="index+'top'"
+                    >
+                      <span>{{index+1}}</span>
+                      <span>{{item.event}}</span>
+                      <span>{{item.eventCount}}</span>
+                    </div>
                   </div>
+                  <div class="empty" v-show="topData.length==0">暂无数据</div>
                 </div>
-                <div class="empty" v-show="topData.length==0">暂无数据</div>
               </div>
+              <div class="bottom"></div>
+              <!-- <div class="titles">高频事件TOP10</div> -->
             </div>
           </div>
         </div>
       </div>
     </div>
-    <el-dialog title :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
-      <div>
-        <p>事件名称：{{warningDetail.event}}</p>
-        <p>所属类别：{{warningDetail.eventClassify}}</p>
-        <p>涉及区域：{{warningDetail.relatedDistrict}}</p>
-        <p>发生频次：{{warningDetail.eventCount}}</p>
+    <el-dialog
+      title="预警事件详情"
+      :visible.sync="dialogVisible"
+      custom-class="dialogEvent"
+      width="572"
+      :before-close="handleClose"
+    >
+      <div class="event-detail">
+        <p>
+          <span>[ 事件名称 ]</span>
+          <!-- <br> -->
+          {{warningDetail.event}}
+        </p>
+        <p>
+          <span>[ 所属类别 ]</span>
+          <!-- <br> -->
+          {{warningDetail.eventClassify}}
+        </p>
+        <p>
+          <span>[ 涉及区域 ]</span>
+          <!-- <br> -->
+          {{warningDetail.relatedDistrict}}
+        </p>
+        <p>
+          <span>[ 发生频次 ]</span>
+          <!-- <br> -->
+          {{warningDetail.eventCount}}
+        </p>
       </div>
     </el-dialog>
     <el-dialog
-      :title="listTitle"
+      title="不合规事项检查明细"
       :visible.sync="listDialog"
-      width="1300px"
       custom-class="listDialog"
       :before-close="handleListClose"
     >
       <div>
+        <p class="list-title">{{listTitle}}</p>
         <el-table
           :data="allEventlList"
           style="width: 100%"
-          show-overflow-tooltip="true"
           height="500"
+          border
           v-loading="loadingList"
         >
           <!-- <el-table-column prop="num" label="序号" width="50"></el-table-column> -->
-          <el-table-column type="index" :index="indexMethod" label="序号"></el-table-column>
-          <el-table-column prop="name" label="企业名称"></el-table-column>
-          <el-table-column prop="address" label="地址"></el-table-column>
-          <el-table-column prop="district" label="区域" width="80"></el-table-column>
-          <el-table-column prop="regulatoryType" label="检查类型" width="80"></el-table-column>
-          <el-table-column prop="drawlink" label="环节" width="80"></el-table-column>
-          <el-table-column prop="inspector" label="检查人员"></el-table-column>
+          <el-table-column
+            type="index"
+            :index="indexMethod"
+            label="序号"
+            width="60"
+            :show-overflow-tooltip="true"
+          ></el-table-column>
+          <el-table-column prop="name" label="企业名称" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="address" label="地址" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="district" label="区域" width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column
+            prop="regulatoryType"
+            label="检查类型"
+            width="80"
+            :show-overflow-tooltip="true"
+          ></el-table-column>
+          <el-table-column prop="drawlink" label="环节" width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="inspector" label="检查人员" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="date" label="检查日期" width="100"></el-table-column>
-          <el-table-column prop="eventClassify" label="检查事项大类"></el-table-column>
-          <el-table-column prop="event" label="检查事项细类" width="240"></el-table-column>
+          <el-table-column prop="eventClassify" label="检查事项大类" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="event" label="检查事项细类" width="240" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="isFit" label="是否符合" width="80"></el-table-column>
         </el-table>
         <div class="page">
@@ -293,13 +331,13 @@ const {
 export default {
   data() {
     return {
-      loading: true,
+      loading: false,
       loadingList: false,
       fullscreen: false,
       mapObj: "",
       polygonObj: "",
       mapCenter: [104.10194, 30.65984],
-      boxWidth: 290,
+      boxWidth: 239,
       time: "",
       warningList: [],
       warningDetail: {},
@@ -442,6 +480,17 @@ export default {
     };
   },
   components: {
+    Amap: {
+      render(createElement) {
+        return createElement("script", {
+          attrs: {
+            type: "text/javascript",
+            src:
+              "https://webapi.amap.com/maps?v=1.3&key=c85b169acc3c5472b5f282ec4cfb5198&plugin=AMap.ToolBar&callback=init"
+          }
+        });
+      }
+    },
     barChart,
     DateSelect
   },
@@ -473,8 +522,10 @@ export default {
         this.supervisionList = [];
         res.data.forEach(item => {
           this.supervisionList.push({
-            value: item,
-            label: item
+            value: item.name,
+            label: item.name,
+            latitude: item.latitude,
+            longitude: item.longitude
           });
         });
       }
@@ -564,7 +615,7 @@ export default {
       }
 
       this.loading = false;
-      this.setTimer();
+      // this.setTimer();
     },
     async getTimeData() {
       let year = this.time.year;
@@ -599,21 +650,25 @@ export default {
       this.$refs.barChartRefs.serDefaultChart();
     },
     initMap() {
+      // window.init = () => {
       this.mapObj = new AMap.Map("maps", {
         resizeEnable: true,
         zoom: 8,
-        mapStyle: "amap://styles/0557538bad9e76aba4f4027e0ef5dea4",
+        // mapStyle: "amap://styles/1936493f5baff70e261633d0f1682b77",
+        mapStyle: "amap://styles/307486d5fc38c1746f40f402c371ce37",
         center: this.mapCenter,
         animateEnable: true
       });
       this.polygonObj = new AMap.Polygon({
         map: this.mapObj,
         strokeWeight: 1,
-        strokeColor: "#0091ea",
-        fillColor: "#80d8ff",
+        strokeColor: "#00FFFF",
+        strokeStyle: "dashed",
+        fillColor: "#1CB0FE",
         fillOpacity: 0.2,
         path: chengdu.features[0].geometry.coordinates[0]
       });
+      // };
     },
     selectProvince() {
       this.selectRegion("成都市");
@@ -626,7 +681,9 @@ export default {
       this.selectSupervision = "";
     },
     changeSupervision(item) {
+      console.log(item);
       this.getData(3);
+      this.mapObj.setCenter([item.longitude, item.latitude]);
     },
     selectRegion(region) {
       let path = "";
@@ -683,11 +740,14 @@ export default {
     timeChange(time) {
       this.time = time;
       this.supervisionList = [];
-      this.$nextTick(() => {
-        this.getTimeData();
-        this.getData(1);
-        this.selectRegion("成都市");
-      });
+      if (time !== "") {
+        this.$nextTick(() => {
+          this.getTimeData();
+          this.getData(1);
+          this.selectRegion("成都市");
+        });
+      } else {
+      }
     },
     addScreenListen() {
       if (screenfull.enabled) {
@@ -716,26 +776,26 @@ export default {
   mounted() {
     this.initMap();
     this.addScreenListen();
-    document.getElementById("pageBox").addEventListener("mouseover", () => {
-      clearInterval(this.timer);
-    });
-    document.getElementById("pageBox").addEventListener("mouseleave", () => {
-      if (!this.listDialog && !this.dialogVisible) {
-        this.setTimer();
-      }
-    });
-    document.getElementById("prevBtn").addEventListener("mouseover", () => {
-      clearInterval(this.timer);
-    });
-    document.getElementById("nextBtn").addEventListener("mouseover", () => {
-      clearInterval(this.timer);
-    });
-    document.getElementById("prevBtn").addEventListener("mouseleave", () => {
-      this.setTimer();
-    });
-    document.getElementById("nextBtn").addEventListener("mouseleave", () => {
-      this.setTimer();
-    });
+    // document.getElementById("pageBox").addEventListener("mouseover", () => {
+    //   clearInterval(this.timer);
+    // });
+    // document.getElementById("pageBox").addEventListener("mouseleave", () => {
+    //   if (!this.listDialog && !this.dialogVisible) {
+    //     this.setTimer();
+    //   }
+    // });
+    // document.getElementById("prevBtn").addEventListener("mouseover", () => {
+    //   clearInterval(this.timer);
+    // });
+    // document.getElementById("nextBtn").addEventListener("mouseover", () => {
+    //   clearInterval(this.timer);
+    // });
+    // document.getElementById("prevBtn").addEventListener("mouseleave", () => {
+    //   this.setTimer();
+    // });
+    // document.getElementById("nextBtn").addEventListener("mouseleave", () => {
+    //   this.setTimer();
+    // });
   },
   destroyed() {
     if (screenfull.enabled) {
@@ -746,7 +806,7 @@ export default {
 </script>
 
 <style lang='scss'>
-$boxWidth: 290px;
+$boxWidth: 239px;
 #main {
   width: 100%;
   height: 100%;
@@ -781,7 +841,7 @@ $boxWidth: 290px;
     right: 0;
     bottom: 0;
     min-width: 1366px;
-    min-height: 800px;
+    min-height: 880px;
     .maps {
       position: absolute;
       width: 100%;
@@ -809,7 +869,7 @@ $boxWidth: 290px;
           position: relative;
           .time-box {
             display: block;
-            width: 200px;
+            width: 100%;
             text-align: center;
             margin: 0 auto;
           }
@@ -832,6 +892,7 @@ $boxWidth: 290px;
         .province {
           margin: 10px 0 0 10px;
           float: left;
+          cursor: pointer;
         }
         .line {
           width: 1px;
@@ -1020,7 +1081,7 @@ $boxWidth: 290px;
               top: 30px;
               left: 20px;
               right: 20px;
-              bottom: 10px;
+              bottom: 46px;
               overflow: hidden;
               .page-box {
                 transition: all 0.4s;
@@ -1040,14 +1101,14 @@ $boxWidth: 290px;
                     //   display: flex;
                     width: 100%;
 
-                    .icon {
-                      // flex: 0 0 100px;
-                      float: left;
-                      width: 100px;
-                      height: 100px;
-                      background: #eee;
-                      text-align: center;
-                    }
+                    // .icon {
+                    //   // flex: 0 0 100px;
+                    //   float: left;
+                    //   width: 100px;
+                    //   height: 100px;
+                    //   background: #eee;
+                    //   text-align: center;
+                    // }
                     .text {
                       // flex: 1;
                       float: left;
@@ -1068,8 +1129,8 @@ $boxWidth: 290px;
                         }
                         span {
                           display: inline-block;
-                          height: 30px;
-                          line-height: 30px;
+                          height: 20px;
+                          line-height: 20px;
                           position: absolute;
                           bottom: 0;
                           right: 0;
@@ -1079,39 +1140,41 @@ $boxWidth: 290px;
                           background: -webkit-linear-gradient(
                             left,
                             transparent,
-                            #fff 55%
+                            #0a153a 55%
                           );
                           background: -o-linear-gradient(
                             right,
                             transparent,
-                            #fff 55%
+                            #0a153a 55%
                           );
                           background: -moz-linear-gradient(
                             right,
                             transparent,
-                            #fff 55%
+                            #0a153a 55%
                           );
                           background: linear-gradient(
                             to right,
                             transparent,
-                            #fff 55%
+                            #0a153a 55%
                           );
                         }
                       }
                     }
-                    .empty {
-                      width: 190px;
-                      height: 100px;
-                      line-height: 100px;
+                    &.empty {
                       text-align: center;
-                      float: left;
+                      color: #fede2c;
+                      .txt {
+                        margin-top: 10px;
+                      }
                     }
                   }
                 }
                 .detail {
                   position: absolute;
-                  right: 10px;
-                  bottom: 10px;
+                  right: 0;
+                  bottom: 0;
+                  cursor: pointer;
+                  color: #03b7b8;
                 }
               }
             }
@@ -1121,10 +1184,7 @@ $boxWidth: 290px;
               left: 50%;
               overflow: hidden;
               transform: translateX(-50%);
-              .disabled {
-                cursor: not-allowed;
-                color: #eee;
-              }
+
               // .el-icon-caret-left {
               //   background: url(../images/left.png) center no-repeat;
               // }
@@ -1140,16 +1200,30 @@ $boxWidth: 290px;
                   background: url(../images/right.png) center no-repeat;
                 }
               }
+              .disabled {
+                cursor: not-allowed;
+                color: #eee;
+              }
             }
           }
           &.rank {
             height: 70%;
+            > div {
+              .top {
+                .tit {
+                  text-align: center;
+                  background: url(../images/tit_07.png) center no-repeat;
+                }
+              }
+            }
             .table-box {
               position: absolute;
-              top: 40px;
+              top: 0;
               left: 0;
               right: 0;
+              color: #13fcff;
               bottom: 0;
+
               .row {
                 width: 100%;
 
@@ -1160,6 +1234,7 @@ $boxWidth: 290px;
                     display: inline-block;
                     height: auto;
                     float: left;
+                    font-size: 12px;
                     text-align: center;
                     &:nth-child(1) {
                       width: 20%;
@@ -1170,13 +1245,14 @@ $boxWidth: 290px;
                     }
                     &:nth-child(3) {
                       width: 20%;
+                      font-size: 14px;
                     }
                   }
                 }
               }
-              .header {
+              .table-header {
                 height: 50px;
-                background: #eee;
+                line-height: 50px;
               }
               .body {
                 position: absolute;
@@ -1233,10 +1309,68 @@ $boxWidth: 290px;
         top: 0;
       }
     }
+    .el-loading-mask {
+      background-color: rgba(0, 150, 229, 0.5);
+    }
+  }
+  .dialogEvent {
+    width: 570px;
+    background: url(../images/dialogEvent.png) center no-repeat;
+    background-size: 100% 100%;
+    .event-detail {
+      p {
+        color: #fede2c;
+        font-size: 14px;
+        margin: 20px 40px;
+        opacity: 0.9;
+        span {
+          display: block;
+          font-weight: bold;
+          font-size: 14px;
+          margin-bottom: 10px;
+        }
+      }
+    }
+    .el-dialog__title {
+      position: absolute;
+      top: 0;
+      font-size: 28px;
+      color: #0efcff;
+      left: 50%;
+      transform: translateX(-50%);
+    }
   }
   .listDialog {
+    width: 1500px;
+    padding: 0 41px;
+    background: url(../images/listDialog.png) center no-repeat;
+    background-size: 100% 100%;
+    .list-title {
+      // position: absolute;
+      // top: 50px;
+      // left: 30px;
+      // right: 30px;
+      padding: 10px 0;
+      margin-top: 30px;
+      width: 100%;
+      color: #0efcff;
+      font-size: 16px;
+      text-align: center;
+      background: rgba(27, 137, 248, 0.2);
+      border-top: 1px solid rgba(0, 150, 229, 0.2);
+      border-left: 1px solid rgba(0, 150, 229, 0.2);
+      border-right: 1px solid rgba(0, 150, 229, 0.2);
+    }
     .el-dialog__header {
-      padding: 20px 50px 20px 20px;
+      // padding: 20px 50px 20px 20px;
+      .el-dialog__title {
+        position: absolute;
+        top: 0;
+        font-size: 28px;
+        color: #0efcff;
+        left: 50%;
+        transform: translateX(-50%);
+      }
     }
     .el-dialog__body {
       overflow: hidden;
@@ -1247,9 +1381,73 @@ $boxWidth: 290px;
         float: right;
         margin: 20px 0;
         overflow: hidden;
+        .el-pagination {
+          color: rgba(0, 150, 229, 0.5);
+        }
+        .el-pager li {
+          background: transparent;
+        }
+        .el-pagination .btn-next,
+        .el-pagination .btn-prev {
+          background: transparent;
+        }
+        .el-pagination button {
+          color: rgba(0, 150, 229, 1);
+        }
+        .el-pagination button:disabled {
+          color: rgba(39, 101, 134, 0.5);
+        }
       }
     }
+    .el-table {
+      background-color: transparent;
+    }
+    .el-table th,
+    .el-table tr {
+      background-color: transparent;
+      color: #0efcff;
+      border-color: rgba(0, 150, 229, 0.2);
+    }
+    .el-table--border td,
+    .el-table--border th,
+    .el-table__body-wrapper
+      .el-table--border.is-scrolling-left
+      ~ .el-table__fixed {
+      border-right: rgba(0, 150, 229, 0.2);
+    }
+    .el-table td,
+    .el-table th.is-leaf {
+      border-bottom: rgba(0, 150, 229, 0.2);
+    }
+    .el-table--border,
+    .el-table--group {
+      border: 1px solid rgba(0, 150, 229, 0.2);
+    }
+    .el-table__body-wrapper {
+      .el-table tr:hover {
+        background-color: transparent !important;
+      }
+    }
+
+    .el-table--border::after,
+    .el-table--group::after,
+    .el-table::before {
+      height: 0;
+      background-color: rgba(0, 150, 229, 0.2);
+    }
+    .el-table--enable-row-hover .el-table__body tr:hover > td {
+      background: transparent;
+    }
+    .el-loading-mask {
+      background-color: rgba(0, 150, 229, 0.5);
+    }
   }
+}
+.el-tooltip__popper {
+  max-width: 300px;
+  white-space: normal;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 .el-select-dropdown {
   background: #0f2155;

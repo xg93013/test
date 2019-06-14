@@ -100,24 +100,25 @@ export default {
         if (res.data && res.data.length > 0) {
           this.currentIndex = 0;
           this.originDate = res.data.reverse();
-        }
-      }
-
-      let month = "";
-      for (let j = 0; j < this.originDate.length; j++) {
-        for (let i = 11; i > -1; i--) {
-          if (this.originDate[j].data.month[i].mark) {
-            month = this.originDate[j].data.month[i].date;
-            this.currentTime = this.currentYear + "年" + month;
-            this.selectItemIndex = i;
-            let emitTime = {
-              year: this.currentYear,
-              msg: month
-            };
-            this.$emit("timeChange", emitTime);
-            return false;
+          let month = "";
+          for (let j = 0; j < this.originDate.length; j++) {
+            for (let i = 11; i > -1; i--) {
+              if (this.originDate[j].data.month[i].mark) {
+                month = this.originDate[j].data.month[i].date;
+                this.currentTime = this.currentYear + "年" + month;
+                this.selectItemIndex = i;
+                let emitTime = {
+                  year: this.currentYear,
+                  msg: month
+                };
+                this.$emit("timeChange", emitTime);
+                return false;
+              }
+            }
           }
         }
+      } else {
+        this.$emit("timeChange", "");
       }
     },
     changeYear(flag) {
@@ -188,15 +189,15 @@ export default {
 };
 </script>
 <style lang="scss">
-$dateThemeBack: #1c2543;
+$dateThemeBack: rgba(0, 150, 229, 0.15);
 
-$dateItemBack: #293458;
+$dateItemBack: rgba(0, 150, 229, 0.5);
 
-$dateActiveBack: #0099ff;
+$dateActiveBack: #1ad6d8;
 
-$disableBack: #7e8e98;
+$disableBack: #4b697c;
 
-$topBack: #2e4354;
+$topBack: #29445a;
 
 $btnOk: #0fa063;
 
@@ -231,16 +232,18 @@ $btnOk: #0fa063;
 }
 .szl-time-pop.el-popper {
   width: 450px;
-  background: rgba(28, 37, 67, 1);
-  border: 1px solid rgba(28, 37, 67, 1);
+  background: #0a153a;
+  border: 1px solid rgba(0, 120, 253, 0.2);
   margin-left: 10px;
-  padding: 20px;
+  border-radius: 6px;
+  padding: 15px;
   * {
     color: #87b3d1;
   }
 }
 
 .szl-time {
+  width: 100%;
   display: inline-block;
   // background: #0099ff;
   // border: 1px solid #0099ff;
@@ -259,9 +262,9 @@ $btnOk: #0fa063;
 }
 
 .szl-time-pop.el-popper .popper__arrow {
-  border-bottom-color: #253745 !important;
+  border-bottom-color: rgba(0, 120, 253, 0.5) !important;
   &:after {
-    border-bottom-color: #253745 !important;
+    border-bottom-color: #0a153a !important;
   }
 }
 .date-container {
@@ -369,7 +372,7 @@ $btnOk: #0fa063;
         line-height: 40px;
         text-align: left;
         float: left;
-        color: #fff;
+        color: #1ad6d8;
       }
       .right {
         float: right;

@@ -164,6 +164,16 @@ export default {
             textStyle: {
               color: "#ccc"
             }
+          },
+          axisLine: {
+            lineStyle: {
+              color: "#0C1941"
+            }
+          },
+          splitLine: {
+            lineStyle: {
+              color: "rgba(0, 150, 229, 0.2)"
+            }
           }
         },
         yAxis3D: {
@@ -175,6 +185,16 @@ export default {
             textStyle: {
               color: "#ccc"
             }
+          },
+          axisLine: {
+            lineStyle: {
+              color: "#0C1941"
+            }
+          },
+          splitLine: {
+            lineStyle: {
+              color: "rgba(0, 150, 229, 0.2)"
+            }
           }
         },
         zAxis3D: {
@@ -183,6 +203,16 @@ export default {
           axisLabel: {
             textStyle: {
               color: "#ccc"
+            }
+          },
+          axisLine: {
+            lineStyle: {
+              color: "#0C1941"
+            }
+          },
+          splitLine: {
+            lineStyle: {
+              color: "rgba(0, 150, 229, 0.2)"
             }
           }
         },

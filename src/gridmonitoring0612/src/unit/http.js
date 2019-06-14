@@ -18,12 +18,12 @@ const handleResponse = res => {
 			if (res.data) {
 				return res.data
 			} else {
-				errAlert(res.data.msg)
+				// errAlert(res.data.msg)
 			}
 		} else if (res.status == 500) {
-			errAlert('请求无响应');
+			// errAlert('请求无响应');
 		} else {
-			errAlert('请求超时');
+			// errAlert('请求超时');
 		}
 	}
 };
@@ -38,7 +38,8 @@ const pubHttp = (type, url, params, contentType) => {
 				url: uri,
 				headers: {
 					'Content-type': contentType
-				}
+				},
+				timeout: 30000
 			}
 			if (type == 'get') {
 				data.params = params;
@@ -52,12 +53,12 @@ const pubHttp = (type, url, params, contentType) => {
 				if (err.response.status == 403) {//未登录，直接跳转至登录页面
 					window.location.replace("/")
 				} else if (err.response.status == 500) {
-					errAlert(err.response.statusText)
+					// errAlert(err.response.statusText)
 				} else {
 					if (err.response.data.message) {
-						errAlert(err.response.data.message)
+						// errAlert(err.response.data.message)
 					} else {
-						errAlert(err.response.data)
+						// errAlert(err.response.data)
 					}
 				}
 			} else {
