@@ -3,7 +3,7 @@
     popper-class="szl-time-pop"
     @after-leave="cancel"
     v-model="show"
-    width="340"
+    width="297"
     trigger="click"
   >
     <div class="date-container">
@@ -73,8 +73,10 @@ export default {
       currentTime: "", // 当前时间
       currentIndex: 0,
       dateType: 1,
-      originDate: "",
-      selectItemIndex: -1
+      originDate: [],
+      selectItemIndex: -1,
+      currentYearIndex: 0,
+      currentItemIndex: -1
     };
   },
   watch: {},
@@ -84,7 +86,9 @@ export default {
   },
   computed: {
     currentYear() {
-      return this.originDate[this.currentIndex].years;
+      return this.originDate[this.currentIndex]
+        ? this.originDate[this.currentIndex].years
+        : "";
     },
     currentDate() {
       return this.originDate[this.currentIndex];
@@ -107,6 +111,8 @@ export default {
                 month = this.originDate[j].data.month[i].date;
                 this.currentTime = this.currentYear + "年" + month;
                 this.selectItemIndex = i;
+                this.currentYearIndex = this.currentIndex;
+                this.currentItemIndex = this.selectItemIndex;
                 let emitTime = {
                   year: this.currentYear,
                   msg: month
@@ -135,6 +141,9 @@ export default {
         }
       }
       this.currentIndex = index;
+      if (this.currentYearIndex === this.currentIndex) {
+        this.selectItemIndex = this.currentItemIndex;
+      }
     },
     changeDateType(type) {
       this.dateType = type;
@@ -147,6 +156,8 @@ export default {
     },
     cancel() {
       this.show = false;
+      this.currentIndex = this.currentYearIndex;
+      this.selectItemIndex = this.currentItemIndex;
     },
     switchTypeName(i) {
       let name = "";
@@ -172,9 +183,25 @@ export default {
     confirmDate() {
       this.show = false;
       if (this.selectItemIndex == -1) {
-        this.dateType = 4;
+        this.currentIndex = 0;
+        this.dateType = 1;
+        // this.selectItemIndex = 0;
+        for (let j = 0; j < this.originDate.length; j++) {
+          for (let i = 11; i > -1; i--) {
+            if (this.originDate[j].data.month[i].mark) {
+              this.selectItemIndex = i;
+              this.confirmRes();
+              return false;
+            }
+          }
+        }
         this.selectItemIndex = 0;
       }
+      this.confirmRes();
+    },
+    confirmRes() {
+      this.currentYearIndex = this.currentIndex;
+      this.currentItemIndex = this.selectItemIndex;
       let typeName = this.switchTypeName(this.dateType);
       let dates = this.currentDate.data[typeName][this.selectItemIndex].date;
       this.currentTime = this.currentYear + "年" + dates;
@@ -189,13 +216,13 @@ export default {
 };
 </script>
 <style lang="scss">
-$dateThemeBack: rgba(0, 150, 229, 0.15);
+$dateThemeBack: transparent;
 
 $dateItemBack: rgba(0, 150, 229, 0.5);
 
 $dateActiveBack: #1ad6d8;
 
-$disableBack: #4b697c;
+$disableBack: #547386;
 
 $topBack: #29445a;
 
@@ -231,12 +258,12 @@ $btnOk: #0fa063;
   }
 }
 .szl-time-pop.el-popper {
-  width: 450px;
-  background: #0a153a;
-  border: 1px solid rgba(0, 120, 253, 0.2);
+  width: 297px;
+  background: #12235c;
+  border: 1px solid rgba(13, 61, 116, 1);
   margin-left: 10px;
   border-radius: 6px;
-  padding: 15px;
+  padding: 0;
   * {
     color: #87b3d1;
   }
@@ -264,7 +291,7 @@ $btnOk: #0fa063;
 .szl-time-pop.el-popper .popper__arrow {
   border-bottom-color: rgba(0, 120, 253, 0.5) !important;
   &:after {
-    border-bottom-color: #0a153a !important;
+    border-bottom-color: #101e4d !important;
   }
 }
 .date-container {

@@ -9,7 +9,9 @@ export default {
   data() {
     return {
       myChart: "",
-      interval: "auto",
+      interval: 4,
+      showLabel: false,
+      margin: 5,
       datas: []
     };
   },
@@ -24,7 +26,7 @@ export default {
       if (a) {
         this.datas = a;
         this.$nextTick(() => {
-          this.initChart(a);
+          this.initChart(a, 3);
         });
       }
     }
@@ -34,110 +36,58 @@ export default {
     init() {
       this.myChart = echarts.init(document.getElementById("3d-chart"));
     },
-    initChart(arr) {
+    initChart(arr, len) {
+      // if (this.myChart) {
+      //   this.myChart.clear();
+      // }
+      let [interval, showLabel, margin] = [
+        this.interval,
+        this.showLabel,
+        this.margin
+      ];
       // 区域
-      let areas = [
-        // "高新区",
-        // "青羊区",
-        // "青羊区a",
-        // "青羊区b",
-        // "青羊区v",
-        // "青羊区c",
-        // "青羊区e",
-        // "青羊区f",
-        // "青羊区g",
-        // "青羊区h",
-        // "青羊区k",
-        // "青羊区e",
-        // "青羊区f",
-        // "青羊区g",
-        // "青羊区h",
-        // "青羊区k",
-        // "青羊区e",
-        // "青羊区f",
-        // "青羊区g",
-        // "青羊区h",
-        // "青羊区k"
-      ];
-
-      // ["a", "b", "c", "d", "e", "f", "g", "h", "f", "k"];
+      let areas = [];
       // 巡查时间
-      let times = [
-        // "2019.01.02",
-        // "2019.01.03",
-        // "2019.01.04",
-        // "2019.01.05",
-        // "2019.01.06",
-        // "2019.01.07",
-        // "2019.01.08",
-        // "2019.01.09",
-        // "2019.01.10",
-        // "2019.01.11",
-        // "2019.01.12",
-        // "2019.01.12"
-      ];
+      let times = [];
+      // 巡查频次
       let data = [];
+      let frequency = [];
       for (let key in arr[0]) {
         arr[0][key].forEach(itema => {
           areas.push(itema.district);
         });
       }
       arr.forEach((itemb, indexb) => {
-        for (let key in itemb) {
-          times.push(key);
-          itemb[key].forEach((itemc, indexc) => {
-            data.push([indexb, indexc, itemc.frequency]);
-          });
+        if (indexb <= len) {
+          for (let key in itemb) {
+            times.push(key);
+            itemb[key].forEach((itemc, indexc) => {
+              data.push([indexb, indexc, itemc.frequency]);
+              frequency.push(itemc.frequency);
+            });
+          }
         }
       });
-      // 巡查频次
-      // let data = [
-      // [0, 0, 5],
-      // [0, 1, 1],
-      // [1, 2, 5],
-      // [2, 3, 5],
-      // [3, 4, 5],
-      // [4, 5, 5],
-      // [5, 4, 5],
-      // [6, 5, 5],
-      // [7, 5, 5],
-      // [8, 5, 5],
-      // [6, 4, 5],
-      // [7, 3, 5],
-      // [8, 2, 5],
-      // [6, 1, 5],
-      // [7, 2, 5],
-      // [2, 3, 5],
-      // [5, 5, 5],
-      // [3, 2, 5],
-      // [4, 5, 5],
-      // [7, 5, 5],
-      // [5, 1, 5],
-      // [6, 6, 5],
-      // [8, 5, 5],
-      // [9, 3, 5],
-      // [10, 2, 5],
-      // [11, 2, 5],
-      // [12, 2, 5],
-      // [13, 2, 5],
-      // [14, 2, 5],
-      // [15, 2, 5],
-      // [16, 2, 5],
-      // [17, 2, 5],
-      // [18, 2, 5],
-      // [19, 2, 5],
-      // [20, 2, 5],
-      // [21, 2, 5]
-      // ];
+      let maxArr = frequency.sort((a, b) => {
+        return b - a;
+      });
+
       let options = {
         tooltip: {
+          confine: true,
           formatter: params => {
             let data = params.data;
-            return areas[data[0]] + ":" + times[data[1]] + ":" + data[2];
+            return (
+              areas[data[0]] +
+              "：" +
+              times[data[1]] +
+              "<br/>巡查频次：" +
+              data[2]
+            );
           }
         },
         visualMap: {
-          max: 20,
+          max: maxArr[0],
           show: false,
           inRange: {
             color: [
@@ -159,10 +109,13 @@ export default {
           type: "category",
           data: areas,
           name: "",
+          // nameGap: 30,
           axisLabel: {
-            interval: this.interval,
+            interval: interval,
+            margin: margin,
             textStyle: {
-              color: "#ccc"
+              color: "#ccc",
+              fontSize: 10
             }
           },
           axisLine: {
@@ -181,9 +134,12 @@ export default {
           data: times,
           name: "",
           axisLabel: {
-            interval: this.interval,
+            show: showLabel,
+            interval: 0,
+            margin: margin,
             textStyle: {
-              color: "#ccc"
+              color: "#ccc",
+              fontSize: 10
             }
           },
           axisLine: {
@@ -201,6 +157,8 @@ export default {
           type: "value",
           name: "",
           axisLabel: {
+            interval: "auto",
+            margin: margin,
             textStyle: {
               color: "#ccc"
             }
@@ -217,11 +175,15 @@ export default {
           }
         },
         grid3D: {
-          boxWidth: 180,
-          boxDepth: 50,
+          boxWidth: 170,
+          boxHeight: 60,
+          boxDepth: 80,
           viewControl: {
-            // projection: 'orthographic'
+            // projection: "orthographic"
+            alpha: 15,
+            beta: -30
           },
+          axisLabel: {},
           light: {
             main: {
               intensity: 1.2,
@@ -239,7 +201,7 @@ export default {
               return [item[1], item[0], item[2]];
             }),
             shading: "lambert",
-            bevelSize: 0.2,
+            // bevelSize: 0.2,
             label: {
               distance: 1,
               textStyle: {
@@ -267,13 +229,19 @@ export default {
     },
     resizeChart() {
       this.interval = 0;
-      this.initChart(this.datas);
+      this.showLabel = true;
+      this.margin = 2;
+      this.initChart(this.datas, this.datas.length);
       this.myChart.resize();
     },
     serDefaultChart() {
-      this.interval = "auto";
-      this.initChart(this.datas);
-      this.myChart.resize();
+      this.interval = 4;
+      this.showLabel = false;
+      this.margin = 5;
+      this.initChart(this.datas, 3);
+      setTimeout(() => {
+        this.myChart.resize();
+      });
     },
     clearChart() {
       this.myChart.clear();
@@ -288,7 +256,6 @@ export default {
 .out {
   width: 100%;
   height: 100%;
-  // position: absolute;
 }
 </style>
 

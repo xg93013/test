@@ -15,15 +15,21 @@ const errAlert = err => {
 const handleResponse = res => {
 	if (res) {
 		if (res.status == 200) {
-			if (res.data) {
-				return res.data
-			} else {
-				// errAlert(res.data.msg)
+			let code = res.data.code;
+			if (code === 0) {
+				return res.data;
+			} else if (code === -1) {
+				errAlert(res.data.msg);
+				return;
+			} else if (code === 101) { //未登录状态，直接返回登录页
+				let baseUrl = sessionStorage.getItem("newBaseUrl");
+				window.location.href = baseUrl
+				return;
 			}
 		} else if (res.status == 500) {
-			// errAlert('请求无响应');
+			errAlert('请求无响应');
 		} else {
-			// errAlert('请求超时');
+			errAlert('请求超时');
 		}
 	}
 };
@@ -53,12 +59,12 @@ const pubHttp = (type, url, params, contentType) => {
 				if (err.response.status == 403) {//未登录，直接跳转至登录页面
 					window.location.replace("/")
 				} else if (err.response.status == 500) {
-					// errAlert(err.response.statusText)
+					errAlert(err.response.statusText)
 				} else {
 					if (err.response.data.message) {
-						// errAlert(err.response.data.message)
+						errAlert(err.response.data.message)
 					} else {
-						// errAlert(err.response.data)
+						errAlert(err.response.data)
 					}
 				}
 			} else {

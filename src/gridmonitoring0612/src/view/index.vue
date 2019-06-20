@@ -4,6 +4,20 @@
       <p>
         <button @click="clearTimer()" id="clickBtn" style="display:none;">清除定时器</button>
       </p>
+      <div class="admins">
+        <el-dropdown trigger="click">
+          <span class="el-dropdown-link" style="cursor:pointer;">
+            <label>欢迎回来！{{userMsg}}</label>
+            <img src="../images/user.png" alt>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="editPassWord()">修改密码</el-dropdown-item>
+            <el-dropdown-item>
+              <a :href="baseUrl">退出登录</a>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
     </div>
     <div class="content" v-loading="loading">
       <!-- <Amap></Amap> -->
@@ -25,7 +39,7 @@
               <i class="el-icon-arrow-right"></i>
             </span>
             <span class="line"></span>
-            <el-select v-model="selectCity" placeholder="请选择区域" @change="changeCity">
+            <el-select v-model="selectCity" placeholder="区域" @change="changeCity">
               <el-option
                 v-for="item in cityList"
                 :key="item.value"
@@ -34,7 +48,7 @@
               ></el-option>
             </el-select>
             <span class="line"></span>
-            <el-select v-model="selectSupervision" placeholder="请选择监管所">
+            <el-select v-model="selectSupervision" placeholder="监管所">
               <el-option
                 v-for="item in supervisionList"
                 :key="item.value"
@@ -109,7 +123,7 @@
               </div>
               <div class="middle">
                 <bar-chart ref="barChartRefs" :gldatas="gldatas"></bar-chart>
-                <span @click="openScreen()" v-show="!fullscreen"></span>
+                <span @click="openScreen()" v-show="!fullscreen&&gldatas.length>0"></span>
                 <span @click="exitOutFullScreen()" v-show="fullscreen" class="exit-full"></span>
               </div>
               <div class="bottom"></div>
@@ -153,12 +167,12 @@
                       <div class="inner">
                         <div class="text">
                           <div class="des">
-                            <label class="left-title">事件名称：{{item.event}}</label>
-                            <span v-show="item.event.length > 46">...</span>
+                            <label class="left-title">[ 事件名称 ]：{{item.event}}</label>
+                            <span v-show="item.event.length > 45">...</span>
                           </div>
                           <br>
                           <p>
-                            <label class="left-title">涉及区域：</label>
+                            <label class="left-title">[ 涉及区域 ]：</label>
                             {{item.relatedDistrictCount}}个区县
                           </p>
                         </div>
@@ -177,8 +191,6 @@
                 </div>
               </div>
               <div class="bottom"></div>
-
-              <!-- <div class="titles">事件预警</div> -->
             </div>
           </div>
           <div class="item rank">
@@ -188,16 +200,15 @@
               </div>
               <div class="middle">
                 <div class="table-box">
-                  <!-- <el-table
-                  :data="topData"
-                  style="width: 100%"
-                  :height="tableHeight"
-                  show-overflow-tooltip="true"
-                  @row-click="rowClick"
-                >
-                  <el-table-column prop="num" label="序号" width="50"></el-table-column>
-                  <el-table-column prop="name" label="事件"></el-table-column>
-                  <el-table-column prop="per" label="频次" width="50"></el-table-column>
+                  <!--<el-table
+                    :data="topData"
+                    style="width: 100%"
+                    show-overflow-tooltip="true"
+                    @row-click="rowClick"
+                  >
+                    <el-table-column :index="indexMethod" label="序号" width="50"></el-table-column>
+                    <el-table-column prop="event" label="事件"></el-table-column>
+                    <el-table-column prop="eventCount" label="频次" width="50"></el-table-column>
                   </el-table>-->
                   <div class="row table-header">
                     <div>
@@ -206,14 +217,19 @@
                       <span>频次</span>
                     </div>
                   </div>
-                  <div class="row body" v-show="topData.length>0">
+                  <div class="row table-body" v-show="topData.length>0">
                     <div
                       v-for="(item, index) in topData"
                       @click="rowClick(item)"
                       :key="index+'top'"
                     >
                       <span>{{index+1}}</span>
-                      <span>{{item.event}}</span>
+                      <span>
+                        <span class="table-inner">
+                          {{item.event}}
+                          <label v-show="item.event.length > 25">...</label>
+                        </span>
+                      </span>
                       <span>{{item.eventCount}}</span>
                     </div>
                   </div>
@@ -237,22 +253,18 @@
       <div class="event-detail">
         <p>
           <span>[ 事件名称 ]</span>
-          <!-- <br> -->
           {{warningDetail.event}}
         </p>
         <p>
           <span>[ 所属类别 ]</span>
-          <!-- <br> -->
           {{warningDetail.eventClassify}}
         </p>
         <p>
           <span>[ 涉及区域 ]</span>
-          <!-- <br> -->
           {{warningDetail.relatedDistrict}}
         </p>
         <p>
           <span>[ 发生频次 ]</span>
-          <!-- <br> -->
           {{warningDetail.eventCount}}
         </p>
       </div>
@@ -264,7 +276,7 @@
       :before-close="handleListClose"
     >
       <div>
-        <p class="list-title">{{listTitle}}</p>
+        <p class="list-title">{{timeTitle+listTitle}}</p>
         <el-table
           :data="allEventlList"
           style="width: 100%"
@@ -272,14 +284,7 @@
           border
           v-loading="loadingList"
         >
-          <!-- <el-table-column prop="num" label="序号" width="50"></el-table-column> -->
-          <el-table-column
-            type="index"
-            :index="indexMethod"
-            label="序号"
-            width="60"
-            :show-overflow-tooltip="true"
-          ></el-table-column>
+          <el-table-column prop="num" label="序号" width="60" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="name" label="企业名称" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="address" label="地址" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="district" label="区域" width="80" :show-overflow-tooltip="true"></el-table-column>
@@ -343,125 +348,103 @@ export default {
       warningDetail: {},
       currentWarning: 0,
       cityList: [
-        {
-          value: "天府新区",
-          label: "天府新区"
-        },
-        {
-          value: "高新区",
-          label: "高新区"
-        },
-        {
-          value: "锦江区",
-          label: "锦江区"
-        },
-        {
-          value: "青羊区",
-          label: "青羊区"
-        },
-        {
-          value: "金牛区",
-          label: "金牛区"
-        },
-        {
-          value: "武侯区",
-          label: "武侯区"
-        },
-        {
-          value: "成华区",
-          label: "成华区"
-        },
-        {
-          value: "龙泉驿区",
-          label: "龙泉驿区"
-        },
-        {
-          value: "青白江区",
-          label: "青白江区"
-        },
-        {
-          value: "新都区",
-          label: "新都区"
-        },
-        {
-          value: "温江区",
-          label: "温江区"
-        },
-        {
-          value: "双流区",
-          label: "双流区"
-        },
-        {
-          value: "郫都区",
-          label: "郫都区"
-        },
-        {
-          value: "简阳市",
-          label: "简阳市"
-        },
-        {
-          value: "都江堰市",
-          label: "都江堰市"
-        },
-        {
-          value: "彭州市",
-          label: "彭州市"
-        },
-        {
-          value: "邛崃市",
-          label: "邛崃市"
-        },
-        {
-          value: "崇州市",
-          label: "崇州市"
-        },
-        {
-          value: "金堂县",
-          label: "金堂县"
-        },
-        {
-          value: "新津县",
-          label: "新津县"
-        },
-        {
-          value: "大邑县",
-          label: "大邑县"
-        },
-        {
-          value: "蒲江县",
-          label: "蒲江县"
-        }
+        // {
+        //   value: "天府新区",
+        //   label: "天府新区"
+        // },
+        // {
+        //   value: "高新区",
+        //   label: "高新区"
+        // },
+        // {
+        //   value: "锦江区",
+        //   label: "锦江区"
+        // },
+        // {
+        //   value: "青羊区",
+        //   label: "青羊区"
+        // },
+        // {
+        //   value: "金牛区",
+        //   label: "金牛区"
+        // },
+        // {
+        //   value: "武侯区",
+        //   label: "武侯区"
+        // },
+        // {
+        //   value: "成华区",
+        //   label: "成华区"
+        // },
+        // {
+        //   value: "龙泉驿区",
+        //   label: "龙泉驿区"
+        // },
+        // {
+        //   value: "青白江区",
+        //   label: "青白江区"
+        // },
+        // {
+        //   value: "新都区",
+        //   label: "新都区"
+        // },
+        // {
+        //   value: "温江区",
+        //   label: "温江区"
+        // },
+        // {
+        //   value: "双流区",
+        //   label: "双流区"
+        // },
+        // {
+        //   value: "郫都区",
+        //   label: "郫都区"
+        // },
+        // {
+        //   value: "简阳市",
+        //   label: "简阳市"
+        // },
+        // {
+        //   value: "都江堰市",
+        //   label: "都江堰市"
+        // },
+        // {
+        //   value: "彭州市",
+        //   label: "彭州市"
+        // },
+        // {
+        //   value: "邛崃市",
+        //   label: "邛崃市"
+        // },
+        // {
+        //   value: "崇州市",
+        //   label: "崇州市"
+        // },
+        // {
+        //   value: "金堂县",
+        //   label: "金堂县"
+        // },
+        // {
+        //   value: "新津县",
+        //   label: "新津县"
+        // },
+        // {
+        //   value: "大邑县",
+        //   label: "大邑县"
+        // },
+        // {
+        //   value: "蒲江县",
+        //   label: "蒲江县"
+        // }
       ],
-      supervisionList: [
-        {
-          value: "aaa",
-          label: "aaa"
-        },
-        {
-          value: "bbb",
-          label: "bbb"
-        }
-      ],
+      supervisionList: [],
       selectCity: "",
       selectSupervision: "",
       dialogVisible: false,
       listDialog: false,
       topData: [],
-      allEventlList: [
-        // {
-        //   num: 1,
-        //   companyName: "企业名称",
-        //   address: "地址",
-        //   area: "区域",
-        //   checkType: "检查类型",
-        //   circle: "环节",
-        //   checkPerson: "检查人员",
-        //   checkDate: "检查日期",
-        //   checkCaseType: "检查事项大类",
-        //   checkCaseClass: "检查事项细类",
-        //   isPass: "是否符合"
-        // }
-      ],
+      allEventlList: [],
+      timeTitle: "",
       listTitle: "",
       timer: "",
       gldatas: [],
@@ -472,11 +455,14 @@ export default {
         regulatoryFrequency: ""
       },
       selectName: "",
-      selectLevel: "",
+      selectLevel: 1,
       pageNo: 1,
       pageSize: 100,
       totalPage: 1,
-      currentEvent: ""
+      currentEvent: "",
+      baseUrl: "",
+      newBaseUrl: "",
+      userMsg: ""
     };
   },
   components: {
@@ -496,6 +482,7 @@ export default {
   },
   created() {
     this.getDistricts();
+    // this.getUserMsg();
   },
   methods: {
     indexMethod(index) {
@@ -536,9 +523,11 @@ export default {
     },
     async getGridDetail(flag) {
       if (!flag) {
-        this.pageNo = 0;
+        this.pageNo = 1;
+        this.totalPage = 0;
       }
       this.loadingList = true;
+      this.allEventlList = [];
       let params = {};
       let year = this.time.year;
       let month = this.time.msg.split("月")[0];
@@ -613,9 +602,8 @@ export default {
       if (topTen) {
         this.topData = topTen.data;
       }
-
       this.loading = false;
-      // this.setTimer();
+      this.setTimer();
     },
     async getTimeData() {
       let year = this.time.year;
@@ -671,8 +659,10 @@ export default {
       // };
     },
     selectProvince() {
-      this.selectRegion("成都市");
-      this.getData(1);
+      if (this.time !== "" && this.selectLevel !== 1) {
+        this.selectRegion("成都市");
+        this.getData(1);
+      }
     },
     changeCity(item) {
       this.getOrgs(item);
@@ -681,7 +671,7 @@ export default {
       this.selectSupervision = "";
     },
     changeSupervision(item) {
-      console.log(item);
+      // console.log(item);
       this.getData(3);
       this.mapObj.setCenter([item.longitude, item.latitude]);
     },
@@ -746,6 +736,7 @@ export default {
           this.getData(1);
           this.selectRegion("成都市");
         });
+        this.timeTitle = time.year + "年" + time.msg + "事件明细：";
       } else {
       }
     },
@@ -761,7 +752,7 @@ export default {
             } else {
               this.$refs.barChartRefs.resizeChart();
             }
-          }, 10);
+          }, 20);
         });
       }
     },
@@ -771,31 +762,54 @@ export default {
           this.nextWarning();
         }, 3000);
       }
+    },
+    async getUserMsg() {
+      let [userInfo, outUrl] = await Promise.all([
+        http.get("/oidc/user/base-info"),
+        http.get("/oidc/app-info")
+      ]);
+      if (userInfo) {
+        this.userMsg = userInfo.data.name;
+      }
+      if (outUrl) {
+        this.newBaseUrl = outUrl.data.indexUrl;
+        this.baseUrl =
+          window.location.href.slice(0, "#") + "frontchannel_logout";
+        sessionStorage.setItem("newBaseUrl", this.newBaseUrl);
+      }
+    },
+
+    editPassWord() {
+      window.open(
+        this.newBaseUrl + "#/modifyPassword",
+        "newwindow",
+        "height=400, width=800,left=400,top=200, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no"
+      );
     }
   },
   mounted() {
     this.initMap();
     this.addScreenListen();
-    // document.getElementById("pageBox").addEventListener("mouseover", () => {
-    //   clearInterval(this.timer);
-    // });
-    // document.getElementById("pageBox").addEventListener("mouseleave", () => {
-    //   if (!this.listDialog && !this.dialogVisible) {
-    //     this.setTimer();
-    //   }
-    // });
-    // document.getElementById("prevBtn").addEventListener("mouseover", () => {
-    //   clearInterval(this.timer);
-    // });
-    // document.getElementById("nextBtn").addEventListener("mouseover", () => {
-    //   clearInterval(this.timer);
-    // });
-    // document.getElementById("prevBtn").addEventListener("mouseleave", () => {
-    //   this.setTimer();
-    // });
-    // document.getElementById("nextBtn").addEventListener("mouseleave", () => {
-    //   this.setTimer();
-    // });
+    document.getElementById("pageBox").addEventListener("mouseover", () => {
+      clearInterval(this.timer);
+    });
+    document.getElementById("pageBox").addEventListener("mouseleave", () => {
+      if (!this.listDialog && !this.dialogVisible) {
+        this.setTimer();
+      }
+    });
+    document.getElementById("prevBtn").addEventListener("mouseover", () => {
+      clearInterval(this.timer);
+    });
+    document.getElementById("nextBtn").addEventListener("mouseover", () => {
+      clearInterval(this.timer);
+    });
+    document.getElementById("prevBtn").addEventListener("mouseleave", () => {
+      this.setTimer();
+    });
+    document.getElementById("nextBtn").addEventListener("mouseleave", () => {
+      this.setTimer();
+    });
   },
   destroyed() {
     if (screenfull.enabled) {
@@ -810,7 +824,6 @@ $boxWidth: 239px;
 #main {
   width: 100%;
   height: 100%;
-  background: #f5f5f5;
   overflow: auto;
   position: relative;
   .header {
@@ -819,21 +832,35 @@ $boxWidth: 239px;
     left: 0;
     right: 0;
     height: 83px;
-    line-height: 83px;
+    min-width: 1366px;
+    // line-height: 83px;
     background: url("../images/top.png") center no-repeat;
     p {
       font-size: 20px;
       margin-left: 10px;
     }
+    .admins {
+      position: absolute;
+      top: 25px;
+      right: 30px;
+      line-height: 34px;
+      .el-dropdown-link {
+        overflow: hidden;
+        label {
+          color: #20fdfa;
+          display: block;
+          height: 34px;
+          float: left;
+          line-height: 34px;
+          margin-right: 10px;
+        }
+        img {
+          float: left;
+        }
+      }
+    }
   }
-  .loading {
-    position: fixed;
-    top: 83px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 100;
-  }
+
   .content {
     position: absolute;
     top: 83px;
@@ -841,7 +868,7 @@ $boxWidth: 239px;
     right: 0;
     bottom: 0;
     min-width: 1366px;
-    min-height: 880px;
+    min-height: 850px;
     .maps {
       position: absolute;
       width: 100%;
@@ -947,7 +974,7 @@ $boxWidth: 239px;
         bottom: 10px;
         .item {
           width: 100%;
-          height: 16%;
+          height: 17%;
           padding: 4px 10px;
 
           > div {
@@ -987,7 +1014,7 @@ $boxWidth: 239px;
               .big {
                 font-size: 40px;
                 font-style: italic;
-                font-family: LcdD;
+                // font-family: "LcdD";
                 // transform: skewX(-60deg);
                 font-weight: bold;
                 color: #20fdfa;
@@ -1029,7 +1056,7 @@ $boxWidth: 239px;
             }
           }
           &.chart {
-            height: 36%;
+            height: 32%;
 
             .tit {
               text-align: center;
@@ -1048,6 +1075,8 @@ $boxWidth: 239px;
               &.exit-full {
                 width: 48px;
                 height: 48px;
+                right: 40px;
+                top: 40px;
                 background: url(../images/exit.png) center no-repeat;
               }
             }
@@ -1055,6 +1084,12 @@ $boxWidth: 239px;
               width: 100%;
               height: 100%;
             }
+            // .middle {
+            //   background: url(../images/middle.png) center repeat-y #151320;
+            // }
+            // .bottom {
+            //   background: url(../images/bot.png) center no-repeat #151320;
+            // }
             .fullscreens {
               .top,
               .middle,
@@ -1078,10 +1113,10 @@ $boxWidth: 239px;
             }
             .out-box {
               position: absolute;
-              top: 30px;
+              top: 0;
               left: 20px;
               right: 20px;
-              bottom: 46px;
+              bottom: 20px;
               overflow: hidden;
               .page-box {
                 transition: all 0.4s;
@@ -1098,19 +1133,8 @@ $boxWidth: 239px;
                     top: 50%;
                     left: 50%;
                     transform: translate(-50%, -50%);
-                    //   display: flex;
                     width: 100%;
-
-                    // .icon {
-                    //   // flex: 0 0 100px;
-                    //   float: left;
-                    //   width: 100px;
-                    //   height: 100px;
-                    //   background: #eee;
-                    //   text-align: center;
-                    // }
                     .text {
-                      // flex: 1;
                       float: left;
                       width: 100%;
                       p {
@@ -1172,7 +1196,7 @@ $boxWidth: 239px;
                 .detail {
                   position: absolute;
                   right: 0;
-                  bottom: 0;
+                  bottom: 20px;
                   cursor: pointer;
                   color: #03b7b8;
                 }
@@ -1183,11 +1207,8 @@ $boxWidth: 239px;
               bottom: 0;
               left: 50%;
               overflow: hidden;
+              z-index: 90;
               transform: translateX(-50%);
-
-              // .el-icon-caret-left {
-              //   background: url(../images/left.png) center no-repeat;
-              // }
               .icon {
                 display: block;
                 float: left;
@@ -1220,31 +1241,41 @@ $boxWidth: 239px;
               position: absolute;
               top: 0;
               left: 0;
-              right: 0;
+              right: 2px;
               color: #13fcff;
               bottom: 0;
+              .el-table {
+                height: 100%;
+                overflow: auto;
+              }
 
               .row {
                 width: 100%;
-
                 > div {
                   overflow: hidden;
                   width: 100%;
+                  border-bottom: 1px solid rgba(2, 182, 182, 0.1);
                   span {
-                    display: inline-block;
-                    height: auto;
+                    display: block;
+                    height: 70px;
                     float: left;
                     font-size: 12px;
                     text-align: center;
+                    padding: 10px;
+                    box-sizing: border-box;
+                    overflow: hidden;
+
                     &:nth-child(1) {
-                      width: 20%;
+                      width: 18%;
                     }
                     &:nth-child(2) {
                       width: 60%;
+                      border-left: 1px solid rgba(2, 182, 182, 0.1);
+                      border-right: 1px solid rgba(2, 182, 182, 0.1);
                       text-align: left;
                     }
                     &:nth-child(3) {
-                      width: 20%;
+                      width: 22%;
                       font-size: 14px;
                     }
                   }
@@ -1253,16 +1284,79 @@ $boxWidth: 239px;
               .table-header {
                 height: 50px;
                 line-height: 50px;
+                > div {
+                  span {
+                    height: 50px;
+                    line-height: 50px;
+                    padding: 0 10px;
+                  }
+                }
               }
-              .body {
+              .table-body {
                 position: absolute;
                 top: 50px;
                 left: 0;
                 right: 0;
                 bottom: 0;
                 overflow: auto;
+
                 > div {
-                  margin: 10px 0;
+                  // margin: 10px 0;
+                  span {
+                    &:nth-child(1) {
+                      line-height: 50px;
+                    }
+                    &:nth-child(2) {
+                      .table-inner {
+                        width: 100%;
+                        height: 50px;
+                        padding: 0;
+                        // padding: 10px;
+                        // margin-top: 10px;
+                        line-height: 25px;
+                        position: relative;
+                        text-align: left;
+                        label {
+                          display: inline-block;
+                          height: 20px;
+                          line-height: 20px;
+                          position: absolute;
+                          bottom: 5px;
+                          right: 0;
+                          // color: #fede2c;
+                          padding-left: 20px;
+
+                          background: -webkit-linear-gradient(
+                            left,
+                            transparent,
+                            #0a153a 55%
+                          );
+                          background: -o-linear-gradient(
+                            right,
+                            transparent,
+                            #0a153a 55%
+                          );
+                          background: -moz-linear-gradient(
+                            right,
+                            transparent,
+                            #0a153a 55%
+                          );
+                          background: linear-gradient(
+                            to right,
+                            transparent,
+                            #0a153a 55%
+                          );
+                        }
+                      }
+                    }
+
+                    &:nth-child(3) {
+                      line-height: 50px;
+                    }
+                  }
+                  &:last-child() {
+                    border-bottom: none;
+                  }
                 }
               }
               .empty {
@@ -1270,7 +1364,7 @@ $boxWidth: 239px;
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                color: #ccc;
+                color: #177575;
                 font-size: 12px;
               }
             }
@@ -1315,6 +1409,7 @@ $boxWidth: 239px;
   }
   .dialogEvent {
     width: 570px;
+    min-height: 465px;
     background: url(../images/dialogEvent.png) center no-repeat;
     background-size: 100% 100%;
     .event-detail {
@@ -1413,11 +1508,11 @@ $boxWidth: 239px;
     .el-table__body-wrapper
       .el-table--border.is-scrolling-left
       ~ .el-table__fixed {
-      border-right: rgba(0, 150, 229, 0.2);
+      border-right: 1px solid rgba(0, 150, 229, 0.2);
     }
     .el-table td,
     .el-table th.is-leaf {
-      border-bottom: rgba(0, 150, 229, 0.2);
+      border-bottom: 1px solid rgba(0, 150, 229, 0.2);
     }
     .el-table--border,
     .el-table--group {
@@ -1442,32 +1537,5 @@ $boxWidth: 239px;
       background-color: rgba(0, 150, 229, 0.5);
     }
   }
-}
-.el-tooltip__popper {
-  max-width: 300px;
-  white-space: normal;
-  word-break: break-all;
-  word-wrap: break-word;
-}
-.el-select-dropdown {
-  background: #0f2155;
-  border: none;
-}
-.el-select-dropdown__item {
-  color: #03b7b8;
-  font-size: 14px;
-}
-.el-select-dropdown__item.selected {
-  color: #03b7b8;
-}
-.el-select-dropdown__item.hover,
-.el-select-dropdown__item:hover {
-  background-color: #153c6f;
-}
-.el-popper[x-placement^="bottom"] .popper__arrow::after {
-  border-bottom-color: #0f2155;
-}
-.el-popper[x-placement^="bottom"] .popper__arrow {
-  border-bottom-color: #0f2155;
 }
 </style>
