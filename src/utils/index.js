@@ -1,62 +1,61 @@
 /**
  * 添加localStorage
  * @param {*} key 
- * @param {*} val json格式
+ * @param {*} val 
  */
-export function setStorage (key, val) {
-    // let arrItem = []
-    // if (!time || isNaN(time)) {
-    //     time = 60
-    // }
-    // if (val instanceof Array) {
-    //     arrItem = val
-    // } else {
-    //     arrItem.push(val)
-    // }
-    let time = new Date()
-    let value = JSON.stringify({data: val, time: time})
-    window.localStorage.setItem(key, value)
+export function setStorage(key, val) {
+    let arrItem = []
+    if (val instanceof Array) {
+        arrItem = val
+    } else {
+        arrItem.push(val)
+    }
+    let strItem = JSON.stringify(arrItem)
+    window.localStorage.setItem(key, strItem)
 }
 
 /**
  * 获取localStorage
  * @param {*} key 
  */
-export function getStorage (key, exp) {
+export function getStorage(key) {
     return JSON.parse(window.localStorage.getItem(key))
 }
 
-export function debounce(func, wait, immediate) {
-    let timeout, args, context, timestamp, result
-  
-    const later = function() {
-      // 据上一次触发时间间隔
-      const last = +new Date() - timestamp
-  
-      // 上次被包装函数被调用时间间隔last小于设定时间间隔wait
-      if (last < wait && last > 0) {
-        timeout = setTimeout(later, wait - last)
-      } else {
-        timeout = null
-        // 如果设定为immediate===true，因为开始边界已经调用过了此处无需调用
-        if (!immediate) {
-          result = func.apply(context, args)
-          if (!timeout) context = args = null
+export function getCookie(c_name) {
+    if (document.cookie.length > 0) {
+        let c_start = document.cookie.indexOf(c_name + "=")
+        if (c_start !== -1) {
+            c_start = c_start + c_name.length + 1
+            let c_end = document.cookie.indexOf(";", c_start)
+            if (c_end === -1) c_end = document.cookie.length
+            return unescape(document.cookie.substring(c_start, c_end))
         }
-      }
     }
-  
-    return function(...args) {
-      context = this
-      timestamp = +new Date()
-      const callNow = immediate && !timeout
-      // 如果延时不存在，重新设定延时
-      if (!timeout) timeout = setTimeout(later, wait)
-      if (callNow) {
-        result = func.apply(context, args)
-        context = args = null
-      }
-  
-      return result
+    return ""
+}
+
+export function setCookie(c_name, value, expiredays) {
+    var exdate = new Date()
+    exdate.setDate(exdate.getDate() + expiredays)
+    document.cookie = c_name + "=" + escape(value) +
+        ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString())
+}
+
+export function checkCookie() {
+    let username = getCookie('username')
+    if (username != null && username !== "") { alert('Welcome again ' + username + '!') } else {
+        username = prompt('Please enter your name:', "")
+        if (username != null && username !== "") {
+            setCookie('username', username, 365)
+        }
     }
-  }
+}
+
+export function checkYear(year) {
+    if (((year % 4) == 0) && ((year % 100) != 0) || ((year % 400) == 0)) {
+        return true
+    } else {
+        return false
+    }
+}

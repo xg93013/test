@@ -1,0 +1,636 @@
+
+// 水资源列表
+url: 精确查找： '/getWaterResourceData?id='
+url: 常规查询： '/getWaterResourceData?rType=river&region=成华区&pType=heichou,nisha'
+response: {
+    code: 0,
+    data: [{
+        area: 42276100
+        area_list: {
+            简阳市: 25565600
+            金堂县: 16710500
+        }
+        coordinate: Array(8)
+        id: 7141
+        name: "沱江"
+        region:  ['简阳市','金堂县']
+        type: "T"
+    }],
+    totalCount: 1000
+}
+// 污染水资源列表
+url: 精确查找：'/getPollutionData?waterId='
+url: 常规查询：'/getPollutionData?rType=river&region=成华区&pType=heichou,nisha'
+response: {
+    code: 0,
+    data: [{
+        area: 79200 // 根据筛选区域取面积，若为成都市为总面积
+        area_list: {
+            成华区: 79200
+        },
+        ares: 79200 // 总面积
+        coordinate: Array(1)
+        heichou: 0.99
+        heichou_norm: 0.99
+        heichou_true: 0.297
+        id: 0
+        limit_size: false
+        location: "成华区"
+        lvzao: 0.1787576290260415
+        lvzao_norm: 0.1787576290260415
+        lvzao_true: 0.1357515258052083
+        name: "大头河"
+        nisha: 0.20823350030258453
+        nisha_norm: 0.20823350030258453
+        nisha_true: 2249.4010018155072
+        pollution_type: ["heichou"]
+        pollution_typeO: "heichou"
+        polution_score: 0.99
+        possition: "成都市成华区中环路杨柳店北路段成都市华建学校"
+        qoq: "+4.29%" // 计算：['+','-'][Math.random()>=0.5 ? 1 : 0] + (Math.random() * 5).toFixed(2) + '%';
+        river: "T"
+        through: ["成华区"]
+        waterId: 7759
+        yoy: "+4.50%" // 计算：['+','-'][Math.random()>=0.5 ? 1 : 0] + (Math.random() * 5).toFixed(2) + '%';
+    }],
+    totalCount: 100
+}
+
+
+// 所有区域 
+url: '/regionsData'
+response: {
+    code: 0,
+    data: [{
+        lakes_area: 78971000
+        lakes_num: 518
+        name: "简阳市"
+        pollution_area: 39300
+        pollution_num: 0
+        pollution_qualti: 0.6604048477241339
+        rivers_area: 29453700
+        rivers_num: 2
+        tatal_num: 539
+        water_index: 0.8697032448391409
+        water_quality: 0.14994457952580956
+    },{
+        lakes_area: 10637900
+        lakes_num: 200
+        name: "邛崃市"
+        pollution_area: 253600
+        pollution_num: 0
+        pollution_qualti: 0.6393135947614371
+        rivers_area: 23644200
+        rivers_num: 6
+        tatal_num: 221
+        water_index: 0.37215809205934275
+        water_quality: 0.23146268000371772
+    }],
+    totalCount: 100
+}
+
+// 查询统计数据（水资源以及水污染）
+url: '/introData?county=all'    county == 'all' 成都市
+response: {
+    code: 0,
+    data: [{
+        areaSortList: {
+            湖泊: [
+                {name: "简阳市", area: 78971000}
+                {name: "金堂县", area: 35501200}
+                {name: "崇州市", area: 21474000}
+            ], 
+            江河: [
+                {name: "简阳市", area: 29453700}
+                {name: "邛崃市", area: 23644200}
+                {name: "金堂县", area: 21059000}
+            ]
+        }
+        gisdata_num: "205G"
+        lakes_area: 247064500
+        lakes_num: 2287
+        name: "成都"
+        pollution_area: 1052600
+        pollution_num: 0
+        rivers_area: 184311900
+        rivers_num: 89
+        total_area: 431376400
+        total_num: 2376
+        water_index: 0.4484620317125996
+        water_quality: 0.28939302226379243
+    }]
+}
+// 查询水污染统计
+url: '/pollutionStatistics?rType=river&region=成华区&pType=heichou,nisha'
+response: {
+    code: 0,
+    data: [{
+        heichou: {
+            count: 8, 
+            area: 356800, // heichou总面积
+            data: [{
+                area: 79200 // 根据筛选区域取面积，若为成都市为ares
+                area_list: {成华区: 79200}
+                ares: 79200
+                coordinate: [Array(126)]
+                heichou: 0.99
+                heichou_norm: 0.99
+                heichou_true: 0.297
+                id: 0
+                isPollution: true
+                limit_size: false
+                location: "成华区"
+                lvzao: 0.1787576290260415
+                lvzao_norm: 0.1787576290260415
+                lvzao_true: 0.1357515258052083
+                name: "大头河"
+                nisha: 0.20823350030258453
+                nisha_norm: 0.20823350030258453
+                nisha_true: 2249.4010018155072
+                pollution_type: ["heichou"]
+                pollution_typeO: "heichou"
+                polution_score: 0.99
+                possition: "成都市成华区中环路杨柳店北路段成都市华建学校"
+                qoq: "+4.29%"
+                river: "T"
+                through: ["成华区"]
+                waterId: 7759
+                yoy: "+4.50%"
+            }]
+        }
+        lvzao: {count: 13, area: 462600, data: Array(13)}
+        nisha: {count: 10, area: 460300, data: Array(10)}
+        total: {count: 31, area: 1279700}
+    }]
+}
+
+
+
+// manager
+{
+    "result": {
+        "\u6210\u534e\u533a": {
+            "water_quality": 0.5902918958643157,
+            "water_index": 0.49599918122989367,
+            "rivers_num": 5,
+            "rivers_area": 1546700,
+            "lakes_num": 34,
+            "lakes_area": 1753600,
+            "pollution_area": 114700,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7942809390620225,
+            "tatal_num": 42
+        },
+        "\u5d07\u5dde\u5e02": {
+            "water_quality": 0.16702096814185832,
+            "water_index": 0.3282278895795397,
+            "rivers_num": 1,
+            "rivers_area": 1521900,
+            "lakes_num": 128,
+            "lakes_area": 23371400,
+            "pollution_area": 13700,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7208475107297363,
+            "tatal_num": 130
+        },
+        "\u5927\u9091\u53bf": {
+            "water_quality": 0.162320519867536,
+            "water_index": 0.11754918070252453,
+            "rivers_num": 1,
+            "rivers_area": 4518800,
+            "lakes_num": 98,
+            "lakes_area": 10715900,
+            "pollution_area": 0,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7396577594893137,
+            "tatal_num": 109
+        },
+        "\u90fd\u6c5f\u5830\u5e02": {
+            "water_quality": 0.15321581470950427,
+            "water_index": 0.4993480963958837,
+            "rivers_num": 6,
+            "rivers_area": 15311100,
+            "lakes_num": 84,
+            "lakes_area": 20897400,
+            "pollution_area": 0,
+            "pollution_num": 0,
+            "pollution_qualti": 0.6941342336991551,
+            "tatal_num": 139
+        },
+        "\u9ad8\u65b0\u533a": {
+            "water_quality": 0.18543699283123205,
+            "water_index": 0.07284735188943141,
+            "rivers_num": 2,
+            "rivers_area": 1391100,
+            "lakes_num": 25,
+            "lakes_area": 1405700,
+            "pollution_area": 17500,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7670988516483267,
+            "tatal_num": 34
+        },
+        "\u7b80\u9633\u5e02": {
+            "water_quality": 0.1847271343673031,
+            "water_index": 0.9024659000534531,
+            "rivers_num": 3,
+            "rivers_area": 30115100,
+            "lakes_num": 1009,
+            "lakes_area": 85538700,
+            "pollution_area": 111300,
+            "pollution_num": 0,
+            "pollution_qualti": 0.8082672979485325,
+            "tatal_num": 1041
+        },
+        "\u91d1\u725b\u533a": {
+            "water_quality": 0.4909188360092677,
+            "water_index": 0.31071917118628045,
+            "rivers_num": 6,
+            "rivers_area": 1921500,
+            "lakes_num": 13,
+            "lakes_area": 458000,
+            "pollution_area": 30100,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7623777091258428,
+            "tatal_num": 39
+        },
+        "\u91d1\u5802\u53bf": {
+            "water_quality": 0.18479355476022233,
+            "water_index": 0.9029667026975362,
+            "rivers_num": 3,
+            "rivers_area": 19219300,
+            "lakes_num": 805,
+            "lakes_area": 41246800,
+            "pollution_area": 62100,
+            "pollution_num": 0,
+            "pollution_qualti": 0.8035868136328871,
+            "tatal_num": 815
+        },
+        "\u9526\u6c5f\u533a": {
+            "water_quality": 0.1742676437601279,
+            "water_index": 0.8601958449505936,
+            "rivers_num": 4,
+            "rivers_area": 2133500,
+            "lakes_num": 17,
+            "lakes_area": 810600,
+            "pollution_area": 0,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7993933789522731,
+            "tatal_num": 26
+        },
+        "\u9f99\u6cc9\u9a7f\u533a": {
+            "water_quality": 0.18919612631009047,
+            "water_index": 0.39655971165451115,
+            "rivers_num": 3,
+            "rivers_area": 2784400,
+            "lakes_num": 206,
+            "lakes_area": 11587200,
+            "pollution_area": 23000,
+            "pollution_num": 0,
+            "pollution_qualti": 0.832517273872367,
+            "tatal_num": 217
+        },
+        "\u5f6d\u5dde\u5e02": {
+            "water_quality": 0.16921223042314243,
+            "water_index": 0.2178546447435622,
+            "rivers_num": 7,
+            "rivers_area": 17115300,
+            "lakes_num": 99,
+            "lakes_area": 7351300,
+            "pollution_area": 3600,
+            "pollution_num": 0,
+            "pollution_qualti": 0.761260602985188,
+            "tatal_num": 126
+        },
+        "\u90eb\u90fd\u533a": {
+            "water_quality": 0.16317598825744936,
+            "water_index": 0.451833619777155,
+            "rivers_num": 9,
+            "rivers_area": 10252600,
+            "lakes_num": 46,
+            "lakes_area": 2040900,
+            "pollution_area": 6600,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7097221375037813,
+            "tatal_num": 96
+        },
+        "\u84b2\u6c5f\u53bf": {
+            "water_quality": 0.16809734451029124,
+            "water_index": 0.43290286230595754,
+            "rivers_num": 1,
+            "rivers_area": 3959900,
+            "lakes_num": 136,
+            "lakes_area": 11874000,
+            "pollution_area": 17900,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7393529891369683,
+            "tatal_num": 160
+        },
+        "\u9752\u767d\u6c5f\u533a": {
+            "water_quality": 0.22275465987337598,
+            "water_index": 0.3923407623375247,
+            "rivers_num": 3,
+            "rivers_area": 3522600,
+            "lakes_num": 193,
+            "lakes_area": 6187800,
+            "pollution_area": 48700,
+            "pollution_num": 0,
+            "pollution_qualti": 0.8247666839143248,
+            "tatal_num": 200
+        },
+        "\u9752\u7f8a\u533a": {
+            "water_quality": 0.5707397230588475,
+            "water_index": 0.44734117546991176,
+            "rivers_num": 4,
+            "rivers_area": 1713200,
+            "lakes_num": 6,
+            "lakes_area": 176900,
+            "pollution_area": 24500,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7045268487389991,
+            "tatal_num": 15
+        },
+        "\u909b\u5d03\u5e02": {
+            "water_quality": 0.18848564478469065,
+            "water_index": 0.4046064369249118,
+            "rivers_num": 6,
+            "rivers_area": 21600300,
+            "lakes_num": 261,
+            "lakes_area": 14573200,
+            "pollution_area": 127800,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7658908291461416,
+            "tatal_num": 363
+        },
+        "\u53cc\u6d41\u533a": {
+            "water_quality": 0.1912519075211443,
+            "water_index": 0.5871222569981925,
+            "rivers_num": 4,
+            "rivers_area": 7371500,
+            "lakes_num": 213,
+            "lakes_area": 8249200,
+            "pollution_area": 42200,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7820502332289773,
+            "tatal_num": 220
+        },
+        "\u5929\u5e9c\u65b0\u533a": {
+            "water_quality": 0.1917755244309126,
+            "water_index": 0.9025018097726591,
+            "rivers_num": 4,
+            "rivers_area": 7232700,
+            "lakes_num": 471,
+            "lakes_area": 22238200,
+            "pollution_area": 38100,
+            "pollution_num": 0,
+            "pollution_qualti": 0.8195028882594351,
+            "tatal_num": 496
+        },
+        "\u6e29\u6c5f\u533a": {
+            "water_quality": 0.155647144116281,
+            "water_index": 0.6491668600675888,
+            "rivers_num": 4,
+            "rivers_area": 9225300,
+            "lakes_num": 26,
+            "lakes_area": 789300,
+            "pollution_area": 0,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7062908807330387,
+            "tatal_num": 39
+        },
+        "\u6b66\u4faf\u533a": {
+            "water_quality": 0.9470296487442764,
+            "water_index": 0.1894233032099611,
+            "rivers_num": 6,
+            "rivers_area": 1104600,
+            "lakes_num": 2,
+            "lakes_area": 79200,
+            "pollution_area": 43100,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7597842155074699,
+            "tatal_num": 9
+        },
+        "\u65b0\u90fd\u533a": {
+            "water_quality": 0.17396612644898823,
+            "water_index": 0.3235940045822711,
+            "rivers_num": 7,
+            "rivers_area": 8025300,
+            "lakes_num": 114,
+            "lakes_area": 3220300,
+            "pollution_area": 0,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7978857923965748,
+            "tatal_num": 141
+        },
+        "\u65b0\u6d25\u53bf": {
+            "water_quality": 0.1667205289045962,
+            "water_index": 0.9869189621602115,
+            "rivers_num": 2,
+            "rivers_area": 10271500,
+            "lakes_num": 126,
+            "lakes_area": 13895800,
+            "pollution_area": 6000,
+            "pollution_num": 0,
+            "pollution_qualti": 0.7413579376400953,
+            "tatal_num": 132
+        }
+    },
+    "month_date": "201903_20190410"
+}
+
+// resource
+
+{
+    "name": "null",
+    "type": "F",
+    "area": 6600,
+    "area_list": {
+        "\u5f6d\u5dde\u5e02": 6600
+    },
+    "id": 1,
+    "coordinate": [
+        [
+            [103.72235, 31.34922],
+            [103.72225, 31.34922],
+            [103.72225, 31.34913],
+            [103.72214, 31.34912],
+            [103.72214, 31.34921],
+            [103.72204, 31.34921],
+            [103.72203, 31.34948],
+            [103.72151, 31.34948],
+            [103.72151, 31.34957],
+            [103.72161, 31.34957],
+            [103.72161, 31.34966],
+            [103.7215, 31.34966],
+            [103.7215, 31.34975],
+            [103.72161, 31.34975],
+            [103.72161, 31.34984],
+            [103.72171, 31.34984],
+            [103.72171, 31.34975],
+            [103.72182, 31.34975],
+            [103.72182, 31.34966],
+            [103.72192, 31.34966],
+            [103.72193, 31.34957],
+            [103.72224, 31.34958],
+            [103.72224, 31.3494],
+            [103.72235, 31.3494],
+            [103.72235, 31.34922]
+        ]
+    ],
+    "region": ["\u5f6d\u5dde\u5e02"]
+}
+
+// water_pollution
+{
+    "river": "T",
+    "name": "\u5927\u5934\u6cb3",
+    "nisha_true": 2249.4010018155072,
+    "nisha_norm": 0.20823350030258453,
+    "lvzao_true": 0.1357515258052083,
+    "lvzao_norm": 0.1787576290260415,
+    "heichou_true": 0.297,
+    "heichou_norm": 0.99,
+    "location": "\u6210\u534e\u533a",
+    "nisha": null,
+    "lvzao": null,
+    "heichou": null,
+    "polution_score": 0.99,
+    "limit_size": false,
+    "coordinate": [
+        [
+            [104.13196, 30.66231],
+            [104.13196, 30.66231],
+            [104.13196, 30.6624],
+            [104.13217, 30.6624],
+            [104.13259, 30.66241],
+            [104.13301, 30.66205],
+            [104.13322, 30.66169],
+            [104.13323, 30.66142],
+            [104.13417, 30.66097],
+            [104.13427, 30.66098],
+            [104.13448, 30.66071],
+            [104.13459, 30.66053],
+            [104.1347, 30.66044],
+            [104.1347, 30.66017],
+            [104.1347, 30.66017],
+            [104.1348, 30.66008],
+            [104.13597, 30.6581],
+            [104.13608, 30.65756],
+            [104.1365, 30.65702],
+            [104.1365, 30.65684],
+            [104.1365, 30.65675],
+            [104.1365, 30.65666],
+            [104.13609, 30.65648],
+            [104.13651, 30.65558],
+            [104.13662, 30.65485],
+            [104.13675, 30.65269],
+            [104.13665, 30.65197],
+            [104.13645, 30.65142],
+            [104.13677, 30.65071],
+            [104.13698, 30.65026],
+            [104.1375, 30.65017],
+            [104.13781, 30.64999],
+            [104.13834, 30.64936],
+            [104.13939, 30.64847],
+            [104.14003, 30.64775],
+            [104.14076, 30.6473],
+            [104.14107, 30.64721],
+            [104.14149, 30.64713],
+            [104.14441, 30.64715],
+            [104.14515, 30.64688],
+            [104.14546, 30.6467],
+            [104.14557, 30.6467],
+            [104.14578, 30.6467],
+            [104.14619, 30.6468],
+            [104.15205, 30.64539],
+            [104.15351, 30.64504],
+            [104.15351, 30.64495],
+            [104.15352, 30.64477],
+            [104.15352, 30.64459],
+            [104.15383, 30.64459],
+            [104.15393, 30.64459],
+            [104.15456, 30.64442],
+            [104.15488, 30.64397],
+            [104.15509, 30.64379],
+            [104.15509, 30.6437],
+            [104.15489, 30.64288],
+            [104.15521, 30.64234],
+            [104.15531, 30.64189],
+            [104.15596, 30.64018],
+            [104.15638, 30.63955],
+            [104.15732, 30.63902],
+            [104.15743, 30.63893],
+            [104.15732, 30.63893],
+            [104.15638, 30.63955],
+            [104.15596, 30.64018],
+            [104.15553, 30.64126],
+            [104.15553, 30.64126],
+            [104.15489, 30.64288],
+            [104.15509, 30.6437],
+            [104.15467, 30.64415],
+            [104.15446, 30.64442],
+            [104.15404, 30.6445],
+            [104.15383, 30.64459],
+            [104.15352, 30.6445],
+            [104.15341, 30.64468],
+            [104.15352, 30.64477],
+            [104.15351, 30.64495],
+            [104.15341, 30.64495],
+            [104.14975, 30.64592],
+            [104.14619, 30.64671],
+            [104.14609, 30.64671],
+            [104.14578, 30.64661],
+            [104.14557, 30.64661],
+            [104.14442, 30.64706],
+            [104.1416, 30.64713],
+            [104.14108, 30.64712],
+            [104.14087, 30.64721],
+            [104.14013, 30.64757],
+            [104.13982, 30.64784],
+            [104.13939, 30.64838],
+            [104.13782, 30.64972],
+            [104.13771, 30.64999],
+            [104.1375, 30.65008],
+            [104.13719, 30.65017],
+            [104.13666, 30.65043],
+            [104.13634, 30.65133],
+            [104.13634, 30.65142],
+            [104.13634, 30.65151],
+            [104.13665, 30.65197],
+            [104.13664, 30.65332],
+            [104.13664, 30.65332],
+            [104.13662, 30.65485],
+            [104.13641, 30.65567],
+            [104.13598, 30.65647],
+            [104.13609, 30.65657],
+            [104.1364, 30.65666],
+            [104.1364, 30.65684],
+            [104.13587, 30.65783],
+            [104.13576, 30.6581],
+            [104.1347, 30.66008],
+            [104.13459, 30.66007],
+            [104.13459, 30.66026],
+            [104.13459, 30.66044],
+            [104.13438, 30.66071],
+            [104.13427, 30.66088],
+            [104.13417, 30.66088],
+            [104.13396, 30.66106],
+            [104.13343, 30.66133],
+            [104.13333, 30.66142],
+            [104.13323, 30.66142],
+            [104.13312, 30.66169],
+            [104.13291, 30.66205],
+            [104.1328, 30.66223],
+            [104.1327, 30.66232],
+            [104.13217, 30.66231],
+            [104.13196, 30.66231]
+        ]
+    ],
+    "pollution_type": "heichou",
+    "ares": 79200,
+    "through": ["\u6210\u534e\u533a"],
+    "id": 9293,
+    "area_list": {
+        "\u6210\u534e\u533a": 79200
+    },
+    "possition": "\u6210\u90fd\u5e02\u6210\u534e\u533a\u8df3\u8e6c\u6cb3\u8857\u9053\u4e2d\u73af\u8def\u53cc\u5e97\u8def\u6bb5"
+}
