@@ -1,0 +1,52 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "微软雅黑";
+    font-size: 14px;
+    list-style: none;
+    text-decoration: none;
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+.sort {
+    line-height: 30px;
+    min-width: 120px;
+    .list {
+        cursor: pointer;
+        .icon {
+            color: #409eff;
+            visibility: hidden;
+        }
+        &.active {
+            .icon {
+                visibility: visible;
+            }
+        }
+    }
+    .ways {
+        border-top: 1px solid #eee;
+        padding: 10px 0;
+        margin: 10px 0 0;
+    }
+}
+
+.dialogDiv {
+    .el-dialog__header {
+        background: #eee;
+        padding: 20px;
+    }
+    .el-dialog__body {
+        padding: 0;
+        height: 350px;
+        min-height: 350px;
+        overflow: auto;
+    }
+}
