@@ -7,10 +7,11 @@
           class="nav-item"
           v-for="(item, index) in headerNav"
           :key="index+'header'"
-          :class="{'active':index ===headerIndex}"
-          @click="changeHeaderNav(index)"
+          :class="{'active':index === headerIndex}"
+          @click="changeHeaderNav(index, item)"
         >
-          <svg-icon :iconClass="item.icon"></svg-icon>
+          <!-- v-show="item.allRoles.includes(currentRole)" -->
+          <svg-icon :iconClass="PathIcon[item.path].iconClass"></svg-icon>
           <span class="name">{{item.name}}</span>
         </div>
       </div>
@@ -41,12 +42,8 @@
       </div>
     </div>
     <div class="nav">
-      <div
-        class="left-nav"
-        v-for="(item, index) in leftNav"
-        :key="index+'leftnav'"
-        v-show="permission.includes(item.key)"
-      >
+      <div class="left-nav" v-for="(item, index) in leftNav" :key="index+'leftnav'">
+        <!-- v-show="item.allRoles.includes(currentRole)" -->
         <p class="sec-title">
           <svg-icon iconClass="list"></svg-icon>
           <span class="name">{{item.name}}</span>
@@ -56,8 +53,8 @@
           :key="indexa+'leftin'"
           @click="changeLeft('key'+index+''+indexa)"
           :class="{'active':itema.path===$route.path}"
-          v-show="permission.includes(itema.key)"
         >
+          <!-- v-show="itema.allRoles.includes(currentRole)" -->
           <router-link :to="{path: itema.path}">{{itema.name}}</router-link>
         </p>
       </div>
@@ -68,11 +65,10 @@
           <el-breadcrumb-item :to="{ path: '/' }">
             <svg-icon iconClass="home"></svg-icon>首页
           </el-breadcrumb-item>
-          <el-breadcrumb-item v-for="(item, index) in $route.matched" :key="index+'berads'">
-            <!-- <router-link :to="{path:item.path}"> -->
-            {{item.name}}
-            <!-- </router-link> -->
-          </el-breadcrumb-item>
+          <el-breadcrumb-item
+            v-for="(item, index) in $route.matched"
+            :key="index+'berads'"
+          >{{item.name}}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
 
@@ -82,83 +78,197 @@
       </div>
     </div>
     <div class="content">
-      <router-view></router-view>
+      <div class="wrapper">
+        <router-view></router-view>
+      </div>
     </div>
+    <!-- <div class="loadings" v-loading="loading" :style="{display: loading ? 'block': 'none'}"></div> -->
   </div>
 </template>
 <script>
+import { setCookie, getCookie } from "@/utils/index.js";
+import pathIcon from "@/assets/pathIcon.js";
 import { mapMutations, mapGetters } from "vuex";
 export default {
   data() {
     return {
-      headerNav: [
-        {
-          name: "计划管理",
-          icon: "guide",
-          type: "planMan",
-          list: [
-            {
-              name: "计划制定",
-              key: "plan",
-              list: [
-                {
-                  name: "计划编制",
-                  path: "/plan/PlanFormulation",
-                  key: "PlanFormulation"
-                },
-                {
-                  name: "计划审批",
-                  path: "/plan/PlanApproval",
-                  key: "PlanApproval"
-                }
-              ]
-            },
-            {
-              name: "计划列表",
-              key: "list",
-              list: [
-                {
-                  name: "计划概览",
-                  path: "/plan/PlanOverview",
-                  key: "PlanOverview"
-                },
-                {
-                  name: "管理分析",
-                  path: "/plan/ManagementAnalysis",
-                  key: "ManagementAnalysis"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          name: "项目管理",
-          icon: "chart"
-        },
-        {
-          name: "任务管理",
-          icon: "email"
-        }
-      ],
-      // leftNav: [],
+      PathIcon: {},
+      headerNav: [],
       headerIndex: 0,
-      leftKey: ""
+      leftKey: "",
+      currentRole: ""
     };
   },
   created() {
-    this.SET_PERMISSION(["PlanFormulation", "PlanApproval", "PlanOverview"]);
+    this.CHANGE_LOADING(true);
+    this.PathIcon = pathIcon;
+    this.headerNav = [
+      {
+        name: "计划管理",
+        icon: "guide",
+        path: "/plan",
+        allRoles: ["PlanFormulation", "PlanApproval", "PlanAdmin", "admin"],
+        list: [
+          {
+            name: "计划制定",
+            // key: "plan",
+            allRoles: ["PlanFormulation", "PlanApproval", "PlanAdmin", "admin"],
+            list: [
+              {
+                name: "计划编制",
+                path: "/PlanFormulation",
+                // key: "PlanFormulation"
+                allRoles: ["PlanFormulation", "PlanAdmin", "admin"]
+              },
+              {
+                name: "计划审批",
+                path: "/PlanApproval",
+                allRoles: ["PlanApproval", "PlanAdmin", "admin"]
+              }
+            ]
+          },
+          {
+            allRoles: ["PlanAdmin", "admin"],
+            name: "计划列表",
+            // key: "planList",
+            list: [
+              {
+                name: "计划概览",
+                path: "/PlanOverview",
+                allRoles: ["PlanOverview", "PlanAdmin", "admin"]
+              },
+              {
+                name: "管理分析",
+                path: "/ManagementAnalysis",
+                allRoles: ["PlanOverview", "PlanAdmin", "admin"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: "项目管理",
+        icon: "chart",
+        path: "/program",
+        allRoles: [
+          "ProgramFormulation",
+          "ProgramApproval",
+          "ProgramAdmin",
+          "admin"
+        ],
+        list: [
+          {
+            name: "项目制定",
+            allRoles: [
+              "ProgramFormulation",
+              "ProgramApproval",
+              "ProgramAdmin",
+              "admin"
+            ],
+            list: [
+              {
+                name: "项目编制",
+                path: "/ProgramFormulation",
+                allRoles: ["ProgramFormulation", "ProgramAdmin", "admin"]
+              },
+              {
+                name: "项目审批",
+                path: "/ProgramApproval",
+                allRoles: ["ProgramApproval", "ProgramAdmin", "admin"]
+              }
+            ]
+          },
+          {
+            allRoles: ["ProgramOverview", "ProgramAdmin", "admin"],
+            name: "项目列表",
+            list: [
+              {
+                name: "项目概览",
+                path: "/ProgramOverview",
+                allRoles: ["ProgramOverview", "ProgramAdmin", "admin"]
+              }
+              // {
+              //   name: "管理分析",
+              //   path: "/ManagementAnalysis",
+              //   key: "ManagementAnalysis"
+              // }
+            ]
+          }
+        ]
+      },
+      {
+        name: "任务管理",
+        icon: "email",
+        path: "/MonitoringTask",
+        allRoles: []
+      },
+      {
+        name: "检测管理",
+        icon: "email",
+        path: "/MonitoringManage",
+        allRoles: ["MonitoringManage", "MonitoringTask", "admin"],
+        list: [
+          {
+            name: "检测管理",
+            allRoles: ["MonitoringManage", "MonitoringTask", "admin"],
+            list: [
+              {
+                name: "检测任务列表",
+                path: "/MonitoringTask",
+                allRoles: ["MonitoringTask", "admin"]
+              }
+            ]
+          }
+        ]
+      }
+    ];
     console.log(this.$route);
+    let index = getCookie("headerIndex");
+    if (index) {
+      this.headerIndex = parseInt(index);
+    } else {
+      setCookie("headerIndex", 0);
+      this.headerIndex = 0;
+    }
+    if (this.$route.path == "/home") {
+      this.$router.push(this.headerNav[this.headerIndex].path);
+    }
+    setTimeout(() => {
+      this.CHANGE_LOADING(false);
+    }, 3000);
+    // this.currentRole = "admin"; // 当前角色
+    // // let allRole = [
+    // //   "admin",
+    // //   "PlanFormulation",
+    // //   "PlanApproval",
+    // //   "PlanAdmin",
+    // //   "ProgramFormulation",
+    // //   "ProgramAdmin",
+    // //   "ProgramOverview"
+    // // ];
+    // for (let i = 0; i < this.headerNav.length; i++) {
+    //   if (this.headerNav[i].allRoles.includes(this.currentRole)) {
+    //     this.headerIndex = i;
+    //     if (this.$route.path == "/") {
+    //       this.$router.push(this.headerNav[this.headerIndex].path);
+    //     } else {
+    //       this.$router.push(this.headerNav[this.headerIndex].path);
+    //     }
+    //   }
+    // }
   },
   computed: {
-    ...mapGetters(["permission"]),
+    ...mapGetters(["loading"]),
     leftNav() {
       return this.headerNav[this.headerIndex].list;
     }
   },
   methods: {
-    ...mapMutations(["SET_PERMISSION"]),
-    changeHeaderNav(index) {
+    ...mapMutations(["CHANGE_LOADING"]),
+    changeHeaderNav(index, item) {
       this.headerIndex = index;
+      this.$router.push(this.PathIcon[item.path].path);
+      setCookie("headerIndex", index);
     },
     changeLeft(key) {
       this.leftKey = key;
@@ -170,145 +280,122 @@ export default {
       });
     }
   },
-  mounted() {
-    if (
-      this.permission.includes("PlanFormulation") ||
-      this.permission.includes("PlanApproval")
-    ) {
-      this.permission.push("plan");
-    }
-    if (
-      this.permission.includes("PlanOverview") ||
-      this.permission.includes("ManagementAnalysis")
-    ) {
-      this.permission.push("list");
-    }
-    // console.log(this.$store.state);
-  }
+  mounted() {}
 };
 </script>
 <style lang="scss" scoped>
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50px;
-  background: #333744;
-  overflow: hidden;
-  color: #fff;
-  .logo {
-    float: left;
-    line-height: 50px;
-    margin: 0 20px;
-  }
-  .header-nav {
-    float: left;
+.home {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  .header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 50px;
-    line-height: 50px;
+    background: #333744;
     overflow: hidden;
-    .nav-item {
+    color: #fff;
+    .logo {
       float: left;
-      margin: 0 5px;
-      cursor: pointer;
-      .name {
-        margin: 0 2px;
-      }
-      &.active {
-        font-weight: bold;
-      }
-      &:hover {
-        font-weight: bold;
-      }
+      line-height: 50px;
+      margin: 0 20px;
     }
-  }
-  .right {
-    float: right;
-    height: 50px;
-    overflow: hidden;
-    line-height: 50px;
-    .item {
+    .header-nav {
       float: left;
-      margin: 0 10px;
-      .el-dropdown-link {
-        color: #fff;
-      }
-    }
-  }
-}
-.nav {
-  position: fixed;
-  top: 50px;
-  left: 0;
-  width: 240px;
-  bottom: 0;
-  background: #fff;
-  .left-nav {
-    width: 100%;
-    p {
-      width: 100%;
-      padding-left: 20px;
-      margin: 0;
-      font-size: 14px;
-      a {
-        display: block;
-        width: 100%;
-        height: 45px;
-        line-height: 45px;
-        color: #333;
-      }
-      // text-align: center;
-      &.sec-title {
-        height: 50px;
-        line-height: 50px;
-        background: #eee;
+      height: 50px;
+      line-height: 50px;
+      overflow: hidden;
+      .nav-item {
+        float: left;
+        margin: 0 5px;
+        cursor: pointer;
         .name {
-          font-size: 16px;
-          margin: 0 4px;
+          margin: 0 2px;
+        }
+        &.active {
+          font-weight: bold;
+        }
+        &:hover {
+          font-weight: bold;
         }
       }
-      &.active {
-        background: #ccc;
+    }
+    .right {
+      float: right;
+      height: 50px;
+      overflow: hidden;
+      line-height: 50px;
+      .item {
+        float: left;
+        margin: 0 10px;
+        .el-dropdown-link {
+          color: #fff;
+        }
       }
     }
   }
-}
-.content {
-  position: fixed;
-  top: 100px;
-  left: 240px;
-  right: 0;
-  bottom: 0;
-  background: #f5f5f5;
-  overflow: auto;
-  .wrapper {
-    min-width: 1300px;
-    min-height: 700px;
-  }
-}
-.breads {
-  position: fixed;
-  left: 240px;
-  right: 0;
-  top: 50px;
-  height: 50px;
-  line-height: 50px;
-  padding: 0 20px;
-  background: #fff;
-  .left {
-    height: 50px;
-    // line-height: 50px;
-    float: left;
-    .el-breadcrumb {
-      line-height: 50px;
+  .nav {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 240px;
+    bottom: 0;
+    background: #fff;
+    .left-nav {
+      width: 100%;
+      p {
+        width: 100%;
+        padding-left: 20px;
+        margin: 0;
+        font-size: 14px;
+        a {
+          display: block;
+          width: 100%;
+          height: 45px;
+          line-height: 45px;
+          color: #333;
+        }
+        // text-align: center;
+        &.sec-title {
+          height: 50px;
+          line-height: 50px;
+          background: #eee;
+          .name {
+            font-size: 16px;
+            margin: 0 4px;
+          }
+        }
+        &.active {
+          background: #ccc;
+        }
+      }
     }
   }
-  .right {
-    float: right;
-    .router-icon {
-      margin: 0 10px;
-      cursor: pointer;
+  .content {
+    position: absolute;
+    top: 100px;
+    left: 240px;
+    right: 0;
+    bottom: 0;
+    background: #f5f5f5;
+    overflow: auto;
+    .wrapper {
+      // width: 100%;
+      // height: 100%;
+      min-width: 1300px;
+      min-height: 600px;
+      overflow: hidden;
     }
+  }
+
+  .loadings {
+    position: absolute;
+    top: 100px;
+    left: 240px;
+    right: 0;
+    bottom: 0;
   }
 }
 </style>

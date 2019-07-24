@@ -1,13 +1,14 @@
 <template>
   <div class="fl">
-    <el-popover placement="bottom-start" width="60" trigger="click" popper-class="sort">
-      <div>
+    <el-popover placement="bottom-start" width="100" trigger="click" popper-class="sort">
+      <div class="sort-boxs">
         <p
           v-for="(item, index) in tableHeader"
           :key="index"
           class="list"
           :class="{'active':item.prop===prop}"
           @click="changeProp(item.prop)"
+          v-if="item.sortable"
         >
           <span class="icon">
             <svg-icon iconClass="radio"></svg-icon>
@@ -104,4 +105,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.sort-boxs {
+  height: 200px;
+  overflow-y: auto;
+}
 </style>

@@ -9,14 +9,14 @@
       @closed="handleClose"
     >
       <div>
-        <div v-for="(item, index) in defaultList" :key="index+'sorta'" class="items start">
+        <div class="items start">
           <span class="left">显示</span>
           <span class="mid">列名</span>
           <span class="right">拖动排序</span>
         </div>
-        <div v-for="item in defaultList" :key="item.prop+'sorta'" class="items disabled">
+        <div v-for="(item, index) in defaultList" :key="index+'sorta'" class="items disabled">
           <span class="left">
-            <el-checkbox v-model="item.show" disabled :checked="true"></el-checkbox>
+            <el-checkbox v-model="item.selected" disabled :checked="true"></el-checkbox>
           </span>
           <span class="mid">{{item.label}}</span>
           <span class="right">
@@ -27,7 +27,7 @@
         <draggable v-model="sortList" group="people" @update="onEnd" :options="{animation:300}">
           <div v-for="item in sortList" :key="item.prop+'drag'" :name="item.label" class="items">
             <span class="left">
-              <el-checkbox v-model="item.show"></el-checkbox>
+              <el-checkbox v-model="item.selected"></el-checkbox>
             </span>
             <span class="mid">{{item.label}}</span>
             <span class="right">

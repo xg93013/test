@@ -1,9 +1,9 @@
 <template>
-  <div id="PlanOverview">
+  <div id="PlanFormulation">
     <div class="commonWidth top-search">
       <div class="fl">
-        <el-input v-model="keyWord" placeholder="搜索计划名称/编号" style="width: 200px;"></el-input>
-        <!-- <el-select v-model="planName" placeholder="计划类型">
+        <el-input v-model="keyWord" placeholder="搜索关键字" style="width: 200px;"></el-input>
+        <!-- <el-select v-model="planName" placeholder="计划名称">
           <el-option
             v-for="item in planNameList"
             :key="item.value"
@@ -12,22 +12,6 @@
           ></el-option>
         </el-select>
         <el-select v-model="planStatus" placeholder="计划状态">
-          <el-option
-            v-for="item in planStatusList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-        <el-select v-model="planStatus" placeholder="牵头单位">
-          <el-option
-            v-for="item in planStatusList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-        <el-select v-model="planStatus" placeholder="承担单位">
           <el-option
             v-for="item in planStatusList"
             :key="item.value"
@@ -44,7 +28,11 @@
     <div class="commonWidth formulation-main">
       <div class="table-top">
         <div class="fl">
-          <!-- <el-popover placement="bottom-start" width="60" trigger="hover" popper-class="sort">
+          <!-- <el-button type="primary" @click="addPlan">
+            <svg-icon iconClass="add"></svg-icon>
+            <span>新增计划</span>
+          </el-button>-->
+          <el-popover placement="bottom-start" width="60" trigger="hover" popper-class="sort">
             <div>
               <p>
                 <el-radio v-model="exportRadio" label="1">当前分类</el-radio>
@@ -58,7 +46,7 @@
               <span>导出</span>
               <svg-icon iconClass="down"></svg-icon>
             </el-button>
-          </el-popover>-->
+          </el-popover>
           <!-- <el-button type="primary" @click="reverseCheck">反选</el-button> -->
         </div>
         <div class="fr sort">
@@ -82,18 +70,17 @@
         border
         @sort-change="sortChange"
       >
-        <!-- <el-table-column width="55">
+        <el-table-column width="55">
           <template slot="header">
             <el-checkbox v-model="checkAll" @change="changeCheckAll"></el-checkbox>
           </template>
           <template slot-scope="scope">
             <el-checkbox v-model="scope.row.checked" @change="changeCheck"></el-checkbox>
           </template>
-        </el-table-column>-->
+        </el-table-column>
         <el-table-column
           :prop="item.prop"
           :label="item.label"
-          :width="item.width"
           :sortable="item.sortable"
           v-for="(item, index) in tableHeader"
           :key="index+'cloum'"
@@ -125,63 +112,17 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="项目详情" align="center">
-          <template slot-scope="scope">
-            <span @click="handleDetail(scope.$index, scope.row)" class="view">
-              <svg-icon iconClass="view"></svg-icon>
-              <span>预览</span>
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column label="任务详情" align="center">
-          <template slot-scope="scope">
-            <span @click="handleDetail(scope.$index, scope.row)" class="view">
-              <svg-icon iconClass="view"></svg-icon>
-              <span>预览</span>
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column label="多维查询" align="center">
-          <template slot-scope="scope">
-            <span @click="handleDetail(scope.$index, scope.row)" class="view">
-              <svg-icon iconClass="view"></svg-icon>
-              <span>预览</span>
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column label="统计分析" align="center">
-          <template slot-scope="scope">
-            <span @click="handleDetail(scope.$index, scope.row)" class="view">
-              <svg-icon iconClass="view"></svg-icon>
-              <span>预览</span>
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column label="分析报告" align="center">
-          <template slot-scope="scope">
-            <span @click="handleDetail(scope.$index, scope.row)" class="view">
-              <svg-icon iconClass="view"></svg-icon>
-              <span>预览</span>
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" align="center" width="100">
+        <el-table-column label="操作" align="center" width="240">
           <template slot-scope="scope">
             <div class="operation">
               <span @click="handleEdit(scope.$index, scope.row)" style="color:#3a8ee6">
-                <svg-icon iconClass="edit"></svg-icon>归档计划
+                <svg-icon iconClass="view"></svg-icon>分配
               </span>
               <!-- <span @click="handleDelete(scope.$index, scope.row)">
                 <svg-icon iconClass="delete"></svg-icon>提交审批
               </span>
               <span @click="handleEdit(scope.$index, scope.row)">
                 <svg-icon iconClass="edit"></svg-icon>审批详情
-              </span>-->
-              <span @click="handleDelete(scope.$index, scope.row)">
-                <svg-icon iconClass="delete"></svg-icon>归档详情
-              </span>
-              <!-- <span @click="handleDelete(scope.$index, scope.row)">
-                <svg-icon iconClass="copy"></svg-icon>复制并新增
               </span>-->
             </div>
           </template>
@@ -215,7 +156,7 @@ import ExportExcel from "@/components/ExportExcel/index.vue";
 import axios from "axios";
 // import { mapGetters } from "vuex";
 export default {
-  name: "PlanOverview",
+  // name: "MonitoringManage",
   data() {
     return {
       selected: [],
@@ -272,7 +213,7 @@ export default {
           num: 1,
           date: "2016-05-02",
           unit: "单位",
-          name: "2019年国家农产品质量安全例行监测（风险监测）工作",
+          name: "王小虎",
           state: 1,
           checked: true
         },
@@ -281,7 +222,7 @@ export default {
           num: 12000000,
           date: "2016-05-02",
           unit: "单位",
-          name: "2019年国家农产品质量安全例行监测（风险监测）工作",
+          name: "王小虎",
           state: 2,
           checked: true
         },
@@ -290,7 +231,7 @@ export default {
           num: 12000001,
           date: "2016-05-02",
           unit: "单位",
-          name: "2019年国家农产品质量安全例行监测（风险监测）工作",
+          name: "王小虎",
           state: 3,
           checked: true
         }
@@ -299,7 +240,7 @@ export default {
         {
           prop: "num",
           label: "计划编号",
-          width: "140",
+          width: "",
           notSort: true,
           sortable: true,
           show: true
@@ -307,36 +248,36 @@ export default {
         {
           prop: "name",
           label: "计划名称",
-          width: "260",
+          width: "",
           notSort: false,
           sortable: true,
           show: true,
           change: false
         },
         {
+          prop: "unit",
+          label: "编制单位",
+          width: "",
+          notSort: false,
+          sortable: true,
+          show: true
+        },
+        {
+          prop: "date",
+          label: "发布时间",
+          width: "",
+          notSort: false,
+          sortable: true,
+          show: true
+        },
+        {
           prop: "state",
           label: "计划状态",
-          width: "140",
+          width: "",
           notSort: false,
           sortable: true,
           show: true
         }
-        // {
-        //   prop: "unit",
-        //   label: "编制单位",
-        //   width: "",
-        //   notSort: false,
-        //   sortable: true,
-        //   show: true
-        // },
-        // {
-        //   prop: "date",
-        //   label: "发布时间",
-        //   width: "",
-        //   notSort: false,
-        //   sortable: true,
-        //   show: true
-        // },
       ],
       selectProp: "",
       selectOrder: "",
@@ -395,9 +336,9 @@ export default {
     },
     handleEdit(index, row) {
       this.$router.push({
-        name: "编辑计划",
+        name: "检测任务分配",
         // path: "/AddPlan",
-        params: { planId: -1, planType: "edit" }
+        params: { planId: -1, planType: "applocation" }
       });
     },
     handleDelete(index, row) {},
@@ -445,28 +386,35 @@ export default {
       console.log(this.tableData);
     },
     //反选
-    // reverseCheck() {
-    //   for (let i = 0; i < this.tableData.length; i++) {
-    //     this.tableData[i].checked = !this.tableData[i].checked;
-    //   }
-    //   this.selectChange();
-    // },
+    reverseCheck() {
+      for (let i = 0; i < this.tableData.length; i++) {
+        this.tableData[i].checked = !this.tableData[i].checked;
+      }
+      this.selectChange();
+    },
     // 导出选择
-    // exportTable() {
-    //   let arr = [];
-    //   for (let i = 0; i < this.tableData.length; i++) {
-    //     if (this.tableData[i].checked) {
-    //       arr.push(this.tableData[i]);
-    //     }
-    //   }
-    //   let uri = "";
-    //   this.$refs.exportRefs.export({}, "url");
-    // },
+    exportTable() {
+      let arr = [];
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].checked) {
+          arr.push(this.tableData[i]);
+        }
+      }
+      let uri = "";
+      this.$refs.exportRefs.export({}, "url");
+    },
     searchResult() {},
     resetSearch() {
       this.keyWord = "";
       this.planName = "";
       this.planStatus = "";
+    },
+    addPlan() {
+      this.$router.push({
+        name: "新增计划",
+        // path: "/AddPlan",
+        params: { planId: 0, planType: "add" }
+      });
     }
   },
   mounted() {

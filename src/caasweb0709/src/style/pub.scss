@@ -16,9 +16,26 @@
     float: right;
 }
 
+.clear {
+    clear: both;
+    overflow: hidden;
+}
+
+.m20 {
+    margin-top: 20px;
+}
+
+.m30 {
+    margin-top: 30px;
+}
+
+.mt20 {
+    margin-bottom: 20px;
+}
+
 .sort {
     line-height: 30px;
-    min-width: 120px;
+    min-width: 160px;
     .list {
         cursor: pointer;
         .icon {
@@ -49,4 +66,282 @@
         min-height: 350px;
         overflow: auto;
     }
+}
+
+.commonWidth {
+    width: 1260px;
+    margin: 20px auto 0;
+    padding: 20px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.content {
+    .el-table td,
+    .el-table th {
+        background-color: #f5f5f5;
+        padding: 4px 0;
+    }
+    .el-table td {
+        background-color: #fff;
+        padding: 8px 0;
+    }
+    // .el-table td div {
+    //     line-height: 16px;
+    // }
+}
+
+.form-item {
+    input {
+        border: none;
+        padding-right: 0;
+    }
+    .el-input__suffix {
+        display: none;
+    }
+    .el-input__prefix {
+        display: none;
+    }
+    .el-input__inner {
+        padding-left: 10px;
+    }
+    .el-textarea__inner {
+        border: none;
+    }
+    width: 100%;
+    display: flex;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    .left-item {
+        flex: 1;
+    }
+    .icons {
+        flex: 0 0 40px;
+        text-align: center;
+        border-left: 1px solid #eee;
+        color: #999;
+    }
+}
+
+// .content {
+.formulation-main {
+    margin: 1px auto 20px;
+    .table-top {
+        width: 100%;
+        overflow: hidden;
+        margin: 10px 0;
+    }
+}
+
+.status {
+    span {
+        color: #999;
+        label {
+            display: block;
+            width: 6px;
+            height: 6px;
+            border-radius: 3px;
+            margin: 10px 6px 0 0;
+            float: left;
+            &.noPass {
+                background: red;
+            }
+            &.approval {
+                background: green;
+            }
+            &.inApproval {
+                background: blue;
+            }
+            &.pass {
+                background: #999;
+            }
+        }
+    }
+}
+
+.operation,
+.view {
+    span {
+        font-size: 12px;
+        cursor: pointer;
+    }
+}
+
+.page-box {
+    overflow: hidden;
+    margin: 20px 0;
+    .sum {
+        color: #666;
+        margin-top: 4px;
+        span {
+            color: #333;
+        }
+    }
+}
+
+.common-title {
+    position: relative;
+    padding-left: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    &::before {
+        position: absolute;
+        content: " ";
+        display: block;
+        width: 4px;
+        height: 16px;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #3a8ee6;
+    }
+}
+
+.icon-title {
+    font-weight: bold;
+    span {
+        font-size: 16px;
+    }
+}
+
+.row-item {
+    display: flex;
+    .row-item-inner {
+        flex: 1;
+        height: 40px;
+        line-height: 40px;
+        display: flex;
+        border: 1px solid #eee;
+        span {
+            flex: 1;
+            padding: 0 10px;
+            &:nth-child(1) {
+                flex: 0 0 100px;
+                text-align: right;
+                background: #eee;
+            }
+        }
+        &:nth-child(2) {
+            border-left: 0;
+        }
+    }
+}
+
+// }
+.approval-step {
+    margin: 20px auto;
+}
+
+// 状态流程
+.approval-steps-box {
+    margin: 20px 4px;
+    .approval-steps {
+        // width: 100%;
+        // padding: 20px 0;
+        border-left: 1px solid #eee;
+        .steps-title {
+            position: relative;
+            label {
+                position: absolute;
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                top: 10px;
+                left: -6px;
+                border-radius: 6px;
+                background: #409eff;
+            }
+            span {
+                margin-left: 35px;
+                height: 30px;
+                color: #fff;
+                line-height: 30px;
+                display: inline-block;
+                background: #409eff;
+                position: relative;
+                padding: 0 10px;
+                font-size: 12px;
+                &::before {
+                    content: "";
+                    width: 0;
+                    height: 0;
+                    position: absolute;
+                    left: -30px;
+                    top: 0;
+                    border-top: 15px solid transparent;
+                    border-left: 15px solid transparent;
+                    border-bottom: 15px solid transparent;
+                    border-right: 15px solid #409eff;
+                }
+            }
+        }
+        .steps-content {
+            position: relative;
+            margin: 20px auto;
+            &::before {
+                content: " ";
+                position: absolute;
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                top: 0;
+                left: -7px;
+                border-radius: 10px;
+                background: #fff;
+                border: 2px solid #409eff;
+            }
+            .content-text {
+                margin-left: 25px;
+                padding: 20px;
+                border: 1px solid #eee;
+                background: #f5f5f5;
+                color: #999;
+                .content-text-top {
+                    overflow: hidden;
+                    .user-icon {
+                        font-size: 20px;
+                    }
+                    .user-name {
+                        font-size: 16px;
+                    }
+                }
+                .content-time {
+                    font-size: 12px;
+                }
+                .content-texts {
+                    margin: 10px 4px;
+                }
+            }
+        }
+    }
+}
+
+.breads {
+    position: absolute;
+    left: 240px;
+    right: 0;
+    top: 50px;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 20px;
+    background: #fff;
+    .left {
+        height: 50px;
+        // line-height: 50px;
+        float: left;
+        .el-breadcrumb {
+            line-height: 50px;
+        }
+    }
+    .right {
+        float: right;
+        .router-icon {
+            margin: 0 10px;
+            cursor: pointer;
+        }
+    }
+}
+
+.el-popper {
+    transition: none;
 }

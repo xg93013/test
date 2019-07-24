@@ -1,48 +1,48 @@
 <template>
-  <div id="PlanApproval">
-    <div class="commonWidth top-search">
+  <div class="wrapper">
+    <div class="top-search">
       <div class="fl">
-        <el-input v-model="keyWord" placeholder="搜索关键字" style="width: 200px;"></el-input>
-        <!-- <el-select v-model="planName" placeholder="计划名称">
+        <el-select v-model="value" placeholder="请选择">
           <el-option
-            v-for="item in planNameList"
+            v-for="item in options"
             :key="item.value"
             :label="item.label"
             :value="item.value"
           ></el-option>
         </el-select>
-        <el-select v-model="planStatus" placeholder="计划状态">
+        <el-select v-model="value" placeholder="请选择">
           <el-option
-            v-for="item in planStatusList"
+            v-for="item in options"
             :key="item.value"
             :label="item.label"
             :value="item.value"
           ></el-option>
-        </el-select>-->
+        </el-select>
+        <el-select v-model="value" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
       </div>
       <div class="fr">
-        <el-button type="primary" @click="searchResult">查询</el-button>
-        <el-button @click="resetSearch">重置</el-button>
+        <el-button type="primary">查询</el-button>
+        <el-button>重置</el-button>
       </div>
     </div>
-    <div class="commonWidth formulation-main">
+    <div class="mains">
       <div class="table-top">
         <div class="fl">
-          <el-popover placement="bottom-start" width="60" trigger="hover" popper-class="sort">
-            <div>
-              <p>
-                <el-radio v-model="exportRadio" label="1">当前分类</el-radio>
-              </p>
-              <p>
-                <el-radio v-model="exportRadio" label="2">选中数据</el-radio>
-              </p>
-            </div>
-            <el-button slot="reference" @click="exportTable">
-              <svg-icon iconClass="export"></svg-icon>
-              <span>导出</span>
-              <svg-icon iconClass="down"></svg-icon>
-            </el-button>
-          </el-popover>
+          <el-button type="primary">
+            <svg-icon iconClass="add"></svg-icon>
+            <span>新增项目计划</span>
+          </el-button>
+          <el-button @click="exportTable">
+            <svg-icon iconClass="export"></svg-icon>
+            <span>导出</span>
+          </el-button>
           <!-- <el-button type="primary" @click="reverseCheck">反选</el-button> -->
         </div>
         <div class="fr sort">
@@ -67,7 +67,7 @@
         @sort-change="sortChange"
       >
         <el-table-column width="55">
-          <template slot="header">
+          <template slot="header" slot-scope="scope">
             <el-checkbox v-model="checkAll" @change="changeCheckAll"></el-checkbox>
           </template>
           <template slot-scope="scope">
@@ -85,16 +85,16 @@
           <template slot-scope="scope">
             <div v-if="item.prop === 'state'" class="status">
               <span v-if="scope.row[item.prop] == 1">
-                <label class="noPass"></label>审核未通过
+                <label></label>审核未通过
               </span>
               <span v-if="scope.row[item.prop] == 2">
-                <label class="approval"></label>待审批
+                <label></label>待审批
               </span>
               <span v-if="scope.row[item.prop] == 3">
-                <label class="inApproval"></label>编制中
+                <label></label>编制中
               </span>
               <span v-if="scope.row[item.prop] == 4">
-                <label class="pass"></label>审核通过
+                <label></label>审核通过
               </span>
             </div>
             <div v-else>{{scope.row[item.prop]}}</div>
@@ -102,42 +102,39 @@
         </el-table-column>
         <el-table-column label="计划详情" align="center">
           <template slot-scope="scope">
-            <span @click="handleDetail(scope.$index, scope.row)" class="view">
-              <svg-icon iconClass="view"></svg-icon>
-              <span>预览</span>
+            <span @click="handleDetail(scope.$index, scope.row)">
+              <svg-icon iconClass="view"></svg-icon>预览
             </span>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="240">
           <template slot-scope="scope">
-            <div class="operation">
-              <span @click="handleApproval(scope.$index, scope.row)">
-                <svg-icon iconClass="approval"></svg-icon>审批
-              </span>
+            <div style="white-space: nowrap;">
               <span @click="handleEdit(scope.$index, scope.row)" style="color:#3a8ee6">
                 <svg-icon iconClass="edit"></svg-icon>编辑
               </span>
+              <!-- <span @click="handleDelete(scope.$index, scope.row)">
+                <svg-icon iconClass="delete"></svg-icon>提交审批
+              </span>
               <span @click="handleEdit(scope.$index, scope.row)">
                 <svg-icon iconClass="edit"></svg-icon>审批详情
-              </span>
-              <!-- <span @click="handleDelete(scope.$index, scope.row)">
-                <svg-icon iconClass="delete"></svg-icon>删除
               </span>-->
+              <span @click="handleDelete(scope.$index, scope.row)">
+                <svg-icon iconClass="delete"></svg-icon>删除
+              </span>
+              <span @click="handleDelete(scope.$index, scope.row)">
+                <svg-icon iconClass="delete"></svg-icon>复制并新增
+              </span>
             </div>
           </template>
         </el-table-column>
       </el-table>
+      <!-- <span v-for="item in permission">{{item}}</span> -->
       <div class="page-box">
-        <div class="sum fl">
-          共
-          <span>9</span> 个计划，编制中 3 个，待审批 1 个，审批通过 1 个， 审批未通过 1 个
-        </div>
         <el-pagination
           background
-          layout="prev, pager, next, sizes"
+          layout="prev, pager, next"
           :total="page.totalElements"
-          :page-size.sync="page.pageSize"
-          :page-sizes="[5, 10, 20, 30, 40, 50, 100]"
           class="fr"
           @current-change="pageChange"
         ></el-pagination>
@@ -155,57 +152,10 @@ import ExportExcel from "@/components/ExportExcel/index.vue";
 import axios from "axios";
 // import { mapGetters } from "vuex";
 export default {
-  name: "PlanApproval",
+  name: "",
   data() {
     return {
       selected: [],
-      keyWord: "",
-      planName: "",
-      planStatus: "",
-      planNameList: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
-      planStatusList: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
       tableData: [
         {
           id: 0,
@@ -214,24 +164,6 @@ export default {
           unit: "单位",
           name: "王小虎",
           state: 1,
-          checked: true
-        },
-        {
-          id: 12000000,
-          num: 12000000,
-          date: "2016-05-02",
-          unit: "单位",
-          name: "王小虎",
-          state: 2,
-          checked: true
-        },
-        {
-          id: 12000001,
-          num: 12000001,
-          date: "2016-05-02",
-          unit: "单位",
-          name: "王小虎",
-          state: 3,
           checked: true
         }
       ],
@@ -278,6 +210,29 @@ export default {
           show: true
         }
       ],
+      options: [
+        {
+          value: "选项1",
+          label: "黄金糕"
+        },
+        {
+          value: "选项2",
+          label: "双皮奶"
+        },
+        {
+          value: "选项3",
+          label: "蚵仔煎"
+        },
+        {
+          value: "选项4",
+          label: "龙须面"
+        },
+        {
+          value: "选项5",
+          label: "北京烤鸭"
+        }
+      ],
+      value: "",
       selectProp: "",
       selectOrder: "",
       page: {
@@ -285,7 +240,6 @@ export default {
         totalElements: 0,
         pageSize: 5
       },
-      exportRadio: "",
       checkAll: false,
       multipleSelection: []
     };
@@ -326,27 +280,9 @@ export default {
       this.selected = val;
       console.log(this.selected);
     },
-    handleDetail(index, row) {
-      this.$router.push({
-        name: "预览",
-        // path: "/AddPlan",
-        params: { planId: -1, planType: "view" }
-      });
-    },
-    handleEdit(index, row) {
-      this.$router.push({
-        name: "编辑计划",
-        // path: "/AddPlan",
-        params: { planId: -1, planType: "edit" }
-      });
-    },
-    handleApproval(index, row) {
-      this.$router.push({
-        name: "审批计划",
-        // path: "/AddPlan",
-        params: { planId: -1, planType: "approval" }
-      });
-    },
+    handleDetail(index, row) {},
+    handleEdit(index, row) {},
+    handleDelete(index, row) {},
     changeHeader(arr) {
       this.tableHeader = [...arr];
     },
@@ -407,12 +343,6 @@ export default {
       }
       let uri = "";
       this.$refs.exportRefs.export({}, "url");
-    },
-    searchResult() {},
-    resetSearch() {
-      this.keyWord = "";
-      this.planName = "";
-      this.planStatus = "";
     }
   },
   mounted() {
@@ -423,4 +353,40 @@ export default {
 </script>
 
 <style lang="scss" scope>
+.top-search,
+.mains {
+  width: 1260px;
+  margin: 20px auto 0;
+  padding: 20px;
+  overflow: hidden;
+  background: #fff;
+}
+.top-search {
+  overflow: hidden;
+  .left {
+    float: left;
+  }
+  .right {
+    float: right;
+  }
+}
+.mains {
+  margin: 1px auto 20px;
+  .table-top {
+    width: 100%;
+    overflow: hidden;
+    margin: 10px 0;
+  }
+  .page-box {
+    overflow: hidden;
+    margin: 20px 0;
+  }
+  .status {
+    span:nth-child(1) {
+      label {
+        display: inline-block;
+      }
+    }
+  }
+}
 </style>

@@ -10,7 +10,7 @@ export default new Vuex.Store({
     permission: []
   },
   getters: {
-    loadingStatus(state) {
+    loading(state) {
       return state.loading;
     },
     permission(state) {
