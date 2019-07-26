@@ -1,0 +1,155 @@
+.PlanDetail {
+    .top {
+        padding: 10px 20px;
+        height: 70px;
+        line-height: 50px;
+        .tips {
+            margin-left: 20px;
+        }
+        .top-title {
+            .title-icon {
+                font-size: 18px;
+            }
+            span {
+                font-size: 16px;
+                font-weight: bold;
+            }
+        }
+    }
+    .item,
+    .list {
+        width: 50%;
+        padding: 0 50px 0 0;
+        .form {
+            margin-top: 40px;
+        }
+    }
+    .last {
+        .item {
+            width: 100%;
+            .last-box {
+                overflow: hidden;
+                .in-item {
+                    width: 50%;
+                    padding: 4px 20px;
+                }
+            }
+        }
+    }
+    .list {
+        width: 100%;
+        padding: 0;
+        .common-title {
+            height: 40px;
+            line-height: 40px;
+            margin: 20px auto;
+        }
+        .label {
+            font-size: 16px;
+            position: absolute;
+            left: 10px;
+        }
+        .result {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            span {
+                font-size: 16px;
+                color: #3a8ee6;
+            }
+        }
+        .list-table {
+            height: auto;
+            overflow: hidden;
+        }
+    }
+    .bot-top {
+        overflow: hidden;
+    }
+    .add-list {
+        clear: both;
+        // width: 100%;
+        overflow: hidden;
+        .add-btn {
+            width: 240px;
+            display: block;
+            margin: 10px auto;
+        }
+    }
+    .operation {
+        text-align: center;
+        margin-bottom: 20px;
+        .inner {
+            display: inline;
+            .btns {
+                width: 160px;
+                margin-left: 4px;
+            }
+        }
+    }
+    .approval-top {
+        width: 50%;
+        .approval-status {
+            span {
+                position: relative;
+                padding-left: 10px;
+                &::before {
+                    content: " ";
+                    display: block;
+                    width: 6px;
+                    height: 6px;
+                    border-radius: 3px;
+                    background: blue;
+                    position: absolute;
+                    top: 50%;
+                    left: 0;
+                    transform: translateY(-50%);
+                }
+                &.wait {
+                    &::before {
+                        background: greenyellow;
+                    }
+                }
+                &.nopass {
+                    &::before {
+                        background: red;
+                    }
+                }
+            }
+        }
+    }
+    .empty-class {
+        display: inline-block;
+        margin-left: 120px;
+        cursor: pointer;
+        padding: 8px 10px;
+        background: #f5f5f5;
+        border: 1px solid #eee;
+        border-radius: 4px;
+    }
+    .approvalDialog {
+        .titles {
+            text-align: center;
+            .aicon,
+            span {
+                font-size: 20px;
+            }
+            &.pass {
+                color: greenyellow;
+            }
+            &.reject {
+                color: red;
+            }
+        }
+        .textarea {
+            display: flex;
+            margin-top: 20px;
+            .txt {
+                flex: 0 0 80px;
+            }
+            .content {
+                flex: 1
+            }
+        }
+    }
+}
