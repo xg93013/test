@@ -1,41 +1,60 @@
 <template>
   <div id="down-tree">
-    <div class="left fl">
-      <el-input v-model="keyWord"></el-input>
-      <el-tree
-        ref="treeRefs"
-        :data="data"
-        node-key="id"
-        :check-strictly="true"
-        :filter-node-method="filterNode"
-        default-expand-all
-        :expand-on-click-node="false"
-        :render-content="renderContent"
-        @check-change="checkChange"
-        @check="checka"
-        @node-click="nodeClick"
-      ></el-tree>
-      <!-- show-checkbox -->
+    <div class="left">
+      <div class="tree-top">
+        <el-input v-model="keyWord" class="tree-search">
+          <svg-icon iconClass="search" slot="suffix"></svg-icon>
+        </el-input>
+      </div>
+
+      <div class="tree-content">
+        <el-tree
+          ref="treeRefs"
+          :data="data"
+          node-key="id"
+          show-checkbox
+          :check-strictly="false"
+          :filter-node-method="filterNode"
+          default-expand-all
+          :expand-on-click-node="false"
+          :render-content="renderContent"
+          @check="check"
+          @node-click="nodeClick"
+        ></el-tree>
+      </div>
+
+      <!-- -->
       <!-- :check-strictly="true" -->
     </div>
-    <div class="right fl">
-      <div class="item" v-for="(item,index) in checkList" :key="'treenode'+index">
-        {{item.name}}
-        <span @click="removeCheck(item.id)">
-          <svg-icon iconClass="close"></svg-icon>
-        </span>
+    <div class="right">
+      <div class="tree-top">
+        <div class="nums fl">20/1000</div>
+        <span class="clear-empty fr" @click="clearTreeCheck">清空</span>
+      </div>
+      <div class="tree-content">
+        <div
+          class="item"
+          v-for="(item,index) in checkList"
+          :key="'treenode'+index"
+          :class="{'active':index==selectIndex}"
+          @click="selectIndex=index"
+        >
+          {{item.name}}
+          <span
+            @click="removeCheck(item.id)"
+            v-show="index==selectIndex"
+            class="close-btn"
+          >
+            <svg-icon iconClass="close"></svg-icon>
+          </span>
+        </div>
+      </div>
+
+      <div class="operation">
+        <el-button>取消</el-button>
+        <el-button @click="getCheckedNodes">确定</el-button>
       </div>
     </div>
-    <el-button @click="clearTreeCheck">清空</el-button>
-    <el-button @click="getCheckedNodes">选中节点</el-button>
-    <el-button @click="addNodes">添加节点</el-button>
-    <el-button @click="addBu">{{btnTxt}}</el-button>
-    <div v-show="type=='a'">
-      <el-form ></el-form>
-    </div>
-    <div v-show="type=='b'">修改组</div>
-    <div v-show="type=='c'">修改人员</div>
-    <div v-show="type=='d'"></div>
   </div>
 </template>
 <script>
@@ -43,83 +62,77 @@ export default {
   data() {
     return {
       keyWord: "",
-      // data: [
-      //   {
-      //     id: 1,
-      //     label: "一级 1",
-      //     children: [
-      //       {
-      //         id: 4,
-      //         label: "二级 1-1",
-      //         children: [
-      //           {
-      //             id: 9,
-      //             label: "三级 1-1-1",
-      //             children: [
-      //               {
-      //                 id: 11,
-      //                 label: "四级 1-1-1"
-      //               }
-      //             ]
-      //           },
-      //           {
-      //             id: 10,
-      //             label: "三级 1-1-2"
-      //           }
-      //         ]
-      //       }
-      //     ]
-      //   },
-      //   {
-      //     id: 2,
-      //     label: "一级 2",
-      //     children: [
-      //       {
-      //         id: 5,
-      //         label: "二级 2-1"
-      //       },
-      //       {
-      //         id: 6,
-      //         label: "二级 2-2"
-      //       }
-      //     ]
-      //   }
-      // ],
       data: [
         {
           id: 1,
-          label: "部门",
-          type: "a",
+          label: "一级 1",
           children: [
             {
-              id: 2,
-              label: "组a",
-              type: "b",
+              id: 4,
+              label: "二级 1-1",
               children: [
                 {
-                  id: 2,
-                  label: "员a",
-                  type: "c"
+                  id: 9,
+                  label: "三级 1-1-1",
+                  children: [
+                    {
+                      id: 11,
+                      label: "四级 1-1-1"
+                    }
+                  ]
                 },
                 {
-                  id: 3,
-                  label: "员b",
-                  type: "c"
+                  id: 10,
+                  label: "三级 1-1-2"
                 }
               ]
+            }
+          ]
+        },
+        {
+          id: 2,
+          label: "一级 2",
+          children: [
+            {
+              id: 5,
+              label: "二级 2-1"
             },
             {
-              id: 3,
-              label: "组b",
-              type: "b"
+              id: 6,
+              label: "二级 2-2"
+            }
+          ]
+        },
+        {
+          id: 20,
+          label: "一级 2",
+          children: [
+            {
+              id: 22,
+              label: "二级 2-1"
+            },
+            {
+              id: 24,
+              label: "二级 2-2"
+            },
+            {
+              id: 25,
+              label: "二级 2-1"
+            },
+            {
+              id: 26,
+              label: "二级 2-2"
+            },
+            {
+              id: 27,
+              label: "二级 2-1"
             }
           ]
         }
       ],
       checkList: [],
-      currentNode: "",
-      allTypes: ["a", "b", "c", "d"],
-      type: "a"
+      selectIndex: 0,
+      currentNode: ""
     };
   },
   watch: {
@@ -127,26 +140,7 @@ export default {
       this.$refs.treeRefs.filter(val);
     }
   },
-  computed: {
-    btnTxt() {
-      let name = "";
-      switch (this.type) {
-        case "a":
-          name = "添加zu";
-          break;
-        case "b":
-          name = "添加zu2";
-          break;
-        case "c":
-          name = "添加zu3";
-          break;
-        case "d":
-          name = "添加zu4";
-          break;
-      }
-      return name;
-    }
-  },
+  computed: {},
   created() {},
   methods: {
     filterNode(value, data) {
@@ -176,11 +170,6 @@ export default {
     getCheckedNodes() {
       // console.log(this.$refs.treeRefs.getCheckedNodes());
     },
-    checkChange(node, check, flag) {
-      // console.log(node);
-      // console.log(check);
-      // console.log(flag);
-    },
     check(node, current) {
       let currentNodes = this.$refs.treeRefs.getNode(node.id);
       if (currentNodes.childNodes && currentNodes.childNodes.length > 0) {
@@ -191,6 +180,8 @@ export default {
             this.formatNode(currentNodes.childNodes[i]);
           }
         }
+        // console.log(currentNodes);
+        // this.formatNode(currentNodes, true);
       } else {
         this.formatNode(currentNodes);
       }
@@ -199,14 +190,26 @@ export default {
       let currentNodes = this.$refs.treeRefs.getNode(node.id);
       this.formatNodea(currentNodes);
     },
+
+    deleteAllNode() {},
+
     formatNode(node) {
       this.deleteNode(node.data.id);
+      // if (!all) {
       if (node.checked) {
         this.checkList.push({
           id: node.data.id,
           name: this.addName(node, "")
         });
       }
+      // } else {
+      //   if (node.checked) {
+      //     this.checkList.push({
+      //       id: node.data.id,
+      //       name: this.addName(node, "") + "/全部"
+      //     });
+      //   }
+      // }
     },
     formatNodea(node) {
       this.deleteNode(node.data.id);
@@ -228,10 +231,16 @@ export default {
       }
     },
     addName(node, name) {
-      if (node.parent == null) {
-        return name;
+      console.log(node);
+      if (node.level == 1) {
+        return node.data.label + "/" + name;
       }
-      let resName = node.data.label + name;
+      let resName = "";
+      if (name != "") {
+        resName = node.data.label + "/" + name;
+      } else {
+        resName = node.data.label;
+      }
       return this.addName(node.parent, resName);
     },
     removeCheck(id) {
@@ -249,43 +258,9 @@ export default {
     },
     nodeClick(data, node, current) {
       // console.log(node);
-      this.currentNode = node;
-      this.formatNodea(node);
-      this.type = node.data.type;
-    },
-    addNodes() {
-      // this.$refs.treeRefs.append(
-      //   {
-      //     id: 20,
-      //     label: "XX部门"
-      //   },
-      //   this.currentNode
-      // );
-      this.currentNode.data.label = "aaaaaaaa";
-      // this.$refs.treeRefs.insertAfter(
-      //   {
-      //     id: 20,
-      //     label: "XX部门"
-      //   },
-      //   this.currentNode
-      // );
-      this.$refs.treeRefs.setCurrentNode(this.currentNode);
-    },
-    addBu() {
-      this.data.push({
-        id: 1,
-        label: "a",
-        type: "a"
-      });
-      let index = this.allTypes.indexOf(this.type);
-      this.$refs.treeRefs.append(
-        {
-          id: 22,
-          type: this.allTypes[index + 1],
-          label: "员bbbbbb"
-        },
-        this.currentNode
-      );
+      // this.currentNode = node;
+      // this.formatNodea(node);
+      // this.type = node.data.type;
     }
   },
   mounted() {
@@ -298,11 +273,55 @@ export default {
   background: #fff;
   padding: 20px;
   overflow: hidden;
+  width: 100%;
+  display: flex;
   .left,
   .right {
-    width: 300px;
+    flex: 1;
+    .tree-search {
+      display: block;
+      width: 230px;
+      margin: 10px auto;
+    }
+    .tree-top {
+      width: 100%;
+      height: 60px;
+      overflow: hidden;
+    }
+    .tree-content {
+      max-height: 300px;
+      overflow-y: auto;
+    }
   }
-  .left {
+  .right {
+    position: relative;
+    padding-bottom: 50px;
+    .item {
+      display: block;
+      padding: 10px 15px;
+      margin: 2px 10px;
+      border: 1px solid #fff;
+      .close-btn {
+        float: right;
+        cursor: pointer;
+      }
+      &.active {
+        background: #f5f5f5;
+        border: 1px solid #eee;
+      }
+    }
+    .tree-top {
+      line-height: 60px;
+      .clear-empty {
+        color: blue;
+        cursor: pointer;
+      }
+    }
+    .operation {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+    }
   }
 }
 </style>
