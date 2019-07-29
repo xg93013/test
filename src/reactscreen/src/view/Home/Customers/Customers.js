@@ -264,12 +264,12 @@ class Index extends React.Component {
             polyline: true,
             data: this.convertLineData(getData),
             lineStyle: {
-                width: 1,
+                width: 1.5,
                 curveness: 0,
                 type: 'solid',
                 color: "#fff",
                 shadowColor: "#fff",
-                shadowBlur: 6
+                shadowBlur: 8
             },
             zlevel: 2,
             effect: {
@@ -331,7 +331,7 @@ class Index extends React.Component {
                     normal: {
                         color: "#fff",
                         shadowColor: 'rgba(255,255,255,0.8)',
-                        shadowBlur: 10
+                        shadowBlur: 0
                     }
                 },
                 label: {

@@ -78,12 +78,36 @@ export default {
                     {
                       id: 11,
                       label: "四级 1-1-1"
+                    },
+                    {
+                      id: 51,
+                      label: "四级 1-1-2"
                     }
                   ]
                 },
                 {
                   id: 10,
                   label: "三级 1-1-2"
+                }
+              ]
+            },
+            {
+              id: 34,
+              label: "二级 1-2",
+              children: [
+                {
+                  id: 39,
+                  label: "三级 1-2-1",
+                  children: [
+                    {
+                      id: 31,
+                      label: "四级 1-2-1"
+                    }
+                  ]
+                },
+                {
+                  id: 30,
+                  label: "三级 1-2-2"
                 }
               ]
             }
@@ -105,7 +129,7 @@ export default {
         },
         {
           id: 20,
-          label: "一级 2",
+          label: "一级 3",
           children: [
             {
               id: 22,
@@ -167,49 +191,77 @@ export default {
         return <span>{node.label}</span>;
       }
     },
-    getCheckedNodes() {
-      // console.log(this.$refs.treeRefs.getCheckedNodes());
-    },
     check(node, current) {
-      let currentNodes = this.$refs.treeRefs.getNode(node.id);
-      if (currentNodes.childNodes && currentNodes.childNodes.length > 0) {
-        for (let i = 0; i < currentNodes.childNodes.length; i++) {
-          if (currentNodes.childNodes[i].childNodes.length > 0) {
-            this.check(currentNodes.childNodes[i].data);
-          } else {
-            this.formatNode(currentNodes.childNodes[i]);
-          }
-        }
-        // console.log(currentNodes);
-        // this.formatNode(currentNodes, true);
-      } else {
-        this.formatNode(currentNodes);
-      }
+      let currentNode = this.$refs.treeRefs.getNode(node.id);
+      this.formatNode(currentNode);
+      this.checkParent(node);
+      this.checkChild(node);
     },
     checka(node, current) {
       let currentNodes = this.$refs.treeRefs.getNode(node.id);
       this.formatNodea(currentNodes);
     },
 
-    deleteAllNode() {},
+    checkParent(node) {
+      let currentNode = this.$refs.treeRefs.getNode(node.id);
+      if (currentNode.level != 1) {
+        let parent = currentNode.parent;
+        this.formatNode(parent);
+        if (parent.checked) {
+          this.deleteAllChildNode(parent);
+        } else {
+          this.selectChildNode(parent);
+        }
+        this.checkParent(parent.data);
+      }
+    },
+    checkChild(node) {
+      let currentNode = this.$refs.treeRefs.getNode(node.id);
+      if (currentNode.childNodes && currentNode.childNodes.length > 0) {
+        for (let i = 0; i < currentNode.childNodes.length; i++) {
+          this.deleteNode(currentNode.childNodes[i].data.id);
+          if (currentNode.childNodes[i].childNodes.length > 0) {
+            this.checkChild(currentNode.childNodes[i].data);
+          }
+        }
+      }
+    },
+
+    deleteAllChildNode(node) {
+      for (let i = 0; i < node.childNodes.length; i++) {
+        this.deleteNode(node.childNodes[i].data.id);
+      }
+    },
+    selectChildNode(node) {
+      for (let i = 0; i < node.childNodes.length; i++) {
+        this.formatNode(node.childNodes[i]);
+      }
+    },
 
     formatNode(node) {
+      // console.log(node);
       this.deleteNode(node.data.id);
-      // if (!all) {
       if (node.checked) {
-        this.checkList.push({
-          id: node.data.id,
-          name: this.addName(node, "")
-        });
+        if (node.isLeaf) {
+          this.checkList.push({
+            id: node.data.id,
+            parent: {
+              id: node.level != 1 ? node.parent.data.id : "无",
+              label: node.level != 1 ? node.parent.data.label : "无"
+            },
+            name: this.addName(node, "")
+          });
+        } else {
+          this.checkList.push({
+            id: node.data.id,
+            name: this.addName(node, "") + "/全部",
+            parent: {
+              id: node.level != 1 ? node.parent.data.id : "无",
+              label: node.level != 1 ? node.parent.data.label : "无"
+            }
+          });
+        }
       }
-      // } else {
-      //   if (node.checked) {
-      //     this.checkList.push({
-      //       id: node.data.id,
-      //       name: this.addName(node, "") + "/全部"
-      //     });
-      //   }
-      // }
     },
     formatNodea(node) {
       this.deleteNode(node.data.id);
@@ -231,6 +283,19 @@ export default {
       }
     },
     addName(node, name) {
+      // console.log(node);
+      if (node.level == 0) {
+        return name;
+      }
+      let resName = "";
+      if (name != "") {
+        resName = node.data.label + "/" + name;
+      } else {
+        resName = node.data.label;
+      }
+      return this.addName(node.parent, resName);
+    },
+    addNamea(node, name) {
       console.log(node);
       if (node.level == 1) {
         return node.data.label + "/" + name;
@@ -255,6 +320,7 @@ export default {
     },
     getCheckedNodes() {
       console.log(this.$refs.treeRefs.getCheckedNodes());
+      console.log(this.checkList);
     },
     nodeClick(data, node, current) {
       // console.log(node);
