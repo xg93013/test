@@ -1,0 +1,235 @@
+.over-view {
+    .over-view-top {
+        position: fixed;
+        left: 70px;
+        top: 80px;
+        right: 16px;
+        height: 60px;
+        background: #EBEBEB;
+        z-index: 10;
+
+        .over-view-title {
+            position: absolute;
+            left: 20px;
+            top: 14px;
+            height: 32px;
+            line-height: 32px;
+            color: #276AB0;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .over-view-search-box {
+            position: absolute;
+            right: 20px;
+            top: 14px;
+            height: 32px;
+            width: 350px;
+            z-index: 10;
+
+            .ant-input {
+                font-size: 16px;
+                padding-right: 58px;
+            }
+        }
+    }
+
+    .base-msg {
+        position: relative;
+        margin-top: 40px;
+        width: 100%;
+        height: 380px;
+        background: #fff;
+        padding: 20px;
+
+        .left {
+            position: absolute;
+            left: 80px;
+            top: 50%;
+            text-align: center;
+            transform: translate(0, -50%);
+
+            span {
+                color: #666;
+            }
+        }
+
+        .right {
+            position: absolute;
+            left: 380px;
+            right: 20px;
+            top: 50%;
+            transform: translate(0, -50%);
+            font-size: 24px;
+            color: #666;
+            line-height: 40px;
+        }
+    }
+
+    .supervise-msg {
+        position: relative;
+        width: 100%;
+        margin-top: 20px;
+        padding: 50px 10px 20px 10px;
+        overflow: hidden;
+        background: #F6F6F6;
+
+        .supervise-content {
+            width: 100%;
+
+            >div {
+                float: left;
+                width: 14.2%;
+                padding: 0 10px;
+
+                >div {
+                    position: relative;
+                    width: 100%;
+                    overflow: hidden;
+                    background: #fff;
+                    box-shadow: 3px 4px 13px 0px rgba(0, 0, 0, 0.09);
+
+                    .bg {
+                        position: absolute;
+                        width: 100px;
+                        height: 30px;
+                        transform: rotate(45deg);
+                        right: -60px;
+                        top: 0;
+                    }
+                }
+            }
+
+            .supervise-name {
+                width: 100%;
+                text-align: center;
+                height: 50px;
+                line-height: 50px;
+                font-size: 16px;
+                color: #000;
+                border-bottom: 1px solid #efefef;
+            }
+
+            .detail-msg {
+                width: 100%;
+                height: 250px;
+                padding: 20px 0;
+                text-align: center;
+
+                >div {
+                    display: inline-block;
+                    color: #666;
+                    font-size: 16px;
+                    text-align: left;
+
+                    i {
+                        position: relative;
+                        display: inline-block;
+                        width: 6px;
+                        height: 6px;
+                        border-radius: 50%;
+                        background: #90D7BF;
+                        top: -2px;
+                        margin-right: 6px;
+                    }
+                }
+            }
+        }
+    }
+
+    .msg-title {
+        position: absolute;
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        padding-left: 20px;
+        font-size: 20px;
+        color: #000;
+        left: 0;
+        top: 0;
+    }
+}
+
+.overview-pop {
+    .ant-modal-footer {
+        display: none !important;
+    }
+
+    .ant-modal-body {
+        padding: 0;
+        padding-bottom: 20px
+    }
+
+    .modal-lists {
+        position: relative;
+        width: 100%;
+
+        .modal-list {
+            width: 100%;
+            overflow: hidden;
+
+            .modal-list-top {
+                width: 100%;
+                height: 50px;
+                padding-top: 21px;
+            }
+        }
+    }
+
+    thead * {
+        font-size: 14px;
+    }
+
+    .modal-lists-a {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        padding: 20px;
+
+        table {
+            width: 100%;
+            margin-bottom: 20px;
+
+            td {
+                height: 40px;
+                border: 1px solid #ccc;
+                padding: 0 20px;
+
+                &:nth-child(1),
+                &:nth-child(3) {
+                    width: 16%;
+                    background: #E6E6E6;
+                    text-align: right;
+                }
+
+                &:nth-child(2),
+                &:nth-child(4) {
+                    width: 34%;
+                    text-align: left;
+                }
+            }
+        }
+    }
+}
+
+.search-box-lists {
+    width: 320px;
+    overflow: hidden;
+    background: #fff;
+
+    >div {
+        width: 100%;
+        height: 30px;
+        line-height: 30px;
+        font-size: 16px;
+        cursor: pointer;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        transition: .3s;
+
+        &:hover {
+            background: #EBEBEB;
+        }
+    }
+}
