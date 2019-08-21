@@ -105,7 +105,16 @@
           min-width="150"
           v-for="(item,index) in oneModeColumn"
           :key="'defaultmode'+index"
-        ></el-table-column>
+        >
+          <el-table-column
+            :prop="itema.prop"
+            :label="itema.name"
+            min-width="150"
+            v-for="(itema,indexa) in item.standards"
+            v-if="itema.list.length>0"
+            :key="'standardmode'+indexa"
+          ></el-table-column>
+        </el-table-column>
         <el-table-column
           v-for="(item,index) in oneModeColumn"
           :label="item.name"
@@ -198,9 +207,63 @@ export default {
           showFullName: true,
           originData: [],
           defaultData: [
+            // {
+            //   id: 1,
+            //   label: "2017年"
+            // }
+          ],
+          standards: [
             {
-              id: 1,
-              label: "2017年"
+              name: "年度",
+              level: 1,
+              prop: "time",
+              list: [
+                {
+                  id: "a1",
+                  dimName: "time",
+                  level: 1,
+                  dimValue: "2017"
+                }
+              ]
+            },
+            {
+              name: "半年",
+              level: 2,
+              prop: "halfYear",
+              list: [
+                {
+                  id: "a1",
+                  dimName: "halfYear",
+                  level: 2,
+                  dimValue: "上半年"
+                }
+              ]
+            },
+            {
+              name: "季度",
+              level: 3,
+              prop: "season",
+              list: [
+                {
+                  id: "a1",
+                  dimName: "season",
+                  level: 3,
+                  dimValue: "1季度"
+                }
+              ]
+            },
+            {
+              name: "月度",
+              level: 4,
+              prop: "month",
+              list: [
+                {
+                  id: "a1",
+                  dimName: "month",
+                  level: 4,
+                  dimValue: "1月"
+                }
+              ]
             }
           ],
           list: [
@@ -210,6 +273,9 @@ export default {
               name: "2017"
             }
           ]
+          // standardsList: [{
+
+          // }]
         },
         {
           name: "区域",
@@ -219,6 +285,58 @@ export default {
           showFullName: true,
           originData: [],
           defaultData: [],
+          standards: [
+            {
+              name: "国家",
+              level: 1,
+              prop: "all",
+              list: [
+                // {
+                //   id: "a1",
+                //   prop: "all",
+                //   name: "全国"
+                // }
+              ]
+            },
+            {
+              name: "省份",
+              level: 2,
+              prop: "province",
+              list: [
+                // {
+                //   id: "a1",
+                //   prop: "province",
+                //   name: "四川省"
+                // }
+              ]
+            },
+            {
+              name: "地市",
+              level: 3,
+              prop: "city",
+              list: [
+                {
+                  id: "a1",
+                  dimName: "city",
+                  level: 3,
+                  dimValue: "成都市"
+                }
+              ]
+            },
+            {
+              name: "区/县",
+              level: 4,
+              prop: "area",
+              list: [
+                {
+                  id: "a1",
+                  dimName: "area",
+                  level: 4,
+                  dimValue: "高新区"
+                }
+              ]
+            }
+          ],
           list: [
             {
               id: "b1",
@@ -233,7 +351,7 @@ export default {
           ]
         },
         {
-          name: "监测项目",
+          name: "食品品类",
           prop: "item",
           checked: true,
           isLeaf: false,
@@ -292,6 +410,60 @@ export default {
             //   label: "亚类2"
             // }
           ],
+          standards: [
+            {
+              name: "大类",
+              level: 1,
+              prop: "categories",
+              list: [
+                {
+                  id: "a1",
+                  dimName: "categories",
+                  level: 1,
+                  dimValue: "大类"
+                }
+              ]
+            },
+            {
+              name: "亚类",
+              level: 2,
+              prop: "subClass",
+              list: [
+                {
+                  id: "a1",
+                  dimName: "subClass",
+                  level: 2,
+                  dimValue: "亚类"
+                }
+              ]
+            },
+            {
+              name: "次亚类",
+              level: 3,
+              prop: "subSubClass",
+              list: [
+                {
+                  id: "a1",
+                  dimName: "subSubClass",
+                  level: 3,
+                  dimValue: "次亚类"
+                }
+              ]
+            },
+            {
+              name: "细类",
+              level: 4,
+              prop: "lastClass",
+              list: [
+                {
+                  id: "a1",
+                  dimName: "lastClass",
+                  level: 4,
+                  dimValue: "细类"
+                }
+              ]
+            }
+          ],
           list: [
             {
               id: "c1",
@@ -301,13 +473,14 @@ export default {
           ]
         },
         {
-          name: "品类",
+          name: "监测项目",
           prop: "inner",
-          checked: false,
+          checked: true,
           isLeaf: true,
           showFullName: false,
           splitStr: "/",
           originData: [],
+          // 检测项目类别、单个检测项目
           defaultData: [
             // {
             //   id: 2,
@@ -317,6 +490,40 @@ export default {
             //   id: 3,
             //   label: "品类次类2"
             // }
+          ],
+          standards: [
+            {
+              name: "检测项目类别",
+              level: 1,
+              prop: "detectionCategories",
+              list: [
+                {
+                  id: "a1",
+                  dimName: "detectionCategories",
+                  level: 1,
+                  dimValue: "检测项目类别"
+                }
+              ]
+            },
+            {
+              name: "单个检测项目",
+              level: 2,
+              prop: "detectionSubClass",
+              list: [
+                {
+                  id: "a1",
+                  dimName: "detectionSubClass",
+                  level: 2,
+                  dimValue: "单个检测项目"
+                },
+                {
+                  id: "a1",
+                  dimName: "detectionSubClass",
+                  level: 2,
+                  dimValue: "单个检测项目"
+                }
+              ]
+            }
           ],
           list: [
             {
@@ -338,10 +545,10 @@ export default {
           isLeaf: true,
           originData: [],
           defaultData: [
-            {
-              id: 2,
-              label: "流通2"
-            }
+            // {
+            //   id: 2,
+            //   label: "流通2"
+            // }
           ],
           list: [
             {
@@ -633,136 +840,6 @@ export default {
             }
           ]
         }
-        // {
-        //   id: "a",
-        //   name: "2019",
-        //   prop: "time",
-        //   totalCount: 20000,
-        //   otherCount: 10000,
-        //   children: [
-        //     {
-        //       id: "ab",
-        //       name: "高新区",
-        //       prop: "area",
-        //       totalCount: "--",
-        //       otherCount: "--",
-        //       children: [
-        //         {
-        //           id: "abc",
-        //           name: "维度3",
-        //           prop: "item",
-        //           totalCount: 300,
-        //           otherCount: 400,
-        //           children: [
-        //             {
-        //               id: "abcd",
-        //               name: "维度4",
-        //               prop: "inner",
-        //               totalCount: 500,
-        //               otherCount: 600,
-        //               children: [
-        //                 {
-        //                   id: "abcd",
-        //                   name: "环节",
-        //                   prop: "links",
-        //                   totalCount: 500,
-        //                   otherCount: 600,
-        //                   children: null
-        //                 }
-        //               ]
-        //             },
-        //             {
-        //               id: "abcd",
-        //               name: "维度42",
-        //               prop: "inner",
-        //               totalCount: 500,
-        //               otherCount: 600,
-        //               children: [
-        //                 {
-        //                   id: "abcd",
-        //                   name: "环节",
-        //                   prop: "links",
-        //                   totalCount: 500,
-        //                   otherCount: 600,
-        //                   children: null
-        //                 }
-        //               ]
-        //               // children: null
-        //             }
-        //           ]
-        //         }
-        //       ]
-        //     },
-        //     {
-        //       id: "ae",
-        //       name: "武侯区",
-        //       prop: "area",
-        //       totalCount: 300,
-        //       otherCount: 400,
-        //       children: [
-        //         {
-        //           id: "abc",
-        //           name: "维度3",
-        //           prop: "item",
-        //           totalCount: 700,
-        //           otherCount: 800,
-        //           children: [
-        //             {
-        //               id: "abcd",
-        //               name: "维度4",
-        //               prop: "inner",
-        //               totalCount: 900,
-        //               otherCount: 200
-        //               // children: null
-        //             },
-        //             {
-        //               id: "abcd",
-        //               name: "维度42",
-        //               prop: "inner",
-        //               totalCount: 500,
-        //               otherCount: 600
-        //               // children: null
-        //             }
-        //           ]
-        //         }
-        //       ]
-        //     },
-        //     {
-        //       id: "ae",
-        //       name: "双流区",
-        //       prop: "area",
-        //       totalCount: 300,
-        //       otherCount: 400,
-        //       children: [
-        //         {
-        //           id: "abc",
-        //           name: "维度3",
-        //           prop: "item",
-        //           totalCount: 700,
-        //           otherCount: 800,
-        //           children: [
-        //             {
-        //               id: "abcd",
-        //               name: "维度4",
-        //               prop: "inner",
-        //               totalCount: 900,
-        //               otherCount: 200
-        //               // children: null
-        //             },
-        //             {
-        //               id: "abcd",
-        //               name: "维度42",
-        //               prop: "inner",
-        //               totalCount: 500,
-        //               otherCount: 600
-        //               // children: null
-        //             }
-        //           ]
-        //         }
-        //       ]
-        //     }
-        //   ]
-        // }
       ],
 
       // 根据数据合并行
@@ -804,27 +881,33 @@ export default {
       {
         id: 1,
         label: "2017年",
+        level: 1,
         children: [
           {
             id: 2,
+            level: 4,
             label: "1月"
           },
           {
             id: 3,
+            level: 4,
             label: "2月"
           }
         ]
       },
       {
         id: 4,
+        level: 1,
         label: "2018年",
         children: [
           {
             id: 5,
+            level: 4,
             label: "1月"
           },
           {
             id: 6,
+            level: 4,
             label: "2月"
           }
         ]
@@ -833,10 +916,12 @@ export default {
     this.moreMode[1].originData = [
       {
         id: 1,
+        level: 4,
         label: "高新区"
       },
       {
         id: 2,
+        level: 4,
         label: "武侯区"
       }
     ];
@@ -860,11 +945,13 @@ export default {
     let obj = {
       id: 1,
       label: "类1",
+      level: 1,
       children: []
     };
     for (let i = 0; i < 30; i++) {
       obj.children.push({
         id: 300 + i,
+        level: 2,
         label: "亚类" + 10 + i,
         children: []
       });
@@ -872,14 +959,16 @@ export default {
         obj.children[i].children.push({
           id: i * 100 + 2000 + j,
           label: "亚类" + 2000 + j,
+          level: 3,
           children: []
         });
-        for (let k = 0; k < 20; k++) {
-          obj.children[i].children[j].children.push({
-            id: (i + 1) * 8000 + (j + 1) * 1000 + k,
-            label: "亚类" + (i + 1) * 8000 + (j + 1) * 1000 + k
-          });
-        }
+        // for (let k = 0; k < 20; k++) {
+        //   obj.children[i].children[j].children.push({
+        //     id: (i + 1) * 8000 + (j + 1) * 1000 + k,
+        //     level: 4,
+        //     label: "亚类" + (i + 1) * 8000 + (j + 1) * 1000 + k
+        //   });
+        // }
       }
     }
     this.moreMode[2].originData[0] = { ...obj };
@@ -888,13 +977,16 @@ export default {
       {
         id: 1,
         label: "品类大类",
+        level: 1,
         children: [
           {
             id: 2,
+            level: 2,
             label: "品类次类"
           },
           {
             id: 3,
+            level: 2,
             label: "品类次类2"
           }
         ]
@@ -902,14 +994,17 @@ export default {
       {
         id: 4,
         label: "品类大类1",
+        level: 1,
         children: [
           {
             id: 5,
-            label: "品类次类3"
+            label: "品类次类3",
+            level: 2
           },
           {
             id: 6,
-            label: "品类次类4"
+            label: "品类次类4",
+            level: 2
           }
         ]
       }
@@ -937,8 +1032,8 @@ export default {
     //     });
     //   }
     // }
-    // this.checkMore();
-    this.getDatas();
+    this.checkMore();
+    // this.getDatas();
   },
   methods: {
     search() {
@@ -977,27 +1072,55 @@ export default {
           break;
         }
       }
-      this.moreMode[index].list = [];
-      for (let j = 0; j < arr.length; j++) {
-        this.moreMode[index].list.push({
-          id: arr[j].id,
-          name: arr[j].nodeLabel,
-          prop: modeType
-        });
+      for (let i = 0; i < this.moreMode[index].standards.length; i++) {
+        this.moreMode[index].standards[i].list = [];
+        let obj = this.moreMode[index].standards[i];
+        for (let j = 0; j < arr.length; j++) {
+          if (obj.level == arr[j].level) {
+            obj.list.push({
+              id: arr[j].id,
+              level: arr[j].level,
+              dimValue: arr[j].nodeLabel,
+              dimName: obj.prop
+            });
+          }
+        }
       }
+      // this.moreMode[index].list = [];
+
+      // for (let j = 0; j < arr.length; j++) {
+      //   this.moreMode[index].list.push({
+      //     id: arr[j].id,
+      //     name: arr[j].nodeLabel,
+      //     prop: modeType
+      //   });
+      // }
+      // this.moreMode.standards.list = [];
+      // let list = this.moreMode.standards.list;
+      // for (let i = 0; i < list.length; i++) {
+      //   for (let j = 0; j < arr.length; j++) {
+      //     if (list[i].level == arr[j].level) {
+      //       list[i].push({
+      //         id: arr[j].id,
+      //         level: arr[j].level,
+      //         dimValue: arr[j].nodeLabel,
+      //         dimName: list[i].prop
+      //       });
+      //     }
+      //   }
+      // }
       this.checkMore();
     },
     getTreeNode(node, children) {
       if (!node) {
         return;
       }
-      if (node.children && node.children.length != 0) {
-        for (let i = 0; i < node.children.length; i++) {
-          this.getTreeNode(node.children[i], children);
+      if (node.dataList && node.dataList.length != 0) {
+        for (let i = 0; i < node.dataList.length; i++) {
+          this.getTreeNode(node.dataList[i], children);
         }
       } else {
-        // console.log(node);
-        node.children = JSON.parse(children);
+        node.dataList = JSON.parse(children);
       }
     },
     treeData(data, pid) {
@@ -1061,7 +1184,7 @@ export default {
             // if (!["id", "prop", "name", "children"].includes(key)) {
             //   this.obj[node.children[i].prop + key] = node.children[i][key];
             // }
-            if (!["dimName", "dimValue", "dataList"].includes(key)) {
+            if (!["id", "dimName", "dimValue", "dataList"].includes(key)) {
               this.obj[node.dataList[i].dimName + key] = node.dataList[i][key];
             }
           }
@@ -1069,6 +1192,7 @@ export default {
         }
       } else {
         if (node.name != "start") {
+          console.log({ ...this.obj });
           this.tableData.push({ ...this.obj });
         }
       }
@@ -1152,15 +1276,24 @@ export default {
       };
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].checked) {
-          if (arr[i].list.length > 0) {
-            this.getTreeNode(this.resultTree, JSON.stringify(arr[i].list));
+          // if (arr[i].list.length > 0) {
+          //   this.getTreeNode(this.resultTree, JSON.stringify(arr[i].list));
+          // }
+          for (let j = 0; j < arr[i].standards.length; j++) {
+            for (let k = 0; k < arr[i].standards[j].list.length; k++) {
+              // console.log(arr[i].standards[j].list[k]);
+              this.getTreeNode(
+                this.resultTree,
+                JSON.stringify(arr[i].standards[j].list)
+              );
+            }
           }
         }
       }
-      // this.getTableData(this.resultTree);
-      // this.getMoreColspan();
+      console.log(this.resultTree);
       this.getTableData({ ...this.resultTree });
       this.getMoreColspan();
+      console.log(this.tableData);
     },
     // 计算各列合并行1
     getMoreColspana() {
@@ -1234,9 +1367,8 @@ export default {
           index++;
         }
       }
-      // console.log(this.moreMode);
-      // console.log(this.modeColspan);
-      // console.log(this.tableData);
+      console.log(this.moreMode);
+      console.log(this.modeColspan);
     },
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       // for (let i = 0; i < this.colsArr.length; i++) {
