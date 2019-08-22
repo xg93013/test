@@ -21,7 +21,7 @@
                 node-key="id"
                 :data="datas"
                 @node-click="nodeClick"
-                :check-strictly="false"
+                :check-strictly="checkStrictly"
                 :filter-node-method="filterNode"
                 :default-expand-all="false"
                 :expand-on-click-node="true"
@@ -54,6 +54,7 @@
                 :key="'treenode'+index"
                 :class="{'active':index==selectIndex}"
                 @click="selectIndex=index"
+                v-if="item.show"
               >
                 {{item.label}}
                 <span
@@ -101,7 +102,8 @@ export default {
         label: "name",
         children: "zones",
         isLeaf: "leaf"
-      }
+      },
+      checkStrictly: false
       // leaf: false
     };
   },
@@ -277,14 +279,55 @@ export default {
     },
     check(node) {
       let currentNode = this.$refs.treeRefs.getNode(node.id);
-      console.log(currentNode);
       if (this.isLeaf) {
-        this.checkLeaf(node);
-        this.getLeafNode(node);
+        if (this.checkLeafList.length > 0) {
+          let level = this.checkLeafList[0].level;
+          if (node.level == level) {
+            this.checkLeaf(node);
+            this.getLeafNode(node);
+          } else {
+            this.$refs.treeRefs.setChecked(node.id, !currentNode.checked, true);
+            for (let i = 0; i < this.checkLeafList.length; i++) {
+              if (this.checkLeafList[i].show) {
+                this.$refs.treeRefs.setChecked(
+                  this.checkLeafList[i].id,
+                  true,
+                  true
+                );
+              }
+            }
+            this.$message.error("请选择同级节点");
+          }
+        } else {
+          this.checkLeaf(node);
+          this.getLeafNode(node);
+        }
       } else {
-        this.formatNode(currentNode);
-        this.checkParent(node);
-        this.checkChild(node);
+        if (this.checkList.length > 0) {
+          let level = this.checkList[0].level;
+          if (node.level == level) {
+            this.formatNode(currentNode);
+            this.checkParent(node);
+            this.checkChild(node);
+          } else {
+            this.$refs.treeRefs.setChecked(node.id, !currentNode.checked, true);
+            for (let i = 0; i < this.checkList.length; i++) {
+              if (this.checkList[i].show) {
+                this.$refs.treeRefs.setChecked(
+                  this.checkList[i].id,
+                  true,
+                  true
+                );
+              }
+            }
+            this.$message.error("请选择同级节点");
+          }
+        } else {
+          // console.log(currentNode);
+          this.formatNode(currentNode);
+          this.checkParent(node);
+          this.checkChild(node);
+        }
       }
       this.getSelectLength();
       // console.log(this.checkList);
@@ -345,13 +388,20 @@ export default {
     formatNode(node) {
       this.deleteNode(node.data.id);
       if (node.checked) {
+        let currentNode = this.$refs.treeRefs.getNode(node.data.id);
         // 不显示全部
         this.checkList.push({
           id: node.data.id,
           label: this.showFullName ? this.addName(node, "") : node.data.label,
           level: node.data.level,
-          nodeLabel: node.data.label
+          nodeLabel: node.data.label,
+          parentId: node.data.level > 1 ? currentNode.parent.data.id : null,
+          show: true
         });
+        console.log(node);
+        if (node.data.level > 1) {
+          this.formatParentNode(currentNode.parent);
+        }
 
         // 显示全部
         // if (node.isLeaf) {
@@ -369,6 +419,22 @@ export default {
         //     nodeLabel: node.data.label
         //   });
         // }
+      }
+    },
+    formatParentNode(node) {
+      this.deleteNode(node.data.id);
+      if (!this.isLeaf) {
+        this.checkList.push({
+          id: node.data.id,
+          label: node.data.label,
+          level: node.data.level,
+          nodeLabel: node.data.label,
+          parentId: node.data.level > 1 ? node.parent.data.id : null,
+          show: false
+        });
+        if (node.data.level > 1) {
+          this.formatParentNode(node.parent);
+        }
       }
     },
     formatLeafNode(node) {
@@ -439,6 +505,7 @@ export default {
       this.getSelectLength();
     },
     getCheckedNodes() {
+      console.log(this.checkList);
       this.$emit(
         "downTree",
         this.isLeaf ? this.checkLeafList : this.checkList,
