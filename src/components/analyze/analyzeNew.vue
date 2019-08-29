@@ -65,6 +65,7 @@
           >
             <el-checkbox v-model="item.checked">{{item.name}}</el-checkbox>
             </div>-->
+            <!-- -->
             <el-radio-group v-model="moreMode[currentMode].currentStandard" @change="checkMore">
               <el-radio
                 :label="index"
@@ -611,6 +612,10 @@ export default {
         id: "0",
         name: "start"
       },
+      selectTree: {
+        id: 0,
+        name: "start"
+      },
       obj: {},
       modeColspan: {},
       tableData: [],
@@ -876,7 +881,9 @@ export default {
           ]
         }
       ],
-      leafNodesLen: 0
+      leafNodesLen: 0,
+      oneId: 1,
+      maxLen: 1000
     };
   },
   components: {
@@ -1051,35 +1058,156 @@ export default {
       }
     ];
     let obj = {
-      id: 1,
+      id: this.getId(),
       label: "大类1",
       level: 1,
-      children: []
+      children: [
+        // {
+        //   id: 2,
+        //   label: "亚类1",
+        //   level: 2,
+        //   children: [
+        //     {
+        //       id: 5,
+        //       label: "次亚类1",
+        //       level: 3,
+        //       children: [
+        //         {
+        //           id: 9,
+        //           label: "细类1",
+        //           level: 4
+        //         },
+        //         {
+        //           id: 10,
+        //           label: "细类2",
+        //           level: 4
+        //         }
+        //       ]
+        //     }
+        //   ]
+        // },
+        // {
+        //   id: 20,
+        //   label: "亚类2",
+        //   level: 2,
+        //   children: [
+        //     {
+        //       id: 11,
+        //       label: "次亚类2",
+        //       level: 3,
+        //       children: [
+        //         {
+        //           id: 12,
+        //           label: "细类3",
+        //           level: 4
+        //         },
+        //         {
+        //           id: 13,
+        //           label: "细类4",
+        //           level: 4
+        //         }
+        //       ]
+        //     },
+        //     {
+        //       id: 14,
+        //       label: "次亚类3",
+        //       level: 3,
+        //       children: [
+        //         {
+        //           id: 15,
+        //           label: "细类5",
+        //           level: 4
+        //         },
+        //         {
+        //           id: 16,
+        //           label: "细类6",
+        //           level: 4
+        //         }
+        //       ]
+        //     }
+        //   ]
+        // },
+        // {
+        //   id: 30,
+        //   label: "亚类3",
+        //   level: 2,
+        //   children: [
+        //     {
+        //       id: 31,
+        //       label: "次亚类4",
+        //       level: 3,
+        //       children: [
+        //         {
+        //           id: 32,
+        //           label: "细类7",
+        //           level: 4
+        //         },
+        //         {
+        //           id: 33,
+        //           label: "细类8",
+        //           level: 4
+        //         }
+        //       ]
+        //     },
+        //     {
+        //       id: 34,
+        //       label: "次亚类5",
+        //       level: 3,
+        //       children: [
+        //         {
+        //           id: 35,
+        //           label: "细类9",
+        //           level: 4
+        //         },
+        //         {
+        //           id: 36,
+        //           label: "细类10",
+        //           level: 4
+        //         }
+        //       ]
+        //     }
+        //   ]
+        // }
+        // {
+        //   id: 3,
+        //   label: "亚类3",
+        //   level: 2
+        // },
+        // {
+        //   id: 4,
+        //   label: "亚类4",
+        //   level: 2
+        // }
+      ]
     };
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 2; i++) {
+      let id = this.getId();
       obj.children.push({
-        id: 300 + i,
+        id: id,
         level: 2,
-        label: "亚类" + 300 + i,
+        label: "亚类" + id,
         children: []
       });
-      for (let j = 0; j < 10; j++) {
+      for (let j = 0; j < 2; j++) {
+        let inId = this.getId();
         obj.children[i].children.push({
-          id: i * 100 + 2000 + j,
-          label: "次亚类" + i * 100 + 2000 + j,
+          id: inId,
+          label: "次亚类" + inId,
           level: 3,
           children: []
         });
         for (let k = 0; k < 2; k++) {
+          let innerId = this.getId();
           obj.children[i].children[j].children.push({
-            id: (i + 1) * 8000 + (j + 1) * 1000 + (k + 1),
+            id: innerId,
             level: 4,
-            label: "细类" + (i + 1) * 8000 + (j + 1) * 1000 + (k + 1)
+            label: "细类" + innerId
           });
         }
       }
     }
     this.moreMode[1].originData = [obj];
+    // console.log(JSON.stringify(this.moreMode[1].originData));
     // console.log(this.moreMode[2]);
     this.moreMode[3].originData = [
       {
@@ -1151,6 +1279,10 @@ export default {
     // this.getDatas();
   },
   methods: {
+    getId() {
+      this.oneId++;
+      return this.oneId;
+    },
     search() {
       this.getDatas();
     },
@@ -1175,7 +1307,7 @@ export default {
     },
     selectDown(arr, modeType) {
       let index = 0;
-      console.log(arr);
+      // console.log(arr);
       // console.log(modeType);
       for (let i = 0; i < this.moreMode.length; i++) {
         if (this.moreMode[i].prop == modeType) {
@@ -1210,7 +1342,7 @@ export default {
         }
       }
       this.checkMore();
-      console.log(this.moreMode);
+      // console.log(this.moreMode);
     },
     getTreeNode(node, linkParent, children) {
       if (!node) {
@@ -1221,24 +1353,30 @@ export default {
           this.getTreeNode(node.dataList[i], linkParent, children);
         }
       } else {
-        let arr = JSON.parse(children);
+        // let arr = [...JSON.parse(children)];
         // if(node.level == 1){
         //   arr = children
         // } else {
 
         // }
+        let origin = JSON.parse(children);
+        let arr = [];
+
         if (linkParent) {
-          // for (let i = 0; i < arr.length; i++) {
-          //   if (node.id == arr[i].parentId) {
-          //     links.push(arr[i]);
-          //   }
-          // }
-          arr = arr.filter(function(item) {
-            return node.id == item.parentId;
-          });
+          for (let j = 0; j < origin.length; j++) {
+            if (node.id == origin[j].parentId) {
+              arr.push({ ...origin[j] });
+            }
+          }
+          // arr = arr.filter(function(item) {
+          //   return node.id == item.parentId;
+          // });
+        } else {
+          arr = JSON.parse(children);
         }
+        // console.log([...arr]);
         // console.log(arr);
-        node.dataList = [...arr];
+        node.dataList = arr;
         // node.colsLevel = this.colsLevel;
       }
     },
@@ -1388,7 +1526,7 @@ export default {
         }
         this.modeColspan[h] = obj;
       }
-      console.log(this.modeColspan);
+      // console.log(this.modeColspan);
     },
     getLeafNodesLength(node) {
       if (node.dataList != null) {
@@ -1444,43 +1582,56 @@ export default {
       this.getMoreColspanb();
     },
     checkMore() {
+      let totalLen = this.tableData.length;
+      console.log(totalLen);
       this.obj = {};
       this.tableData = [];
       this.modeColspan = {};
+      this.leafNodesLen = 0;
       // this.$nextTick(() => {
       let arr = [...this.oneModeColumn];
+      let originArr = [...this.moreMode];
       this.resultTree = {
         id: "0",
         name: "start"
       };
-      console.log(arr);
-      for (let i = 0; i < arr.length; i++) {
-        if (arr[i].checked) {
-          console.log(arr[i].currentStandard);
-          for (let j = 0; j < arr[i].standards.length; j++) {
-            if (j <= parseInt(arr[i].currentStandard)) {
-              if (arr[i].standards[j].list.length > 0) {
-                let linkParent = false;
-                if (j > 0) {
-                  linkParent = true;
+      this.getTree = {
+        id: "0",
+        name: "start"
+      };
+      if (arr.length > 0) {
+        for (let i = 0; i < arr.length; i++) {
+          if (arr[i].checked) {
+            // console.log(arr[i].currentStandard);
+            for (let j = 0; j < arr[i].standards.length; j++) {
+              if (j <= parseInt(arr[i].currentStandard)) {
+                if (arr[i].standards[j].list.length > 0) {
+                  let linkParent = false;
+                  if (j > 0) {
+                    linkParent = true;
+                  }
+                  this.getTreeNode(
+                    this.resultTree,
+                    linkParent,
+                    JSON.stringify(arr[i].standards[j].list)
+                  );
+                  this.leafNodesLen = 0;
+                  this.getLeafNodesLength(this.resultTree);
+                  if (this.leafNodesLen >= this.maxLen) {
+                    this.moreMode[this.currentMode].currentStandard = -1;
+                    this.$message.warning(
+                      `显示数据大于${this.maxLen}行，请导出查看！`
+                    );
+                    return;
+                  }
                 }
-                this.getTreeNode(
-                  this.resultTree,
-                  linkParent,
-                  JSON.stringify(arr[i].standards[j].list)
-                );
               }
             }
           }
         }
+        this.getTableData({ ...this.resultTree });
+        this.getMoreColspanb();
       }
-      // console.log(this.oneModeColumn);
-      console.log(this.resultTree);
-      this.getTableData({ ...this.resultTree });
-      this.getMoreColspanb();
-      console.log(this.modeColspan);
-      console.log(this.tableData);
-      // });
     },
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       if (this.modeColspan[columnIndex]) {
