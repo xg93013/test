@@ -492,12 +492,17 @@ export default {
       // console.log(arr);
       for (let i = 0; i < arr.length; i++) {
         let node = this.$refs.treeRefs.getNode(arr[i].id);
+        // let yearId = node.data.level == 1 && this.modeType == "time" ? node.data.id : null;
         console.log(node);
         this.emitData.push({
           id: arr[i].id,
           label: arr[i].label,
           level: arr[i].level,
-          parentId: node.data.level > 1 ? node.parent.data.id : null
+          parentId: node.data.level > 1 ? node.parent.data.id : null,
+          yearId:
+            node.data.level > 1 && this.modeType == "time"
+              ? this.getYearId(node)
+              : null
         });
         if (node.checked) {
           this.getStepNodes(this.getChildNode(this.allData, arr[i].id));
@@ -511,20 +516,63 @@ export default {
       );
       this.visible = false;
     },
+    getYearId(node) {
+      if (node.data.level != 1) {
+        this.getYearId(node.parent);
+      } else {
+        return node.data.id;
+      }
+    },
     getStepNodes(node) {
       let parentId = node.id;
       if (node.children && node.children.length > 0) {
         for (let j = 0; j < node.children.length; j++) {
           // console.log(node);
+          // let inNode = this.$refs.treeRefs.getNode(node.children[j].id);
+          let inNodeArr = this.getParent(this.datas, node.children[j].id);
+          let yearId = null;
+          console.log(inNodeArr);
+          for (let m = 0; m < inNodeArr.length; m++) {
+            if (inNodeArr[m].level == 1) {
+              yearId = inNodeArr[m].id;
+            }
+          }
           this.emitData.push({
             id: node.children[j].id,
             label: node.children[j].label,
             level: node.children[j].level,
-            parentId: node.children[j].level > 1 ? parentId : null
+            parentId: node.children[j].level > 1 ? parentId : null,
+            yearId: yearId
           });
           this.getStepNodes(node.children[j]);
         }
       }
+    },
+    getParent(data2, nodeId2) {
+      var arrRes = [];
+      if (data2.length == 0) {
+        if (!!nodeId2) {
+          arrRes.unshift(data2);
+        }
+        return arrRes;
+      }
+      let rev = (data, nodeId) => {
+        for (var i = 0, length = data.length; i < length; i++) {
+          let node = data[i];
+          if (node.id == nodeId) {
+            arrRes.unshift(node);
+            rev(data2, node.parentId);
+            break;
+          } else {
+            if (!!node.children) {
+              rev(node.children, nodeId);
+            }
+          }
+        }
+        return arrRes;
+      };
+      arrRes = rev(data2, nodeId2);
+      return arrRes;
     },
     nodeClick(data, node, current) {
       // console.log(node);

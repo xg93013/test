@@ -60,12 +60,6 @@
             <div class="in-item in-title">
               <span>*</span>维度层级：
             </div>
-            <!-- <div
-            
-          >
-            <el-checkbox v-model="item.checked">{{item.name}}</el-checkbox>
-            </div>-->
-            <!-- -->
             <el-radio-group v-model="moreMode[currentMode].currentStandard" @change="checkMore">
               <el-radio
                 :label="index"
@@ -73,19 +67,20 @@
                 v-for="(item, index) in moreMode[currentMode].standards"
                 :key="'initem'+index"
               >{{item.name}}</el-radio>
-              <!-- <el-radio :label="6">备选项</el-radio>
-              <el-radio :label="9">备选项</el-radio>-->
             </el-radio-group>
           </div>
           <div class="in-tab">
             <div class="in-item in-title">统计指标：</div>
-            <div
-              class="in-item"
-              v-for="(item, index) in moreMode[currentMode].onecheckData"
-              :key="'onecheckData'+index"
+            <el-checkbox-group
+              v-model="moreMode[currentMode].selectCheck"
+              @change="changeCheckMore"
             >
-              <el-checkbox v-model="item.checked">{{item.name}}</el-checkbox>
-            </div>
+              <el-checkbox
+                :label="item.label"
+                v-for="(item, index) in moreMode[currentMode].onecheckData"
+                :key="'onecheckbox'+index"
+              >{{item.label}}</el-checkbox>
+            </el-checkbox-group>
           </div>
         </div>
         <div class="right">
@@ -124,7 +119,7 @@
                 :label="itema.name"
                 min-width="150"
                 v-for="(itema,indexa) in item.standards"
-                v-if="indexa<=item.currentStandard"
+                v-if="item.prop == 'time' ? (indexa==item.currentStandard || indexa == 0) : (indexa == item.currentStandard) "
                 :key="'standardmode'+indexa"
               ></el-table-column>
             </el-table-column>
@@ -132,14 +127,14 @@
               v-for="(item,index) in oneModeColumn"
               :label="item.name"
               align="center"
-              v-if="onecheckDataColumn.length>0"
+              v-if="item.checkResult.length>0"
               :key="'defaultmodea'+index"
             >
               <el-table-column
                 :prop="item.prop + itema.prop"
                 :label="itema.label"
                 min-width="150"
-                v-for="(itema,indexa) in onecheckDataColumn"
+                v-for="(itema,indexa) in item.checkResult"
                 :key="'defaultmodeb'+indexa"
               ></el-table-column>
             </el-table-column>
@@ -281,7 +276,36 @@ export default {
                 // }
               ]
             }
-          ]
+          ],
+          onecheckData: [
+            {
+              label: "数量1",
+              prop: "total",
+              checked: true
+            },
+            {
+              label: "数量2",
+              prop: "unTotal",
+              checked: true
+            },
+            {
+              label: "数量3",
+              prop: "unRatio",
+              checked: true
+            },
+            {
+              label: "数量4",
+              prop: "qtotal",
+              checked: true
+            },
+            {
+              label: "数量5",
+              prop: "qratio",
+              checked: true
+            }
+          ],
+          selectCheck: [],
+          checkResult: []
           // list: [
           //   {
           //     id: "a1",
@@ -407,7 +431,36 @@ export default {
                 // }
               ]
             }
-          ]
+          ],
+          onecheckData: [
+            {
+              label: "数量1",
+              prop: "total",
+              checked: true
+            },
+            {
+              label: "数量2",
+              prop: "unTotal",
+              checked: true
+            },
+            {
+              label: "数量3",
+              prop: "unRatio",
+              checked: true
+            },
+            {
+              label: "数量4",
+              prop: "qtotal",
+              checked: true
+            },
+            {
+              label: "数量5",
+              prop: "qratio",
+              checked: true
+            }
+          ],
+          selectCheck: [],
+          checkResult: []
         },
         {
           name: "监测区域",
@@ -482,7 +535,36 @@ export default {
             //   prop: "area",
             //   name: "武侯区"
             // }
-          ]
+          ],
+          onecheckData: [
+            {
+              label: "数量1",
+              prop: "total",
+              checked: true
+            },
+            {
+              label: "数量2",
+              prop: "unTotal",
+              checked: true
+            },
+            {
+              label: "数量3",
+              prop: "unRatio",
+              checked: true
+            },
+            {
+              label: "数量4",
+              prop: "qtotal",
+              checked: true
+            },
+            {
+              label: "数量5",
+              prop: "qratio",
+              checked: true
+            }
+          ],
+          selectCheck: [],
+          checkResult: []
         },
         {
           name: "检测项目",
@@ -537,7 +619,36 @@ export default {
                 // }
               ]
             }
-          ]
+          ],
+          onecheckData: [
+            {
+              label: "数量1",
+              prop: "total",
+              checked: true
+            },
+            {
+              label: "数量2",
+              prop: "unTotal",
+              checked: true
+            },
+            {
+              label: "数量3",
+              prop: "unRatio",
+              checked: true
+            },
+            {
+              label: "数量4",
+              prop: "qtotal",
+              checked: true
+            },
+            {
+              label: "数量5",
+              prop: "qratio",
+              checked: true
+            }
+          ],
+          selectCheck: [],
+          checkResult: []
         },
         {
           name: "抽检环节",
@@ -559,7 +670,36 @@ export default {
               prop: "linksOne",
               list: []
             }
-          ]
+          ],
+          onecheckData: [
+            {
+              label: "数量1",
+              prop: "total",
+              checked: true
+            },
+            {
+              label: "数量2",
+              prop: "unTotal",
+              checked: true
+            },
+            {
+              label: "数量3",
+              prop: "unRatio",
+              checked: true
+            },
+            {
+              label: "数量4",
+              prop: "qtotal",
+              checked: true
+            },
+            {
+              label: "数量5",
+              prop: "qratio",
+              checked: true
+            }
+          ],
+          selectCheck: [],
+          checkResult: []
         },
         {
           name: "任务来源",
@@ -581,7 +721,36 @@ export default {
               prop: "taskFromOne",
               list: []
             }
-          ]
+          ],
+          onecheckData: [
+            {
+              label: "数量1",
+              prop: "total",
+              checked: true
+            },
+            {
+              label: "数量2",
+              prop: "unTotal",
+              checked: true
+            },
+            {
+              label: "数量3",
+              prop: "unRatio",
+              checked: true
+            },
+            {
+              label: "数量4",
+              prop: "qtotal",
+              checked: true
+            },
+            {
+              label: "数量5",
+              prop: "qratio",
+              checked: true
+            }
+          ],
+          selectCheck: [],
+          checkResult: []
         },
         {
           name: "任务类型",
@@ -603,7 +772,36 @@ export default {
               prop: "taskTypeOne",
               list: []
             }
-          ]
+          ],
+          onecheckData: [
+            {
+              label: "数量1",
+              prop: "total",
+              checked: true
+            },
+            {
+              label: "数量2",
+              prop: "unTotal",
+              checked: true
+            },
+            {
+              label: "数量3",
+              prop: "unRatio",
+              checked: true
+            },
+            {
+              label: "数量4",
+              prop: "qtotal",
+              checked: true
+            },
+            {
+              label: "数量5",
+              prop: "qratio",
+              checked: true
+            }
+          ],
+          selectCheck: [],
+          checkResult: []
         }
       ],
       colsArr: [],
@@ -937,21 +1135,25 @@ export default {
               id: 25,
               label: "上半年",
               level: 2,
+              parentId: 1,
               children: [
                 {
                   id: 26,
                   label: "1季度",
                   level: 3,
+                  parentId: 25,
                   children: [
                     {
                       id: 2,
                       level: 4,
-                      label: "1月"
+                      label: "1月",
+                      parentId: 26
                     },
                     {
                       id: 3,
                       level: 4,
-                      label: "2月"
+                      label: "2月",
+                      parentId: 26
                     }
                   ]
                 }
@@ -963,25 +1165,30 @@ export default {
           id: 4,
           level: 1,
           label: "2018年",
+          parentId: null,
           children: [
             {
               id: 30,
               label: "上半年",
               level: 2,
+              parentId: 4,
               children: [
                 {
                   id: 31,
                   label: "1季度",
                   level: 3,
+                  parentId: 30,
                   children: [
                     {
                       id: 32,
                       level: 4,
+                      parentId: 31,
                       label: "1月"
                     },
                     {
                       id: 33,
                       level: 4,
+                      parentId: 31,
                       label: "2月"
                     }
                   ]
@@ -1279,6 +1486,30 @@ export default {
     // this.getDatas();
   },
   methods: {
+    changeCheckMore() {
+      this.moreMode[this.currentMode].checkResult = [];
+      for (
+        let i = 0;
+        i < this.moreMode[this.currentMode].selectCheck.length;
+        i++
+      ) {
+        for (
+          let j = 0;
+          j < this.moreMode[this.currentMode].onecheckData.length;
+          j++
+        ) {
+          if (
+            this.moreMode[this.currentMode].onecheckData[j].label ==
+            this.moreMode[this.currentMode].selectCheck[i]
+          ) {
+            this.moreMode[this.currentMode].checkResult.push({
+              ...this.moreMode[this.currentMode].onecheckData[j]
+            });
+            break;
+          }
+        }
+      }
+    },
     getId() {
       this.oneId++;
       return this.oneId;
@@ -1307,7 +1538,7 @@ export default {
     },
     selectDown(arr, modeType) {
       let index = 0;
-      // console.log(arr);
+      console.log(arr);
       // console.log(modeType);
       for (let i = 0; i < this.moreMode.length; i++) {
         if (this.moreMode[i].prop == modeType) {
@@ -1315,6 +1546,32 @@ export default {
           break;
         }
       }
+      // let obj = this.moreMode[index].standards[
+      //   this.moreMode[index].currentStandard
+      // ];
+      // let standardIndex = this.moreMode[index].currentStandard;
+      // this.moreMode[index].standards[standardIndex - 1].list = [];
+      // if (this.moreMode[index].prop != "links") {
+      //   for (let j = 0; j < arr.length; j++) {
+      //     if (arr[j].level == standardIndex) {
+      //       this.moreMode[index].standards[standardIndex - 1].list.push({
+      //         id: arr[j].id,
+      //         level: arr[j].level,
+      //         dimValue: arr[j].label,
+      //         dimName: obj.prop,
+      //         parentId: arr[j].parentId
+      //       });
+      //     }
+      //   }
+      // } else {
+      //   for (let k = 0; k < arr.length; k++) {
+      //     this.moreMode[index].standards[standardIndex - 1].list.push({
+      //       id: arr[k].id,
+      //       dimValue: arr[k].label,
+      //       dimName: obj.prop
+      //     });
+      //   }
+      // }
       this.moreMode[index].currentStandard = -1;
       for (let i = 0; i < this.moreMode[index].standards.length; i++) {
         this.moreMode[index].standards[i].list = [];
@@ -1322,13 +1579,16 @@ export default {
         if (this.moreMode[index].prop != "links") {
           for (let j = 0; j < arr.length; j++) {
             if (obj.level == arr[j].level) {
-              this.moreMode[index].standards[i].list.push({
+              let inObj = {
                 id: arr[j].id,
                 level: arr[j].level,
                 dimValue: arr[j].label,
-                dimName: obj.prop,
-                parentId: arr[j].parentId
-              });
+                dimName: obj.prop
+              };
+              if (this.moreMode[index].prop == "time") {
+                inObj.yearId = arr[j].yearId;
+              }
+              this.moreMode[index].standards[i].list.push(inObj);
             }
           }
         } else {
@@ -1341,8 +1601,9 @@ export default {
           }
         }
       }
+
       this.checkMore();
-      // console.log(this.moreMode);
+      console.log(this.moreMode);
     },
     getTreeNode(node, linkParent, children) {
       if (!node) {
@@ -1364,7 +1625,7 @@ export default {
 
         if (linkParent) {
           for (let j = 0; j < origin.length; j++) {
-            if (node.id == origin[j].parentId) {
+            if (node.id == origin[j].yearId) {
               arr.push({ ...origin[j] });
             }
           }
@@ -1414,7 +1675,7 @@ export default {
       if (!node) {
         return;
       }
-      if (node.dataList != null) {
+      if (node.dataList != null && node.dataList.length > 0) {
         for (let i = 0; i < node.dataList.length; i++) {
           this.obj[node.dataList[i].dimName] = node.dataList[i].dimValue;
           for (let key in node.dataList[i]) {
@@ -1428,6 +1689,7 @@ export default {
                 "dimValue",
                 "dataList",
                 "parentId",
+                "yearId",
                 "level"
               ].includes(key)
             ) {
@@ -1483,18 +1745,27 @@ export default {
 
       for (let i = 0; i < this.oneModeColumn.length; i++) {
         for (let j = 0; j < this.oneModeColumn[i].standards.length; j++) {
-          if (
-            this.oneModeColumn[i].standards[j].list.length > 0 &&
-            j <= this.oneModeColumn[i].currentStandard
-          ) {
-            allStandards.push({
-              name: this.oneModeColumn[i].standards[j].name,
-              prop: this.oneModeColumn[i].standards[j].prop
-            });
+          if (this.oneModeColumn[i].standards[j].list.length > 0) {
+            if (this.oneModeColumn[i].prop == "time") {
+              if (j == 0 || j == this.oneModeColumn[i].currentStandard) {
+                allStandards.push({
+                  name: this.oneModeColumn[i].standards[j].name,
+                  prop: this.oneModeColumn[i].standards[j].prop
+                });
+              }
+            } else {
+              if (j == this.oneModeColumn[i].currentStandard) {
+                allStandards.push({
+                  name: this.oneModeColumn[i].standards[j].name,
+                  prop: this.oneModeColumn[i].standards[j].prop
+                });
+              }
+            }
           }
         }
       }
-      // console.log(this.tableData);
+      console.log(allStandards);
+      console.log(this.tableData);
       // console.log(this.getNodeInTree(this.resultTree, "2018年"));
       for (let h = 0; h < allStandards.length; h++) {
         let obj = {};
@@ -1526,10 +1797,10 @@ export default {
         }
         this.modeColspan[h] = obj;
       }
-      // console.log(this.modeColspan);
+      console.log(this.modeColspan);
     },
     getLeafNodesLength(node) {
-      if (node.dataList != null) {
+      if (node.dataList != null && node.dataList.length > 0) {
         for (let i = 0; i < node.dataList.length; i++) {
           this.getLeafNodesLength(node.dataList[i]);
         }
@@ -1599,39 +1870,86 @@ export default {
         id: "0",
         name: "start"
       };
+      console.log(arr);
       if (arr.length > 0) {
         for (let i = 0; i < arr.length; i++) {
           if (arr[i].checked) {
             // console.log(arr[i].currentStandard);
-            for (let j = 0; j < arr[i].standards.length; j++) {
-              if (j <= parseInt(arr[i].currentStandard)) {
-                if (arr[i].standards[j].list.length > 0) {
-                  let linkParent = false;
-                  if (j > 0) {
-                    linkParent = true;
-                  }
-                  this.getTreeNode(
-                    this.resultTree,
-                    linkParent,
-                    JSON.stringify(arr[i].standards[j].list)
-                  );
-                  this.leafNodesLen = 0;
-                  this.getLeafNodesLength(this.resultTree);
-                  if (this.leafNodesLen >= this.maxLen) {
-                    this.moreMode[this.currentMode].currentStandard = -1;
-                    this.$message.warning(
-                      `显示数据大于${this.maxLen}行，请导出查看！`
+            if (arr[i].prop != "time") {
+              for (let j = 0; j < arr[i].standards.length; j++) {
+                if (j == parseInt(arr[i].currentStandard)) {
+                  if (arr[i].standards[j].list.length > 0) {
+                    let linkParent = false;
+                    // if (j > 0) {
+                    //   linkParent = true;
+                    // }
+                    this.getTreeNode(
+                      this.resultTree,
+                      linkParent,
+                      JSON.stringify(this.unique4(arr[i].standards[j].list))
                     );
-                    return;
+                    this.leafNodesLen = 0;
+                    this.getLeafNodesLength(this.resultTree);
+                    if (this.leafNodesLen >= this.maxLen) {
+                      this.moreMode[this.currentMode].currentStandard = -1;
+                      this.$message.warning(
+                        `显示数据大于${this.maxLen}行，请导出查看！`
+                      );
+                      return;
+                    }
                   }
                 }
               }
+            } else {
+              for (let j = 0; j < arr[i].standards.length; j++) {
+                if (j == 0 || j == arr[i].currentStandard) {
+                  if (arr[i].standards[j].list.length > 0) {
+                    let linkParent = false;
+                    if (j > 0) {
+                      linkParent = true;
+                    }
+                    this.getTreeNode(
+                      this.resultTree,
+                      linkParent,
+                      JSON.stringify(arr[i].standards[j].list)
+                    );
+                    this.leafNodesLen = 0;
+                    this.getLeafNodesLength(this.resultTree);
+                    if (this.leafNodesLen >= this.maxLen) {
+                      this.moreMode[this.currentMode].currentStandard = -1;
+                      this.$message.warning(
+                        `显示数据大于${this.maxLen}行，请导出查看！`
+                      );
+                      return;
+                    }
+                  }
+                }
+              }
+              // if (arr[i].currentStandard > 0) {
+
+              // }
+              // else {
+              // }
             }
           }
         }
+        console.log(this.resultTree);
         this.getTableData({ ...this.resultTree });
         this.getMoreColspanb();
       }
+    },
+
+    unique4(arr) {
+      var hash = [];
+      for (var i = 0; i < arr.length; i++) {
+        for (var j = i + 1; j < arr.length; j++) {
+          if (arr[i].dimValue === arr[j].dimValue) {
+            ++i;
+          }
+        }
+        hash.push(arr[i]);
+      }
+      return hash;
     },
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       if (this.modeColspan[columnIndex]) {
