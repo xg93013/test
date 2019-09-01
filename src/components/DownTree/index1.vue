@@ -45,7 +45,7 @@
           </div>
           <div class="right">
             <div class="tree-top">
-              <div class="nums fl">{{selectLen}}/{{totalLen}}</div>
+              <div class="nums fl">{{selectLen}}/{{totalLen > 0 ? totalLen-1: 0}}</div>
               <span class="clear-empty fr" @click="reset">清空</span>
             </div>
             <div class="tree-content">
@@ -173,13 +173,10 @@ export default {
   created() {},
   methods: {
     loadNode(node, resolve) {
-      console.log(node);
-      console.log(this.allData);
       if (node.level > 0) {
         let data = [];
         let result = [];
         result = this.getChildNode(this.allData, node.data.id);
-        console.log(result);
         if (result.children != null && result.children.length > 0) {
           for (let i = 0; i < result.children.length; i++) {
             data.push({
@@ -272,8 +269,21 @@ export default {
       }
     },
     getSelectLength() {
+      this.emitData = [];
       let arr = this.$refs.treeRefs.getCheckedNodes(false, true);
-      this.selectLen = arr.length;
+      // console.log(arr);
+      for (let i = 0; i < arr.length; i++) {
+        let node = this.$refs.treeRefs.getNode(arr[i].id);
+        let parentId = node.data.level > 1 ? node.parent.data.id : null;
+        // if (arr[i].label != "全部") {
+        this.pushEmitData(arr[i], parentId);
+        if (node.checked) {
+          this.getStepNodes(this.getChildNode(this.allData, arr[i].id));
+        }
+        // }
+      }
+      this.emitData = this.unique(this.emitData);
+      this.selectLen = this.emitData.length;
     },
     show() {
       this.visible = true;
@@ -304,6 +314,7 @@ export default {
     },
     check(node) {
       let currentNode = this.$refs.treeRefs.getNode(node.id);
+      console.log(currentNode);
       if (this.isLeaf) {
         this.checkLeaf(node);
         this.getLeafNode(node);
@@ -466,7 +477,11 @@ export default {
       }
       let resName = "";
       if (name != "") {
-        resName = node.data.label + this.splitStr + name;
+        if (node.level > 1) {
+          resName = node.data.label + this.splitStr + name;
+        } else {
+          resName = name;
+        }
       } else {
         resName = node.data.label;
       }
@@ -487,68 +502,53 @@ export default {
       this.getSelectLength();
     },
     getCheckedNodes() {
-      this.emitData = [];
-      let arr = this.$refs.treeRefs.getCheckedNodes(false, true);
-      // console.log(arr);
-      for (let i = 0; i < arr.length; i++) {
-        let node = this.$refs.treeRefs.getNode(arr[i].id);
-        // let yearId = node.data.level == 1 && this.modeType == "time" ? node.data.id : null;
-        console.log(node);
-        this.emitData.push({
-          id: arr[i].id,
-          label: arr[i].label,
-          level: arr[i].level,
-          parentId: node.data.level > 1 ? node.parent.data.id : null,
-          yearId:
-            node.data.level > 1 && this.modeType == "time"
-              ? this.getYearId(node)
-              : null
-        });
-        if (node.checked) {
-          this.getStepNodes(this.getChildNode(this.allData, arr[i].id));
-        }
-      }
-      console.log(this.emitData);
       this.$emit(
         "downTree",
         this.isLeaf ? this.checkLeafList : this.emitData,
-        this.modeType
+        this.modeType,
+        this.checkList
       );
       this.visible = false;
-    },
-    getYearId(node) {
-      if (node.data.level != 1) {
-        this.getYearId(node.parent);
-      } else {
-        return node.data.id;
-      }
     },
     getStepNodes(node) {
       let parentId = node.id;
       if (node.children && node.children.length > 0) {
-        for (let j = 0; j < node.children.length; j++) {
+        for (let i = 0; i < node.children.length; i++) {
           // console.log(node);
           // let inNode = this.$refs.treeRefs.getNode(node.children[j].id);
-          let inNodeArr = this.getParent(this.datas, node.children[j].id);
-          let yearId = null;
-          console.log(inNodeArr);
-          for (let m = 0; m < inNodeArr.length; m++) {
-            if (inNodeArr[m].level == 1) {
-              yearId = inNodeArr[m].id;
-            }
-          }
-          this.emitData.push({
-            id: node.children[j].id,
-            label: node.children[j].label,
-            level: node.children[j].level,
-            parentId: node.children[j].level > 1 ? parentId : null,
-            yearId: yearId
-          });
-          this.getStepNodes(node.children[j]);
+          this.pushEmitData(node.children[i], parentId);
+          this.getStepNodes(node.children[i]);
         }
       }
     },
-    getParent(data2, nodeId2) {
+    pushEmitData(node, parentId) {
+      // let yearId = null;
+      // let flag = false;
+      // if (this.modeType == "time") {
+      //   let allParent = this.getAllParent(this.datas, node.id);
+      //   for (let i = 0; i < allParent.length; i++) {
+      //     if (allParent[i].level == 1) {
+      //       yearId = allParent[i].id;
+      //     }
+      //   }
+      // }
+      // for (let i = 0; i < this.emitData.length; i++) {
+      //   if (node.id == this.emitData[i].id) {
+      //     flag = true;
+      //     return;
+      //   }
+      // }
+      if (node.label != "全部") {
+        this.emitData.push({
+          id: node.id,
+          label: node.label,
+          level: node.level,
+          parentId: node.level > 1 ? parentId : null
+          // yearId: yearId
+        });
+      }
+    },
+    getAllParent(data2, nodeId2) {
       var arrRes = [];
       if (data2.length == 0) {
         if (!!nodeId2) {
@@ -576,6 +576,28 @@ export default {
     },
     nodeClick(data, node, current) {
       // console.log(node);
+    },
+    unique(arr) {
+      // var hash = [];
+      // for (var i = 0; i < arr.length; i++) {
+      //   for (var j = i + 1; j < arr.length; j++) {
+      //     if (arr[i].id === arr[j].id) {
+      //       ++i;
+      //     }
+      //   }
+      //   hash.push({ ...arr[i] });
+      // }
+      // return hash;
+
+      let result = [];
+      let obj = {};
+      for (let i = 0; i < arr.length; i++) {
+        if (!obj[arr[i].id]) {
+          result.push(arr[i]);
+          obj[arr[i].id] = true;
+        }
+      }
+      return result;
     }
   },
   mounted() {
@@ -587,7 +609,6 @@ export default {
         label: "start",
         children: [...this.datas]
       };
-      console.log(this.allData);
       for (let i = 0; i < this.datas.length; i++) {
         this.originData.push({
           id: this.datas[i].id,
