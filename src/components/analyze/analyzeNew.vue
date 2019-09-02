@@ -37,9 +37,9 @@
               :datas="item.originData"
               :defaultData="item.defaultData"
               :modeType="item.prop"
-              icon="list"
+              icon="down"
               :ref="item.prop+'TreeRefs'"
-              :placeholder="'请选择'+item.name"
+              :placeholder="item.name"
               v-else
             ></down-tree>
           </div>
@@ -64,10 +64,10 @@
               :key="'modes'+index"
               @click="changeMode(index)"
             >
-              <span
-                class="mode-item"
-                :class="{'active':moreMode[index].currentStandard>-1}"
-              >{{item.name}}</span>
+              <span class="mode-item" :class="{'active':moreMode[index].currentStandard>-1}">
+                <svg-icon :iconClass="item.icon" class="icons"></svg-icon>
+                {{item.name}}
+              </span>
             </div>
             <!-- <div class="in-item">食品品类</div>
           <div class="in-item">监测区域</div>
@@ -114,9 +114,9 @@
           </div>
           <div class="in-tab">
             <div class="in-item in-title">
-              <el-checkbox v-model="showSummary">显示总计</el-checkbox>
+              <el-checkbox v-model="showSummary" change="changeTotal">显示总计</el-checkbox>
             </div>
-            <div class="in-item sorts">
+            <!-- <div class="in-item sorts">
               排序字段：
               <el-select v-model="moreMode[currentMode].sortStandard">
                 <el-option
@@ -126,13 +126,14 @@
                   :key="'sorts'+index"
                 ></el-option>
               </el-select>
-            </div>
+            </div>-->
           </div>
         </div>
         <div class="right">
-          <el-button @click="reset" class="btns">设置</el-button>
+          <!-- <el-button @click="reset" class="btns">设置</el-button> -->
           <el-button @click="resetMode" class="btns">重置</el-button>
-          <el-button @click="reset" class="btns">模板管理</el-button>
+          <el-button @click="modeShow" class="btns">模板管理</el-button>
+          <!-- <el-button @click="reset" class="btns">保存模板</el-button> -->
         </div>
       </div>
       <div class="out-box">
@@ -140,8 +141,12 @@
           <div class="left">预览报表结果</div>
           <!-- <div class="mid"></div> -->
           <div class="right">
-            <el-button @click="search">查询</el-button>
-            <el-button>导出</el-button>
+            <el-button @click="search">
+              <svg-icon iconClass="search"></svg-icon>查询
+            </el-button>
+            <el-button>
+              <svg-icon iconClass="export"></svg-icon>导出
+            </el-button>
           </div>
         </div>
 
@@ -152,7 +157,21 @@
           </div>
         </div>
         <div class="table-box">
-          <!--  -->
+          <!-- 操作提示 -->
+          <div class="step-tips" v-show="tableData.length==0">
+            <div class="lefts">
+              <svg-icon iconClass="tips"></svg-icon>
+            </div>
+            <div class="right">
+              <p class="bigs">操作提示</p>
+              <p>第一步，请先通过筛选条件，筛选要进行统计分析的数据</p>
+              <p>
+                第二步，请设定统计维度、维度层级、统计指标；并根据需要设定排名字段
+                也可以调用已经定义好的模板
+              </p>
+              <p>第三步，点击“查询”按钮，系统将根据您设定的报表统计维度，生成相应的数据</p>
+            </div>
+          </div>
           <el-table
             :data="tableData"
             :span-method="objectSpanMethod"
@@ -198,18 +217,71 @@
       </div>
       <!-- <div class="out-box"></div> -->
     </div>
+    <!-- 模板管理 -->
+    <el-dialog
+      title="模板列表"
+      :visible.sync="dialogVisible"
+      width="800px"
+      height="500px"
+      custom-class="modeDialog"
+    >
+      <div class="mode-manage">
+        <el-table :data="modeData" border>
+          <el-table-column label="序号" prop="nums"></el-table-column>
+          <el-table-column label="统计报表模板名称" prop="name"></el-table-column>
+          <el-table-column label="模板建立时间" prop="createTime"></el-table-column>
+          <el-table-column label="操作" prop="operation" width="320" align="center">
+            <template slot-scope="scope">
+              <div class="mode-operation">
+                <span @click="copyMode(scope.row)">
+                  <svg-icon iconClass="edit" class="links-icon" @click.native="visible=false"></svg-icon>复制并新增
+                </span>
+                <span @click="viewMode(scope.row)">
+                  <svg-icon iconClass="view" class="links-icon" @click.native="visible=false"></svg-icon>预览
+                </span>
+                <span @click="useMode(scope.row)">
+                  <svg-icon iconClass="edit" class="links-icon" @click.native="visible=false"></svg-icon>使用该模板
+                </span>
+                <span @click="deleteMode(scope.row)">
+                  <svg-icon iconClass="delete" class="links-icon" @click.native="visible=false"></svg-icon>删除
+                </span>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="page-box">
+          <div class="inline">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="modePage.currentPage"
+              :page-sizes="[10, 20, 30, 40]"
+              :page-size="modePage.pageSize"
+              layout="sizes, prev, pager, next"
+              :total="modePage.totals"
+            ></el-pagination>
+          </div>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 import DownTree from "@/components/DownTree/index1";
 import MoreCheckbox from "@/components/MoreCheckbox/index";
 import SourceTree from "@/assets/treeData.json";
+import ClassData from "@/assets/classData.json";
 export default {
   data() {
     return {
+      level: 1,
       timeRange: "",
       tableTitle: "",
-      showSummary: true,
+      showSummary: false,
       searchList: [],
       allMode: [
         {
@@ -273,6 +345,152 @@ export default {
           checked: true,
           showFullName: true,
           originData: [],
+          icon: "time",
+          defaultData: [],
+          currentStandard: -1,
+          sortStandard: "",
+          standards: [],
+          onecheckData: [],
+          indicators: [],
+          filterData: []
+        }
+      ],
+      colsArr: [],
+      num: 20,
+      resultTree: {
+        id: "0",
+        name: "start"
+      },
+      selectTree: {
+        id: 0,
+        name: "start"
+      },
+      obj: {},
+      modeColspan: {},
+      tableData: [],
+      originData: [
+        {
+          dimValue: "2017",
+          dimName: "year",
+          total: 20000,
+          unTotal: 10,
+          dataList: [
+            {
+              dimValue: "上半年",
+              dimName: "halfYear",
+              total: 100,
+              unTotal: 15,
+              dataList: [
+                {
+                  dimValue: "食品大类",
+                  dimName: "categories",
+                  total: 300,
+                  unTotal: 5,
+                  dataList: null
+                },
+                {
+                  dimValue: "食品大类2",
+                  dimName: "categories",
+                  total: 3000,
+                  unTotal: 20,
+                  dataList: null
+                }
+              ]
+            }
+          ]
+        },
+        {
+          dimValue: "2018",
+          dimName: "year",
+          total: 30000,
+          unTotal: 66,
+          dataList: [
+            {
+              dimValue: "上半年",
+              dimName: "halfYear",
+              total: 500,
+              unTotal: 3,
+              dataList: [
+                {
+                  dimValue: "食品大类6",
+                  dimName: "categories",
+                  total: 700,
+                  unTotal: 14,
+                  dataList: null
+                },
+                {
+                  dimValue: "食品大类3",
+                  dimName: "categories",
+                  total: 3000,
+                  unTotal: 20,
+                  dataList: null
+                },
+                {
+                  dimValue: "食品大类4",
+                  dimName: "categories",
+                  total: 3000,
+                  unTotal: 20,
+                  dataList: null
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      leafNodesLen: 0,
+      oneId: 1,
+      maxLen: 1000,
+      dialogVisible: false,
+      modeData: [],
+      modePage: {
+        pageSize: 10,
+        currentPage: 1,
+        totals: 20
+      }
+    };
+  },
+  components: {
+    DownTree,
+    MoreCheckbox
+  },
+  watch: {},
+  computed: {
+    oneModeColumn() {
+      return this.moreMode.filter(function(item) {
+        let flag = false;
+        for (let i = 0; i < item.standards.length; i++) {
+          if (item.standards[i].list.length > 0) {
+            flag = true;
+            break;
+          } else {
+            flag = false;
+          }
+        }
+        return item.checked && flag && item.currentStandard > -1;
+      });
+    }
+    // moreModea() {
+    //   return this.moreMode.filter(function(item) {
+    //     return item.prop != "links";
+    //   });
+    // },
+    // linksMode() {
+    //   return this.moreMode.filter(function(item) {
+    //     return item.prop == "links";
+    //   });
+    // }
+  },
+  created() {
+    setTimeout(() => {
+      let origins = [
+        {
+          name: "抽样时间",
+          prop: "time",
+          isLeaf: false,
+          checked: true,
+          showFullName: true,
+          originData: [],
+          icon: "time",
           defaultData: [
             // {
             //   id: 1,
@@ -335,33 +553,7 @@ export default {
               ]
             }
           ],
-          onecheckData: [
-            {
-              label: "数量1",
-              prop: "total",
-              checked: false
-            },
-            {
-              label: "数量2",
-              prop: "unTotal",
-              checked: false
-            },
-            {
-              label: "数量3",
-              prop: "unRatio",
-              checked: false
-            },
-            {
-              label: "数量4",
-              prop: "qtotal",
-              checked: false
-            },
-            {
-              label: "数量5",
-              prop: "qratio",
-              checked: false
-            }
-          ],
+          onecheckData: [],
           indicators: [],
           filterData: []
           // list: [
@@ -385,6 +577,7 @@ export default {
           currentStandard: -1,
           sortStandard: "",
           filterData: [],
+          icon: "category",
           originData: [
             // {
             //   id: 1,
@@ -493,31 +686,31 @@ export default {
             }
           ],
           onecheckData: [
-            {
-              label: "数量1",
-              prop: "total",
-              checked: false
-            },
-            {
-              label: "数量2",
-              prop: "unTotal",
-              checked: false
-            },
-            {
-              label: "数量3",
-              prop: "unRatio",
-              checked: false
-            },
-            {
-              label: "数量4",
-              prop: "qtotal",
-              checked: false
-            },
-            {
-              label: "数量5",
-              prop: "qratio",
-              checked: false
-            }
+            // {
+            //   label: "数量1",
+            //   prop: "total",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量2",
+            //   prop: "unTotal",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量3",
+            //   prop: "unRatio",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量4",
+            //   prop: "qtotal",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量5",
+            //   prop: "qratio",
+            //   checked: false
+            // }
           ],
           indicators: [],
           filterData: []
@@ -528,6 +721,7 @@ export default {
           checked: true,
           isLeaf: false,
           splitStr: "/",
+          icon: "position",
           showFullName: true,
           originData: [],
           defaultData: [],
@@ -535,94 +729,50 @@ export default {
           sortStandard: "",
           standards: [
             // {
-            //   name: "国家",
+            //   name: "省份",
             //   level: 1,
-            //   prop: "all",
-            //   list: [
-            //     // {
-            //     //   id: "a1",
-            //     //   prop: "all",
-            //     //   name: "全国"
-            //     // }
-            //   ]
+            //   prop: "province",
+            //   list: []
             // },
-            {
-              name: "省份",
-              level: 1,
-              prop: "province",
-              list: [
-                // {
-                //   id: "a1",
-                //   prop: "province",
-                //   name: "四川省"
-                // }
-              ]
-            },
-            {
-              name: "地市",
-              level: 2,
-              prop: "city",
-              list: [
-                // {
-                //   id: "a1",
-                //   dimName: "city",
-                //   level: 2,
-                //   dimValue: "成都市"
-                // }
-              ]
-            },
+            // {
+            //   name: "地市",
+            //   level: 2,
+            //   prop: "city",
+            //   list: []
+            // },
             {
               name: "区/县",
-              level: 3,
+              level: 1,
               prop: "inarea",
-              list: [
-                // {
-                //   id: "a1",
-                //   dimName: "inarea",
-                //   level: 3,
-                //   dimValue: "高新区"
-                // }
-              ]
+              list: []
             }
-          ],
-          list: [
-            // {
-            //   id: "b1",
-            //   prop: "area",
-            //   name: "高新区"
-            // },
-            // {
-            //   id: "b2",
-            //   prop: "area",
-            //   name: "武侯区"
-            // }
           ],
           onecheckData: [
-            {
-              label: "数量1",
-              prop: "total",
-              checked: false
-            },
-            {
-              label: "数量2",
-              prop: "unTotal",
-              checked: false
-            },
-            {
-              label: "数量3",
-              prop: "unRatio",
-              checked: false
-            },
-            {
-              label: "数量4",
-              prop: "qtotal",
-              checked: false
-            },
-            {
-              label: "数量5",
-              prop: "qratio",
-              checked: false
-            }
+            // {
+            //   label: "数量1",
+            //   prop: "total",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量2",
+            //   prop: "unTotal",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量3",
+            //   prop: "unRatio",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量4",
+            //   prop: "qtotal",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量5",
+            //   prop: "qratio",
+            //   checked: false
+            // }
           ],
           indicators: [],
           filterData: []
@@ -634,20 +784,12 @@ export default {
           isLeaf: false,
           showFullName: true,
           splitStr: "/",
+          icon: "bug",
           originData: [],
           currentStandard: -1,
           sortStandard: "",
           // 检测项目类别、单个检测项目
-          defaultData: [
-            // {
-            //   id: 2,
-            //   label: "品类次类"
-            // },
-            // {
-            //   id: 3,
-            //   label: "品类次类2"
-            // }
-          ],
+          defaultData: [],
           standards: [
             {
               name: "检测项目类别",
@@ -683,31 +825,31 @@ export default {
             }
           ],
           onecheckData: [
-            {
-              label: "数量1",
-              prop: "total",
-              checked: false
-            },
-            {
-              label: "数量2",
-              prop: "unTotal",
-              checked: false
-            },
-            {
-              label: "数量3",
-              prop: "unRatio",
-              checked: false
-            },
-            {
-              label: "数量4",
-              prop: "qtotal",
-              checked: false
-            },
-            {
-              label: "数量5",
-              prop: "qratio",
-              checked: false
-            }
+            // {
+            //   label: "数量1",
+            //   prop: "total",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量2",
+            //   prop: "unTotal",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量3",
+            //   prop: "unRatio",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量4",
+            //   prop: "qtotal",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量5",
+            //   prop: "qratio",
+            //   checked: false
+            // }
           ],
           indicators: [],
           filterData: []
@@ -716,14 +858,10 @@ export default {
           name: "抽检环节",
           prop: "links",
           checked: true,
+          icon: "links",
           isLeaf: true,
           originData: [],
-          defaultData: [
-            // {
-            //   id: 2,
-            //   label: "流通2"
-            // }
-          ],
+          defaultData: [],
           currentStandard: -1,
           sortStandard: "",
           standards: [
@@ -735,31 +873,31 @@ export default {
             }
           ],
           onecheckData: [
-            {
-              label: "数量1",
-              prop: "total",
-              checked: false
-            },
-            {
-              label: "数量2",
-              prop: "unTotal",
-              checked: false
-            },
-            {
-              label: "数量3",
-              prop: "unRatio",
-              checked: false
-            },
-            {
-              label: "数量4",
-              prop: "qtotal",
-              checked: false
-            },
-            {
-              label: "数量5",
-              prop: "qratio",
-              checked: false
-            }
+            // {
+            //   label: "数量1",
+            //   prop: "total",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量2",
+            //   prop: "unTotal",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量3",
+            //   prop: "unRatio",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量4",
+            //   prop: "qtotal",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量5",
+            //   prop: "qratio",
+            //   checked: false
+            // }
           ],
           indicators: [],
           filterData: []
@@ -768,14 +906,10 @@ export default {
           name: "任务来源",
           prop: "taskFrom",
           checked: true,
+          icon: "task",
           isLeaf: false,
           originData: [],
-          defaultData: [
-            // {
-            //   id: 2,
-            //   label: "流通2"
-            // }
-          ],
+          defaultData: [],
           currentStandard: -1,
           sortStandard: "",
           standards: [
@@ -787,31 +921,31 @@ export default {
             }
           ],
           onecheckData: [
-            {
-              label: "数量1",
-              prop: "total",
-              checked: false
-            },
-            {
-              label: "数量2",
-              prop: "unTotal",
-              checked: false
-            },
-            {
-              label: "数量3",
-              prop: "unRatio",
-              checked: false
-            },
-            {
-              label: "数量4",
-              prop: "qtotal",
-              checked: false
-            },
-            {
-              label: "数量5",
-              prop: "qratio",
-              checked: false
-            }
+            // {
+            //   label: "数量1",
+            //   prop: "total",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量2",
+            //   prop: "unTotal",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量3",
+            //   prop: "unRatio",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量4",
+            //   prop: "qtotal",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量5",
+            //   prop: "qratio",
+            //   checked: false
+            // }
           ],
           indicators: [],
           filterData: []
@@ -821,6 +955,7 @@ export default {
           prop: "taskType",
           checked: true,
           isLeaf: false,
+          icon: "types",
           originData: [],
           defaultData: [
             // {
@@ -839,534 +974,459 @@ export default {
             }
           ],
           onecheckData: [
-            {
-              label: "数量1",
-              prop: "total",
-              checked: false
-            },
-            {
-              label: "数量2",
-              prop: "unTotal",
-              checked: false
-            },
-            {
-              label: "数量3",
-              prop: "unRatio",
-              checked: false
-            },
-            {
-              label: "数量4",
-              prop: "qtotal",
-              checked: false
-            },
-            {
-              label: "数量5",
-              prop: "qratio",
-              checked: false
-            }
+            // {
+            //   label: "数量1",
+            //   prop: "total",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量2",
+            //   prop: "unTotal",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量3",
+            //   prop: "unRatio",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量4",
+            //   prop: "qtotal",
+            //   checked: false
+            // },
+            // {
+            //   label: "数量5",
+            //   prop: "qratio",
+            //   checked: false
+            // }
           ],
           indicators: [],
           filterData: []
         }
-      ],
-      colsArr: [],
-      num: 20,
-      resultTree: {
-        id: "0",
-        name: "start"
-      },
-      selectTree: {
-        id: 0,
-        name: "start"
-      },
-      obj: {},
-      modeColspan: {},
-      tableData: [],
-      originData: [
-        {
-          dimValue: "2017",
-          dimName: "year",
-          total: 20000,
-          unTotal: 10,
-          dataList: [
-            {
-              dimValue: "上半年",
-              dimName: "halfYear",
-              total: 100,
-              unTotal: 15,
-              dataList: [
-                {
-                  dimValue: "食品大类",
-                  dimName: "categories",
-                  total: 300,
-                  unTotal: 5,
-                  dataList: null
-                },
-                {
-                  dimValue: "食品大类2",
-                  dimName: "categories",
-                  total: 3000,
-                  unTotal: 20,
-                  dataList: null
-                }
-              ]
-            }
-          ]
-        },
-        {
-          dimValue: "2018",
-          dimName: "year",
-          total: 30000,
-          unTotal: 66,
-          dataList: [
-            {
-              dimValue: "上半年",
-              dimName: "halfYear",
-              total: 500,
-              unTotal: 3,
-              dataList: [
-                {
-                  dimValue: "食品大类6",
-                  dimName: "categories",
-                  total: 700,
-                  unTotal: 14,
-                  dataList: null
-                },
-                {
-                  dimValue: "食品大类3",
-                  dimName: "categories",
-                  total: 3000,
-                  unTotal: 20,
-                  dataList: null
-                },
-                {
-                  dimValue: "食品大类4",
-                  dimName: "categories",
-                  total: 3000,
-                  unTotal: 20,
-                  dataList: null
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      leafNodesLen: 0,
-      oneId: 1,
-      maxLen: 1000
-    };
-  },
-  components: {
-    DownTree,
-    MoreCheckbox
-  },
-  watch: {},
-  computed: {
-    oneModeColumn() {
-      return this.moreMode.filter(function(item) {
-        let flag = false;
-        for (let i = 0; i < item.standards.length; i++) {
-          if (item.standards[i].list.length > 0) {
-            flag = true;
-            break;
-          } else {
-            flag = false;
-          }
-        }
-        return item.checked && flag && item.currentStandard > -1;
-      });
-    }
-    // moreModea() {
-    //   return this.moreMode.filter(function(item) {
-    //     return item.prop != "links";
-    //   });
-    // },
-    // linksMode() {
-    //   return this.moreMode.filter(function(item) {
-    //     return item.prop == "links";
-    //   });
-    // }
-  },
-  created() {
-    // let timeObj = {
-    //   id: 100,
-    //   label: "全部",
-    //   level: 0,
-    //   children: [
-    //     {
-    //       id: 1,
-    //       label: "2017年",
-    //       level: 1,
-    //       children: [
-    //         {
-    //           id: 25,
-    //           label: "上半年",
-    //           level: 2,
-    //           parentId: 1,
-    //           children: [
-    //             {
-    //               id: 26,
-    //               label: "1季度",
-    //               level: 3,
-    //               parentId: 25,
-    //               children: [
-    //                 {
-    //                   id: 2,
-    //                   level: 4,
-    //                   label: "1月",
-    //                   parentId: 26
-    //                 },
-    //                 {
-    //                   id: 3,
-    //                   level: 4,
-    //                   label: "2月",
-    //                   parentId: 26
-    //                 }
-    //               ]
-    //             }
-    //           ]
-    //         }
-    //       ]
-    //     },
-    //     {
-    //       id: 4,
-    //       level: 1,
-    //       label: "2018年",
-    //       parentId: null,
-    //       children: [
-    //         {
-    //           id: 30,
-    //           label: "上半年",
-    //           level: 2,
-    //           parentId: 4,
-    //           children: [
-    //             {
-    //               id: 31,
-    //               label: "1季度",
-    //               level: 3,
-    //               parentId: 30,
-    //               children: [
-    //                 {
-    //                   id: 32,
-    //                   level: 4,
-    //                   parentId: 31,
-    //                   label: "1月"
-    //                 },
-    //                 {
-    //                   id: 33,
-    //                   level: 4,
-    //                   parentId: 31,
-    //                   label: "2月"
-    //                 }
-    //               ]
-    //             }
-    //           ]
-    //         }
-    //       ]
-    //     }
-    //   ]
-    // };
-    // for (let i = 0; i < 9; i++) {
-    //   timeObj.children[0].children.push({
-    //     id: 7 + i,
-    //     level: 4,
-    //     label: 3 + i + "月"
-    //   });
-    // }
-
-    // this.moreMode[0].originData = [timeObj];
-    let proObj = {
-      id: 0,
-      level: 0,
-      label: "全部",
-      children: [
-        // {
-        //   id: 3,
-        //   level: 1,
-        //   label: "四川省",
-        //   children: [
-        //     {
-        //       id: 4,
-        //       level: 2,
-        //       label: "成都市",
-        //       children: [
-        //         {
-        //           id: 6,
-        //           level: 3,
-        //           label: "高新区"
-        //         }
-        //       ]
-        //     },
-        //     {
-        //       id: 5,
-        //       level: 2,
-        //       label: "达州市",
-        //       children: [
-        //         {
-        //           id: 8,
-        //           level: 3,
-        //           label: "区1"
-        //         }
-        //       ]
-        //     }
-        //   ]
-        // }
-      ]
-    };
-    // for (let i = 0; i < 20; i++) {
-    //   proObj.children[0].children[0].children.push({
-    //     id: 30 + i,
-    //     level: 3,
-    //     label: "高新区" + i
-    //   });
-    // }
-    this.moreMode[2].originData = [proObj];
-    this.searchList = [
-      {
-        type: "label1",
-        label: "标签1",
-        list: ["全部", "类型1", "类型2", "类型3"]
-      },
-      {
-        type: "label2",
-        label: "标签2",
-        list: ["全部", "类型1", "类型2", "类型3"]
-      },
-      {
-        type: "label3",
-        label: "标签3",
-        list: ["全部", "状态1", "状态2", "状态3"]
-      }
-    ];
-    let obj = {
-      id: this.getId(),
-      label: "大类1",
-      level: 1,
-      children: [
-        // {
-        //   id: 2,
-        //   label: "亚类1",
-        //   level: 2,
-        //   children: [
-        //     {
-        //       id: 5,
-        //       label: "次亚类1",
-        //       level: 3,
-        //       children: [
-        //         {
-        //           id: 9,
-        //           label: "细类1",
-        //           level: 4
-        //         },
-        //         {
-        //           id: 10,
-        //           label: "细类2",
-        //           level: 4
-        //         }
-        //       ]
-        //     }
-        //   ]
-        // },
-        // {
-        //   id: 20,
-        //   label: "亚类2",
-        //   level: 2,
-        //   children: [
-        //     {
-        //       id: 11,
-        //       label: "次亚类2",
-        //       level: 3,
-        //       children: [
-        //         {
-        //           id: 12,
-        //           label: "细类3",
-        //           level: 4
-        //         },
-        //         {
-        //           id: 13,
-        //           label: "细类4",
-        //           level: 4
-        //         }
-        //       ]
-        //     },
-        //     {
-        //       id: 14,
-        //       label: "次亚类3",
-        //       level: 3,
-        //       children: [
-        //         {
-        //           id: 15,
-        //           label: "细类5",
-        //           level: 4
-        //         },
-        //         {
-        //           id: 16,
-        //           label: "细类6",
-        //           level: 4
-        //         }
-        //       ]
-        //     }
-        //   ]
-        // },
-        // {
-        //   id: 30,
-        //   label: "亚类3",
-        //   level: 2,
-        //   children: [
-        //     {
-        //       id: 31,
-        //       label: "次亚类4",
-        //       level: 3,
-        //       children: [
-        //         {
-        //           id: 32,
-        //           label: "细类7",
-        //           level: 4
-        //         },
-        //         {
-        //           id: 33,
-        //           label: "细类8",
-        //           level: 4
-        //         }
-        //       ]
-        //     },
-        //     {
-        //       id: 34,
-        //       label: "次亚类5",
-        //       level: 3,
-        //       children: [
-        //         {
-        //           id: 35,
-        //           label: "细类9",
-        //           level: 4
-        //         },
-        //         {
-        //           id: 36,
-        //           label: "细类10",
-        //           level: 4
-        //         }
-        //       ]
-        //     }
-        //   ]
-        // }
-        // {
-        //   id: 3,
-        //   label: "亚类3",
-        //   level: 2
-        // },
-        // {
-        //   id: 4,
-        //   label: "亚类4",
-        //   level: 2
-        // }
-      ]
-    };
-    for (let i = 0; i < 50; i++) {
-      let id = this.getId();
-      obj.children.push({
-        id: id,
-        level: 2,
-        label: "亚类" + id,
-        children: []
-      });
-      for (let j = 0; j < 50; j++) {
-        let inId = this.getId();
-        obj.children[i].children.push({
-          id: inId,
-          label: "次亚类" + inId,
-          level: 3,
-          children: []
-        });
-        for (let k = 0; k < 50; k++) {
-          let innerId = this.getId();
-          obj.children[i].children[j].children.push({
-            id: innerId,
-            level: 4,
-            label: "细类" + innerId
-          });
-        }
-      }
-    }
-    this.moreMode[1].originData = [
-      {
-        id: 0,
-        label: "全部",
-        level: 0,
-        children: [obj]
-      }
-    ];
-    // console.log(JSON.stringify(this.moreMode[1].originData));
-    // console.log(this.moreMode[2]);
-    this.moreMode[3].originData = [
-      {
-        id: 100,
-        label: "全部",
-        level: 0,
-        children: [
+      ];
+      for (let i = 0; i < origins.length; i++) {
+        origins[i].onecheckData = [
           {
-            id: 1,
-            label: "品类大类",
-            level: 1,
-            children: [
-              {
-                id: 2,
-                level: 2,
-                label: "品类次类"
-              },
-              {
-                id: 3,
-                level: 2,
-                label: "品类次类2"
-              }
-            ]
+            label: "数量1",
+            prop: "total",
+            checked: false
           },
           {
-            id: 4,
-            label: "品类大类1",
-            level: 1,
-            children: [
-              {
-                id: 5,
-                label: "品类次类3",
-                level: 2
-              },
-              {
-                id: 6,
-                label: "品类次类4",
-                level: 2
-              }
-            ]
+            label: "数量2",
+            prop: "unTotal",
+            checked: false
+          },
+          {
+            label: "数量3",
+            prop: "unRatio",
+            checked: false
+          },
+          {
+            label: "数量4",
+            prop: "qtotal",
+            checked: false
+          },
+          {
+            label: "数量5",
+            prop: "qratio",
+            checked: false
           }
+        ];
+      }
+      this.moreMode = origins;
+
+      // let timeObj = {
+      //   id: 100,
+      //   label: "全部",
+      //   level: 0,
+      //   children: [
+      //     {
+      //       id: 1,
+      //       label: "2017年",
+      //       level: 1,
+      //       children: [
+      //         {
+      //           id: 25,
+      //           label: "上半年",
+      //           level: 2,
+      //           parentId: 1,
+      //           children: [
+      //             {
+      //               id: 26,
+      //               label: "1季度",
+      //               level: 3,
+      //               parentId: 25,
+      //               children: [
+      //                 {
+      //                   id: 2,
+      //                   level: 4,
+      //                   label: "1月",
+      //                   parentId: 26
+      //                 },
+      //                 {
+      //                   id: 3,
+      //                   level: 4,
+      //                   label: "2月",
+      //                   parentId: 26
+      //                 }
+      //               ]
+      //             }
+      //           ]
+      //         }
+      //       ]
+      //     },
+      //     {
+      //       id: 4,
+      //       level: 1,
+      //       label: "2018年",
+      //       parentId: null,
+      //       children: [
+      //         {
+      //           id: 30,
+      //           label: "上半年",
+      //           level: 2,
+      //           parentId: 4,
+      //           children: [
+      //             {
+      //               id: 31,
+      //               label: "1季度",
+      //               level: 3,
+      //               parentId: 30,
+      //               children: [
+      //                 {
+      //                   id: 32,
+      //                   level: 4,
+      //                   parentId: 31,
+      //                   label: "1月"
+      //                 },
+      //                 {
+      //                   id: 33,
+      //                   level: 4,
+      //                   parentId: 31,
+      //                   label: "2月"
+      //                 }
+      //               ]
+      //             }
+      //           ]
+      //         }
+      //       ]
+      //     }
+      //   ]
+      // };
+      // for (let i = 0; i < 9; i++) {
+      //   timeObj.children[0].children.push({
+      //     id: 7 + i,
+      //     level: 4,
+      //     label: 3 + i + "月"
+      //   });
+      // }
+
+      // this.moreMode[0].originData = [timeObj];
+      let proObj = {
+        id: 0,
+        level: 0,
+        label: "全部",
+        children: ClassData.yp_scz_sq
+        // children: [
+        //   // {
+        //   //   id: 3,
+        //   //   level: 1,
+        //   //   label: "四川省",
+        //   //   children: [
+        //   //     {
+        //   //       id: 4,
+        //   //       level: 2,
+        //   //       label: "成都市",
+        //   //       children: [
+        //   //         {
+        //   //           id: 6,
+        //   //           level: 3,
+        //   //           label: "高新区"
+        //   //         }
+        //   //       ]
+        //   //     },
+        //   //     {
+        //   //       id: 5,
+        //   //       level: 2,
+        //   //       label: "达州市",
+        //   //       children: [
+        //   //         {
+        //   //           id: 8,
+        //   //           level: 3,
+        //   //           label: "区1"
+        //   //         }
+        //   //       ]
+        //   //     }
+        //   //   ]
+        //   // }
+        // ]
+      };
+      // for (let i = 0; i < 20; i++) {
+      //   proObj.children[0].children[0].children.push({
+      //     id: 30 + i,
+      //     level: 3,
+      //     label: "高新区" + i
+      //   });
+      // }
+      this.moreMode[2].originData = [proObj];
+      this.searchList = [
+        {
+          type: "label1",
+          label: "标签1",
+          list: ["全部", "类型1", "类型2", "类型3"]
+        },
+        {
+          type: "label2",
+          label: "标签2",
+          list: ["全部", "类型1", "类型2", "类型3"]
+        },
+        {
+          type: "label3",
+          label: "标签3",
+          list: ["全部", "状态1", "状态2", "状态3"]
+        }
+      ];
+      let obj = {
+        id: this.getId(),
+        label: "大类1",
+        level: 1,
+        children: [
+          // {
+          //   id: 2,
+          //   label: "亚类1",
+          //   level: 2,
+          //   children: [
+          //     {
+          //       id: 5,
+          //       label: "次亚类1",
+          //       level: 3,
+          //       children: [
+          //         {
+          //           id: 9,
+          //           label: "细类1",
+          //           level: 4
+          //         },
+          //         {
+          //           id: 10,
+          //           label: "细类2",
+          //           level: 4
+          //         }
+          //       ]
+          //     }
+          //   ]
+          // },
+          // {
+          //   id: 20,
+          //   label: "亚类2",
+          //   level: 2,
+          //   children: [
+          //     {
+          //       id: 11,
+          //       label: "次亚类2",
+          //       level: 3,
+          //       children: [
+          //         {
+          //           id: 12,
+          //           label: "细类3",
+          //           level: 4
+          //         },
+          //         {
+          //           id: 13,
+          //           label: "细类4",
+          //           level: 4
+          //         }
+          //       ]
+          //     },
+          //     {
+          //       id: 14,
+          //       label: "次亚类3",
+          //       level: 3,
+          //       children: [
+          //         {
+          //           id: 15,
+          //           label: "细类5",
+          //           level: 4
+          //         },
+          //         {
+          //           id: 16,
+          //           label: "细类6",
+          //           level: 4
+          //         }
+          //       ]
+          //     }
+          //   ]
+          // },
+          // {
+          //   id: 30,
+          //   label: "亚类3",
+          //   level: 2,
+          //   children: [
+          //     {
+          //       id: 31,
+          //       label: "次亚类4",
+          //       level: 3,
+          //       children: [
+          //         {
+          //           id: 32,
+          //           label: "细类7",
+          //           level: 4
+          //         },
+          //         {
+          //           id: 33,
+          //           label: "细类8",
+          //           level: 4
+          //         }
+          //       ]
+          //     },
+          //     {
+          //       id: 34,
+          //       label: "次亚类5",
+          //       level: 3,
+          //       children: [
+          //         {
+          //           id: 35,
+          //           label: "细类9",
+          //           level: 4
+          //         },
+          //         {
+          //           id: 36,
+          //           label: "细类10",
+          //           level: 4
+          //         }
+          //       ]
+          //     }
+          //   ]
+          // }
+          // {
+          //   id: 3,
+          //   label: "亚类3",
+          //   level: 2
+          // },
+          // {
+          //   id: 4,
+          //   label: "亚类4",
+          //   level: 2
+          // }
         ]
-      }
-    ];
-    this.moreMode[4].originData = [
-      {
-        id: 1,
-        label: "流通"
-      },
-      {
-        id: 2,
-        label: "流通2"
-      }
-    ];
-    // for (let i = 0; i < 500; i++) {
-    //   this.moreMode[2].originData[1].children.push({
-    //     id: 3000 + i,
-    //     label: "亚类" + 600 + i,
-    //     children: []
-    //   });
-    //   for (let j = 0; j < 500; j++) {
-    //     this.moreMode[2].originData[1].children[i].children.push({
-    //       id: 5000 + j,
-    //       label: "亚类" + 5000 + j
-    //     });
-    //   }
-    // }
-    // this.checkMore();
-    // this.getDatas();
+      };
+      // for (let i = 0; i < 10; i++) {
+      //   let id = this.getId();
+      //   obj.children.push({
+      //     id: id,
+      //     level: 2,
+      //     label: "亚类" + id,
+      //     children: []
+      //   });
+      //   for (let j = 0; j < 10; j++) {
+      //     let inId = this.getId();
+      //     obj.children[i].children.push({
+      //       id: inId,
+      //       label: "次亚类" + inId,
+      //       level: 3,
+      //       children: []
+      //     });
+      //     for (let k = 0; k < 10; k++) {
+      //       let innerId = this.getId();
+      //       obj.children[i].children[j].children.push({
+      //         id: innerId,
+      //         level: 4,
+      //         label: "细类" + innerId
+      //       });
+      //     }
+      //   }
+      // }
+      this.level = 1;
+      this.moreMode[1].originData = [
+        {
+          id: 0,
+          label: "全部",
+          level: 0,
+          children: ClassData.yp_fl_xl_bh
+        }
+      ];
+      console.log(this.moreMode[1].originData);
+      // console.log(JSON.stringify(this.moreMode[1].originData));
+      // console.log(this.moreMode[2]);
+      this.moreMode[3].originData = [
+        {
+          id: "100",
+          label: "全部",
+          children: ClassData.jy_xm_bh
+          // level: 0,
+          // children: [
+          //   {
+          //     id: '0',
+          //     label: "品类大类",
+          //     // level: 1,
+          //     children: [
+          //       {
+          //         id: 2,
+          //         // level: 2,
+          //         label: "品类大类"
+          //       },
+          //       {
+          //         id: 3,
+          //         // level: 2,
+          //         label: "品类次类2"
+          //       }
+          //     ]
+          //   },
+          //   {
+          //     id: 4,
+          //     label: "品类大类1",
+          //     // level: 1,
+          //     children: [
+          //       {
+          //         id: 5,
+          //         label: "品类大类1"
+          //         // level: 2
+          //       },
+          //       {
+          //         id: 6,
+          //         label: "品类次类4"
+          //         // level: 2
+          //       }
+          //     ]
+          //   }
+          // ]
+        }
+      ];
+      this.moreMode[4].originData = ClassData.yp_hj_new;
+      // [
+      //   {
+      //     id: 1,
+      //     label: "流通"
+      //   },
+      //   {
+      //     id: 2,
+      //     label: "流通2"
+      //   }
+      // ];
+      // for (let i = 0; i < 500; i++) {
+      //   this.moreMode[2].originData[1].children.push({
+      //     id: 3000 + i,
+      //     label: "亚类" + 600 + i,
+      //     children: []
+      //   });
+      //   for (let j = 0; j < 500; j++) {
+      //     this.moreMode[2].originData[1].children[i].children.push({
+      //       id: 5000 + j,
+      //       label: "亚类" + 5000 + j
+      //     });
+      //   }
+      // }
+      // this.checkMore();
+      // this.getDatas();
+    }, 500);
   },
   methods: {
+    handleSizeChange() {},
+    handleCurrentChange() {},
+    handleClose() {},
+    copyMode(row) {},
+    viewMode(row) {},
+    useMode(row) {},
+    deleteMode(row) {},
     changeCheckMore() {
       this.moreMode[this.currentMode].indicators = [];
       // for (
@@ -1401,6 +1461,9 @@ export default {
           });
         }
       }
+      this.checkMore();
+    },
+    changeTotal() {
       this.checkMore();
     },
     changeTime() {
@@ -1537,6 +1600,7 @@ export default {
     resetMode() {
       this.tableData = [];
       this.modeColspan = {};
+      this.showSummary = false;
       for (let i = 0; i < this.moreMode.length; i++) {
         this.moreMode[i].currentStandard = -1;
         for (let j = 0; j < this.moreMode[i].onecheckData.length; j++) {
@@ -1942,7 +2006,7 @@ export default {
                     //   linkParent = true;
                     // }
                     if (arr[i].standards[j].list.length >= this.maxLen) {
-                      this.moreMode[this.currentMode].currentStandard = -1;
+                      // this.moreMode[this.currentMode].currentStandard = -1;
                       this.$message.warning(
                         `显示数据大于${this.maxLen}行，请导出查看！`
                       );
@@ -1956,7 +2020,7 @@ export default {
                     this.leafNodesLen = 0;
                     this.getLeafNodesLength(this.resultTree);
                     if (this.leafNodesLen >= this.maxLen) {
-                      this.moreMode[this.currentMode].currentStandard = -1;
+                      // this.moreMode[this.currentMode].currentStandard = -1;
                       this.$message.warning(
                         `显示数据大于${this.maxLen}行，请导出查看！`
                       );
@@ -2039,18 +2103,18 @@ export default {
     },
     getSummaries(param) {
       let totalData = [
-        {
-          dimName: "halfYear",
-          dimValue: "半年",
-          total: 300,
-          unTotal: 5
-        },
-        {
-          dimName: "categories",
-          dimValue: "食品品类",
-          total: 300,
-          unTotal: 5
-        }
+        // {
+        //   dimName: "halfYear",
+        //   dimValue: "半年",
+        //   total: 300,
+        //   unTotal: 5
+        // },
+        // {
+        //   dimName: "categories",
+        //   dimValue: "食品品类",
+        //   total: 300,
+        //   unTotal: 5
+        // }
       ];
       let obj = {};
       for (let i = 0; i < totalData.length; i++) {
@@ -2116,6 +2180,26 @@ export default {
     getDate(datestr) {
       var temp = datestr.split("-");
       return new Date(temp[0], temp[1] - 1, temp[2]);
+    },
+    modeShow() {
+      this.dialogVisible = true;
+      this.modeData = [
+        {
+          nums: 1,
+          name: "模板名称",
+          createTime: "2018-02-02"
+        }
+      ];
+    },
+    addLevel(node, levelObj) {
+      // node.level = this.level;
+      if (node.children && node.children.length > 0) {
+        // this.level++;
+        for (let i = 0; i < node.children.length; i++) {
+          node.children[i].level = this.level;
+          this.addLevel(node.children[i]);
+        }
+      }
     }
   },
   mounted() {}
@@ -2137,7 +2221,7 @@ export default {
       padding: 20px 0;
       .left {
         position: relative;
-        width: 200px;
+        width: 180px;
         float: left;
         padding-left: 10px;
         box-sizing: border-box;
@@ -2157,7 +2241,7 @@ export default {
       }
       .mid {
         float: left;
-        width: calc(100% - 400px);
+        width: calc(100% - 380px);
         .tabs-item {
           float: left;
           width: 200px;
@@ -2177,11 +2261,19 @@ export default {
             .mode-item {
               display: inline-block;
               padding: 2px 10px;
-              line-height: 36px;
+              line-height: 32px;
               cursor: pointer;
+              color: #333;
+              .icons {
+                color: #999;
+              }
               &.active {
                 color: #409eff;
                 border: 1px solid #409eff;
+                border-radius: 4px;
+                .icons {
+                  color: #409eff;
+                }
               }
             }
 
@@ -2227,6 +2319,35 @@ export default {
         margin: 20px;
         width: calc(100% - 40px);
         box-sizing: border-box;
+        .step-tips {
+          width: 600px;
+          margin: 30px auto;
+          padding: 20px;
+          border-radius: 6px;
+          border: 1px solid #409eff;
+          overflow: hidden;
+          .lefts {
+            float: left;
+            width: 60px;
+            text-align: center;
+            color: #409eff;
+            font-size: 30px;
+            margin-top: 10px;
+          }
+          .right {
+            float: left;
+            color: #999;
+            width: calc(100% - 60px);
+            p {
+              line-height: 20px;
+              font-size: 14px;
+              margin: 10px 0;
+              &.bigs {
+                font-size: 16px;
+              }
+            }
+          }
+        }
       }
     }
   }

@@ -19,7 +19,7 @@
               <el-tree
                 show-checkbox
                 node-key="id"
-                :data="originData"
+                :data="datas"
                 @node-click="nodeClick"
                 :check-strictly="checkStrictly"
                 :filter-node-method="filterNode"
@@ -29,8 +29,6 @@
                 :accordion="true"
                 :render-content="renderContent"
                 @check="check"
-                :load="loadNode"
-                lazy
                 ref="treeRefs"
               ></el-tree>
               <!-- <el-tree
@@ -39,14 +37,16 @@
                 show-checkbox
                 :render-content="renderContent"
                 lazy
+                :load="loadNode"
+                lazy
               ></el-tree>-->
             </div>
             <!-- :check-strictly="true" -->
           </div>
           <div class="right">
             <div class="tree-top">
-              <div class="nums fl">{{selectLen}}/{{totalLen > 0 ? totalLen-1: 0}}</div>
-              <span class="clear-empty fr" @click="reset">清空</span>
+              <div class="nums">{{selectLen}}/{{totalLen > 0 ? totalLen-1: 0}}</div>
+              <span class="clear-empty" @click="reset">清空</span>
             </div>
             <div class="tree-content">
               <div
@@ -110,7 +110,8 @@ export default {
         isLeaf: "leaf"
       },
       checkStrictly: false,
-      emitData: []
+      emitData: [],
+      paramsData: []
       // leaf: false
     };
   },
@@ -274,14 +275,22 @@ export default {
       // console.log(arr);
       for (let i = 0; i < arr.length; i++) {
         let node = this.$refs.treeRefs.getNode(arr[i].id);
-        let parentId = node.data.level > 1 ? node.parent.data.id : null;
-        // if (arr[i].label != "全部") {
-        this.pushEmitData(arr[i], parentId);
-        if (node.checked) {
-          this.getStepNodes(this.getChildNode(this.allData, arr[i].id));
-        }
+        console.log(node);
+        // console.log(arr[i].id);
+        let parentId = node.level - 1 > 1 ? node.parent.data.id : null;
+        this.pushEmitData(node, parentId);
+
+        // 懒加载获取
+        // if (node.checked) {
+        //   this.getStepNodes(this.getChildNode(this.allData, arr[i].id));
         // }
+        if (arr[i].id != "0") {
+          if (arr[i].id.substr(arr[i].id.length - 2, 2) != "00") {
+            this.paramsData.push(arr[i]);
+          }
+        }
       }
+      console.log(this.emitData);
       this.emitData = this.unique(this.emitData);
       this.selectLen = this.emitData.length;
     },
@@ -382,13 +391,15 @@ export default {
       this.deleteNode(node.data.id);
       if (node.checked) {
         let currentNode = this.$refs.treeRefs.getNode(node.data.id);
+        console.log(currentNode);
+        let level = currentNode.level - 1;
         // 不显示全部
         this.checkList.push({
           id: node.data.id,
           label: this.showFullName ? this.addName(node, "") : node.data.label,
-          level: node.data.level,
+          level: level,
           nodeLabel: node.data.label,
-          parentId: node.data.level > 1 ? currentNode.parent.data.id : null,
+          parentId: level > 1 ? currentNode.parent.data.id : null,
           show: true
         });
         // console.log(node);
@@ -420,12 +431,12 @@ export default {
         this.checkList.push({
           id: node.data.id,
           label: node.data.label,
-          level: node.data.level,
+          level: node.level - 1,
           nodeLabel: node.data.label,
-          parentId: node.data.level > 1 ? node.parent.data.id : null,
+          parentId: node.level - 1 > 1 ? node.parent.data.id : null,
           show: false
         });
-        if (node.data.level > 1) {
+        if (node.level - 1 > 1) {
           this.formatParentNode(node.parent);
         }
       }
@@ -506,7 +517,7 @@ export default {
         "downTree",
         this.isLeaf ? this.checkLeafList : this.emitData,
         this.modeType,
-        this.checkList
+        this.paramsData
       );
       this.visible = false;
     },
@@ -540,10 +551,10 @@ export default {
       // }
       if (node.label != "全部") {
         this.emitData.push({
-          id: node.id,
-          label: node.label,
-          level: node.level,
-          parentId: node.level > 1 ? parentId : null
+          id: node.data.id,
+          label: node.data.label,
+          level: node.level - 1,
+          parentId: node.level - 1 > 1 ? parentId : null
           // yearId: yearId
         });
       }
@@ -653,6 +664,14 @@ export default {
       width: 100%;
       height: 60px;
       overflow: hidden;
+      .nums {
+        display: inline-block;
+        float: left;
+      }
+      .clear-empty {
+        float: right;
+        margin-right: 10px;
+      }
     }
     .tree-content {
       max-height: 350px;
