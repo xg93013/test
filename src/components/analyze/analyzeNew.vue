@@ -158,7 +158,7 @@
         </div>
         <div class="table-box">
           <!-- 操作提示 -->
-          <div class="step-tips" v-show="tableData.length==0">
+          <div class="step-tips" v-show="tableData.length==0&&oneModeColumn.length==0">
             <div class="lefts">
               <svg-icon iconClass="tips"></svg-icon>
             </div>
@@ -172,6 +172,7 @@
               <p>第三步，点击“查询”按钮，系统将根据您设定的报表统计维度，生成相应的数据</p>
             </div>
           </div>
+
           <el-table
             :data="tableData"
             :span-method="objectSpanMethod"
@@ -180,6 +181,8 @@
             :show-summary="showSummary"
             :summary-method="getSummaries"
             border
+            v-show="oneModeColumn.length>0"
+            empty-text="--"
           >
             <!-- -->
             <el-table-column
@@ -187,16 +190,25 @@
               min-width="150"
               v-for="(item,index) in oneModeColumn"
               :key="'defaultmode'+index"
+              v-if="item.prop == 'time'&&item.currentStandard>0"
             >
               <el-table-column
                 :prop="itema.prop"
                 :label="itema.name"
                 min-width="150"
                 v-for="(itema,indexa) in item.standards"
-                v-if="item.prop == 'time' ? (indexa==item.currentStandard || indexa == 0) : (indexa == item.currentStandard)"
+                v-if="[0, item.currentStandard].includes(indexa)"
                 :key="'standardmode'+indexa"
               ></el-table-column>
             </el-table-column>
+            <el-table-column
+              :label="item.name+'('+item.standards[item.currentStandard].name+')'"
+              :prop="item.standards[item.currentStandard].prop"
+              min-width="150"
+              v-for="(item,index) in oneModeColumn"
+              :key="'defaultmodess'+index"
+              v-if="item.prop != 'time'||(item.prop=='time'&&item.currentStandard==0)"
+            ></el-table-column>
             <el-table-column
               v-for="(item,index) in oneModeColumn"
               :label="item.name"
@@ -213,6 +225,12 @@
               ></el-table-column>
             </el-table-column>
           </el-table>
+          <div class="max-tips" v-show="oneModeColumn.length>0&&showMaxtips">
+            <div class="max-inline">
+              <svg-icon iconClass="tips"></svg-icon>
+              筛选数据大于{{maxLen}}行，请直接导出查看！
+            </div>
+          </div>
         </div>
       </div>
       <!-- <div class="out-box"></div> -->
@@ -298,18 +316,6 @@ export default {
         }
       ],
       currentMode: 0,
-      // twoChecklist: [],
-      // checkObj: {
-      //   pass: "合格率",
-      //   nopass: "不合格率",
-      //   passsum: "总合格率",
-      //   nopasssum: "总不合格率"
-      // },
-      // "total": 480,
-      // "unTotal": 0,
-      // "unRatio": 0,
-      // "qtotal": 480,
-      // "qratio": 100
       onecheckData: [
         {
           label: "数量1",
@@ -355,8 +361,6 @@ export default {
           filterData: []
         }
       ],
-      colsArr: [],
-      num: 20,
       resultTree: {
         id: "0",
         name: "start"
@@ -446,7 +450,8 @@ export default {
         pageSize: 10,
         currentPage: 1,
         totals: 20
-      }
+      },
+      showMaxtips: false
     };
   },
   components: {
@@ -555,6 +560,7 @@ export default {
           ],
           onecheckData: [],
           indicators: [],
+          filterKey: "",
           filterData: []
           // list: [
           //   {
@@ -633,6 +639,7 @@ export default {
           ],
           standards: [
             {
+              id: "",
               name: "大类",
               level: 1,
               prop: "categories",
@@ -646,6 +653,7 @@ export default {
               ]
             },
             {
+              id: "",
               name: "亚类",
               level: 2,
               prop: "subClass",
@@ -659,6 +667,7 @@ export default {
               ]
             },
             {
+              id: "",
               name: "次亚类",
               level: 3,
               prop: "subSubClass",
@@ -672,6 +681,7 @@ export default {
               ]
             },
             {
+              id: "",
               name: "细类",
               level: 4,
               prop: "lastClass",
@@ -685,34 +695,9 @@ export default {
               ]
             }
           ],
-          onecheckData: [
-            // {
-            //   label: "数量1",
-            //   prop: "total",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量2",
-            //   prop: "unTotal",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量3",
-            //   prop: "unRatio",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量4",
-            //   prop: "qtotal",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量5",
-            //   prop: "qratio",
-            //   checked: false
-            // }
-          ],
+          onecheckData: [],
           indicators: [],
+          filterKey: "",
           filterData: []
         },
         {
@@ -741,40 +726,16 @@ export default {
             //   list: []
             // },
             {
+              id: "sdf",
               name: "区/县",
               level: 1,
               prop: "inarea",
               list: []
             }
           ],
-          onecheckData: [
-            // {
-            //   label: "数量1",
-            //   prop: "total",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量2",
-            //   prop: "unTotal",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量3",
-            //   prop: "unRatio",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量4",
-            //   prop: "qtotal",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量5",
-            //   prop: "qratio",
-            //   checked: false
-            // }
-          ],
+          onecheckData: [],
           indicators: [],
+          filterKey: "",
           filterData: []
         },
         {
@@ -792,6 +753,7 @@ export default {
           defaultData: [],
           standards: [
             {
+              id: "sdf",
               name: "检测项目类别",
               level: 1,
               prop: "detectionCategories",
@@ -805,6 +767,7 @@ export default {
               ]
             },
             {
+              id: "sdf",
               name: "单个检测项目",
               level: 2,
               prop: "detectionSubClass",
@@ -824,34 +787,9 @@ export default {
               ]
             }
           ],
-          onecheckData: [
-            // {
-            //   label: "数量1",
-            //   prop: "total",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量2",
-            //   prop: "unTotal",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量3",
-            //   prop: "unRatio",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量4",
-            //   prop: "qtotal",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量5",
-            //   prop: "qratio",
-            //   checked: false
-            // }
-          ],
+          onecheckData: [],
           indicators: [],
+          filterKey: "",
           filterData: []
         },
         {
@@ -866,40 +804,16 @@ export default {
           sortStandard: "",
           standards: [
             {
+              id: "asasd",
               name: "单个抽检环节",
               level: 1,
               prop: "linksOne",
               list: []
             }
           ],
-          onecheckData: [
-            // {
-            //   label: "数量1",
-            //   prop: "total",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量2",
-            //   prop: "unTotal",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量3",
-            //   prop: "unRatio",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量4",
-            //   prop: "qtotal",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量5",
-            //   prop: "qratio",
-            //   checked: false
-            // }
-          ],
+          onecheckData: [],
           indicators: [],
+          filterKey: "",
           filterData: []
         },
         {
@@ -914,40 +828,16 @@ export default {
           sortStandard: "",
           standards: [
             {
+              id: "aa",
               name: "单个检测项目",
               level: 1,
               prop: "taskFromOne",
               list: []
             }
           ],
-          onecheckData: [
-            // {
-            //   label: "数量1",
-            //   prop: "total",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量2",
-            //   prop: "unTotal",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量3",
-            //   prop: "unRatio",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量4",
-            //   prop: "qtotal",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量5",
-            //   prop: "qratio",
-            //   checked: false
-            // }
-          ],
+          onecheckData: [],
           indicators: [],
+          filterKey: "",
           filterData: []
         },
         {
@@ -967,66 +857,47 @@ export default {
           sortStandard: "",
           standards: [
             {
+              id: "aa",
               name: "单个任务类型",
               level: 1,
               prop: "taskTypeOne",
               list: []
             }
           ],
-          onecheckData: [
-            // {
-            //   label: "数量1",
-            //   prop: "total",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量2",
-            //   prop: "unTotal",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量3",
-            //   prop: "unRatio",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量4",
-            //   prop: "qtotal",
-            //   checked: false
-            // },
-            // {
-            //   label: "数量5",
-            //   prop: "qratio",
-            //   checked: false
-            // }
-          ],
+          onecheckData: [],
           indicators: [],
+          filterKey: "",
           filterData: []
         }
       ];
       for (let i = 0; i < origins.length; i++) {
         origins[i].onecheckData = [
           {
+            id: "1",
             label: "数量1",
             prop: "total",
             checked: false
           },
           {
+            id: "2",
             label: "数量2",
             prop: "unTotal",
             checked: false
           },
           {
+            id: "3",
             label: "数量3",
             prop: "unRatio",
             checked: false
           },
           {
+            id: "4",
             label: "数量4",
             prop: "qtotal",
             checked: false
           },
           {
+            id: "5",
             label: "数量5",
             prop: "qratio",
             checked: false
@@ -1169,6 +1040,7 @@ export default {
       //   });
       // }
       this.moreMode[2].originData = [proObj];
+      this.moreMode[2].filterKey = "yp_scz_sq";
       this.searchList = [
         {
           type: "label1",
@@ -1344,12 +1216,13 @@ export default {
           children: ClassData.yp_fl_xl_bh
         }
       ];
+      this.moreMode[1].filterKey = "yp_fl_xl_bh";
       console.log(this.moreMode[1].originData);
       // console.log(JSON.stringify(this.moreMode[1].originData));
       // console.log(this.moreMode[2]);
       this.moreMode[3].originData = [
         {
-          id: "100",
+          id: "0",
           label: "全部",
           children: ClassData.jy_xm_bh
           // level: 0,
@@ -1391,7 +1264,9 @@ export default {
           // ]
         }
       ];
+      this.moreMode[3].filterKey = "jy_xm_bh";
       this.moreMode[4].originData = ClassData.yp_hj_new;
+      this.moreMode[4].filterKey = "yp_hj_new";
       // [
       //   {
       //     id: 1,
@@ -1556,6 +1431,7 @@ export default {
       if (this.oneModeColumn.length > 0) {
         this.checkMore();
       }
+      this.moreMode[0].filterKey = "time";
     },
     changeCurrentStandard() {
       if (this.oneModeColumn.length > 0) {
@@ -1903,25 +1779,6 @@ export default {
         return total;
       }
     },
-    addW() {
-      this.num++;
-      this.moreMode.push({
-        name: "维度" + this.num,
-        prop: "oneia" + this.num,
-        list: [
-          {
-            id: "c1" + this.num,
-            prop: "oneia" + this.num,
-            name: this.num + "10维1"
-          },
-          {
-            id: "c2" + this.num,
-            prop: "oneia" + this.num,
-            name: this.num + "10维2"
-          }
-        ]
-      });
-    },
     getDatas() {
       this.obj = {};
       this.tableData = [];
@@ -1933,6 +1790,7 @@ export default {
       // params
       let params = {};
       params.list = [];
+      params.filterObj = {};
       params.showTotal = this.showSummary;
       for (let i = 0; i < this.moreMode.length; i++) {
         let flag = false;
@@ -1946,25 +1804,35 @@ export default {
         }
         if (flag && this.moreMode[i].currentStandard > -1) {
           let indicators = [];
+          let indicatorsIds = [];
           let filterData = [];
+
+          if (this.moreMode[i].filterKey != "") {
+            params.filterObj[this.moreMode[i].filterKey] = this.moreMode[
+              i
+            ].filterData;
+          }
           for (let k = 0; k < this.moreMode[i].indicators.length; k++) {
             indicators.push(this.moreMode[i].indicators[k].label);
+            indicatorsIds.push(this.moreMode[i].indicators[k].id);
           }
-          if (this.moreMode[i].filterData.length > 0) {
-            filterData =
-              this.moreMode[i].filterData[0].label == "全部"
-                ? []
-                : this.moreMode[i].filterData;
-          }
-
+          // if (this.moreMode[i].filterData.length > 0) {
+          //   filterData =
+          //     this.moreMode[i].filterData[0].label == "全部"
+          //       ? []
+          //       : this.moreMode[i].filterData;
+          // }
           params.list.push({
             dimensionName: this.moreMode[i].name,
             dimensionLevel: this.moreMode[i].standards[
               this.moreMode[i].currentStandard
             ].name,
-            filterData: filterData,
+            dimensionLevelId: this.moreMode[i].standards[
+              this.moreMode[i].currentStandard
+            ].id,
             indicators: indicators,
-            sort: this.moreMode[i].sortStandard
+            indicatorsIds: indicatorsIds
+            // sort: this.moreMode[i].sortStandard
           });
         }
       }
@@ -1977,6 +1845,7 @@ export default {
       this.getStandardsColspan();
     },
     checkMore() {
+      this.showMaxtips = false;
       let totalLen = this.tableData.length;
       this.obj = {};
       this.tableData = [];
@@ -2007,9 +1876,10 @@ export default {
                     // }
                     if (arr[i].standards[j].list.length >= this.maxLen) {
                       // this.moreMode[this.currentMode].currentStandard = -1;
-                      this.$message.warning(
-                        `显示数据大于${this.maxLen}行，请导出查看！`
-                      );
+                      this.showMaxtips = true;
+                      // this.$message.warning(
+                      //   `显示数据大于${this.maxLen}行，请导出查看！`
+                      // );
                       return;
                     }
                     this.getTreeNode(
@@ -2021,9 +1891,10 @@ export default {
                     this.getLeafNodesLength(this.resultTree);
                     if (this.leafNodesLen >= this.maxLen) {
                       // this.moreMode[this.currentMode].currentStandard = -1;
-                      this.$message.warning(
-                        `显示数据大于${this.maxLen}行，请导出查看！`
-                      );
+                      this.showMaxtips = true;
+                      // this.$message.warning(
+                      //   `显示数据大于${this.maxLen}行，请导出查看！`
+                      // );
                       return;
                     }
                   }
@@ -2346,6 +2217,21 @@ export default {
                 font-size: 16px;
               }
             }
+          }
+        }
+        .max-tips {
+          width: 100%;
+          height: 60px;
+          margin: 20px auto;
+          text-align: center;
+          overflow: hidden;
+          .max-inline {
+            display: inline-block;
+            padding: 15px;
+
+            border-radius: 6px;
+            border: 1px solid orange;
+            color: orange;
           }
         }
       }

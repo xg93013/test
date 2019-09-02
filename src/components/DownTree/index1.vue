@@ -29,6 +29,7 @@
                 :accordion="true"
                 :render-content="renderContent"
                 @check="check"
+                :default-expanded-keys="[0]"
                 ref="treeRefs"
               ></el-tree>
               <!-- <el-tree
@@ -272,6 +273,10 @@ export default {
     getSelectLength() {
       this.emitData = [];
       let arr = this.$refs.treeRefs.getCheckedNodes(false, true);
+      let selectAllNode = this.$refs.treeRefs.getNode("0"); // 全选
+      if (selectAllNode.checked) {
+        this.paramsData = [];
+      }
       // console.log(arr);
       for (let i = 0; i < arr.length; i++) {
         let node = this.$refs.treeRefs.getNode(arr[i].id);
@@ -284,14 +289,14 @@ export default {
         // if (node.checked) {
         //   this.getStepNodes(this.getChildNode(this.allData, arr[i].id));
         // }
-        if (arr[i].id != "0") {
+        if (arr[i].id != "0" && !selectAllNode.checked) {
           if (arr[i].id.substr(arr[i].id.length - 2, 2) != "00") {
             this.paramsData.push(arr[i]);
           }
         }
       }
       console.log(this.emitData);
-      this.emitData = this.unique(this.emitData);
+      // this.emitData = this.unique(this.emitData);
       this.selectLen = this.emitData.length;
     },
     show() {
