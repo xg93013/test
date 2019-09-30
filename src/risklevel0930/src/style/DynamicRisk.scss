@@ -1,0 +1,31 @@
+.top-dynamic {
+    overflow: hidden;
+    height: 40px;
+    line-height: 40px;
+    .tips-icon {
+        color: #ff992f;
+        font-size: 16px;
+    }
+}
+
+.match-score {
+    width: 100%;
+    margin: 20px auto;
+    span {
+        font-size: 16px;
+        color: #666;
+    }
+    text-align: center;
+}
+
+.other-text {
+    overflow: hidden;
+    margin: 30px auto;
+    .label {
+        width: 160px;
+        text-align: right;
+    }
+    .content {
+        width: 450px;
+    }
+}
