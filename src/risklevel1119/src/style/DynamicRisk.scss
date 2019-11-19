@@ -1,0 +1,22 @@
+.top-dynamic {
+    overflow: hidden;
+    height: 40px;
+    line-height: 40px;
+}
+
+.match-score {
+    width: 100%;
+    margin: 20px auto;
+    font-weight: bold;
+    span {
+        font-size: 16px;
+        color: #666;
+        &.bColor {
+            color: rgb(70, 211, 93)
+        }
+    }
+    .score-num {
+        font-size: 16px;
+    }
+    text-align: center;
+}
