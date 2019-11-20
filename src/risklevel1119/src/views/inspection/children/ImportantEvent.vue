@@ -371,10 +371,11 @@ export default {
       }
     },
     reset() {
-      this.importantContent = this.originContent;
-      this.remarks = this.originRemarks;
-      this.others = this.originOthers;
-      this.inputForm = deepClone(this.originInputForm);
+      // this.importantContent = this.originContent;
+      // this.remarks = this.originRemarks;
+      // this.others = this.originOthers;
+      // this.inputForm = deepClone(this.originInputForm);
+      this.getDefaultData();
     },
     showTips() {
       this.$refs.tipsRefs.show();

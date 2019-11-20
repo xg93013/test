@@ -536,6 +536,7 @@ export default {
       this.getSelectLength();
     },
     reset(flag) {
+      this.deleteRowIds = [];
       if (!this.isOpened) {
         this.isFirstReset = true;
       } else {

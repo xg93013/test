@@ -177,12 +177,8 @@
         <div class="commonWidth bot">
           <div class="bot-top" v-show="!disabled">
             <div class="common-title">被检查企业主体信息</div>
-            <el-form
-              :model="projectForm"
-              ref="projectFormRefs"
-              :rules="projectFormRules"
-              label-width="120px"
-            >
+            <el-form :model="projectForm" ref="projectFormRefs" label-width="120px">
+              <!-- :rules="projectFormRules" -->
               <div class="fl item">
                 <div class="form">
                   <el-form-item label="所属区域：" prop="area">
@@ -374,6 +370,25 @@
         <el-button type="primary" @click="entDetailvisible = false">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="确认提示"
+      :visible.sync="dialogVisible"
+      width="470px"
+      custom-class="dialogVisible"
+    >
+      <div class="contents">
+        <div class="icons">
+          <svg-icon iconClass="question" class="question"></svg-icon>
+        </div>
+        <div class="texts">
+          <p class="big">是否确认发布</p>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirmSubmit">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -469,6 +484,18 @@ export default {
         }
       }
     };
+    let adminSectionValidator = (rule, value, callback) => {
+      let reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/;
+      if (!value) {
+        callback(new Error("请输入机构/处室！"));
+      } else {
+        if (value.length > 100 || !reg.test(value)) {
+          callback(new Error("最长为100个字符，不能包含空格和特殊字符！"));
+        } else {
+          callback();
+        }
+      }
+    };
 
     return {
       timer: "",
@@ -522,13 +549,20 @@ export default {
         ],
         planAdminOrg: [
           { required: true, validator: adminOrgValidator, trigger: "change" }
+        ],
+        planAdminSection: [
+          {
+            required: true,
+            validator: adminSectionValidator,
+            trigger: "change"
+          }
         ]
       },
       projectFormRules: {
-        area: [{ required: true, message: "请选择区域", trigger: "change" }],
-        enterpriseName: [
-          { required: true, message: "请选择企业名称", trigger: "change" }
-        ]
+        // area: [{ required: true, message: "请选择区域", trigger: "change" }],
+        // enterpriseName: [
+        //   { required: true, message: "请选择企业名称", trigger: "change" }
+        // ]
       },
       tableData: [],
       productTableData: [],
@@ -575,6 +609,7 @@ export default {
         pageSize: 10
       },
       entDetailvisible: false,
+      dialogVisible: false,
       enterprise: {
         enterpriseName: "",
         enterpriseAddress: "",
@@ -583,7 +618,8 @@ export default {
         productNo: ""
       },
       originForm: {},
-      originTableData: []
+      originTableData: [],
+      planId: ""
     };
   },
   components: {
@@ -641,7 +677,11 @@ export default {
       this.projectForm.enterpriseId = item.value;
     },
     changeArea(item) {
-      this.getAllEnterprise();
+      if (this.normalForm.planType != "") {
+        this.getAllEnterprise();
+      } else {
+        this.$message.error("请先选择企业类型！");
+      }
     },
     async getAllEnterprise() {
       this.projectForm.enterpriseName = "";
@@ -730,34 +770,20 @@ export default {
       });
     },
     async submitForm(type, flag) {
-      let planId = "";
       let form = { ...this.normalForm };
       form.year = parseInt(form.year);
       let res = "";
       res = await http.post(PLAN, form);
       if (res.status == 200) {
-        planId = res.data.data.id;
+        this.planId = res.data.data.id;
         if (type == "SAVE") {
           this.$message.success("保存计划成功！");
         }
         if (type == "COMMIT") {
-          let resa = await http.patch(PLAN + "/" + planId);
-          if (resa) {
-            this.$message.success("发布成功！");
-            let code = "";
-            if (getStorage("currentCode")) {
-              code = getStorage("currentCode")[0];
-            }
-            setTimeout(() => {
-              this.$router.push({
-                path: "/PlanFormulation",
-                query: {
-                  code: code
-                }
-              });
-            }, 1000);
+          if (this.tableData.length > 0) {
+            this.dialogVisible = true;
           } else {
-            this.$message.success("发布失败！");
+            this.$message.error("请先配置一条企业数据！");
           }
         }
         if (flag) {
@@ -770,35 +796,37 @@ export default {
       }
     },
     addToList() {
-      this.$refs.projectFormRefs.validate(validate => {
-        if (validate) {
-          // let name = "";
-          let flag = false;
-          let index = this.tableData.length - 1;
-          for (let i = 0; i < this.tableData.length; i++) {
-            if (
-              this.tableData[i].enterpriseName ==
-              this.projectForm.enterpriseName
-            ) {
-              flag = true;
-              break;
-            } else {
-              continue;
-            }
-          }
-          if (!flag) {
-            if (this.normalForm.planNo != "") {
-              this.save(true);
-            } else {
-              this.$message.error("请先生成计划编号！");
-            }
+      // this.$refs.projectFormRefs.validate(validate => {
+      if (
+        this.projectForm.area != "" &&
+        this.projectForm.enterpriseName != ""
+      ) {
+        // let name = "";
+        let flag = false;
+        let index = this.tableData.length - 1;
+        for (let i = 0; i < this.tableData.length; i++) {
+          if (
+            this.tableData[i].enterpriseName == this.projectForm.enterpriseName
+          ) {
+            flag = true;
+            break;
           } else {
-            this.$message.error("项目已经存在！");
+            continue;
+          }
+        }
+        if (!flag) {
+          if (this.normalForm.planNo != "") {
+            this.save(true);
+          } else {
+            this.$message.error("请先生成计划编号！");
           }
         } else {
-          this.$message.error("请选择企业信息！");
+          this.$message.error("项目已经存在！");
         }
-      });
+      } else {
+        this.$message.error("请选择企业信息！");
+      }
+      // });
     },
     async addEntToList() {
       let res = await http.post(
@@ -899,6 +927,27 @@ export default {
     },
     sizeChange() {
       this.getTableData();
+    },
+    async confirmSubmit() {
+      this.dialogVisible = false;
+      let resa = await http.patch(PLAN + "/" + this.planId);
+      if (resa) {
+        this.$message.success("发布成功！");
+        let code = "";
+        if (getStorage("currentCode")) {
+          code = getStorage("currentCode")[0];
+        }
+        setTimeout(() => {
+          this.$router.push({
+            path: "/PlanFormulation",
+            query: {
+              code: code
+            }
+          });
+        }, 1000);
+      } else {
+        this.$message.success("发布失败！");
+      }
     }
   }
 };

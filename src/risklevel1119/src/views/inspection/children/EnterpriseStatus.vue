@@ -640,7 +640,9 @@ export default {
               : [],
             riskLevel: data.preRiskLevel ? data.preRiskLevel : "",
             stopStartDate: data.shutdownDate ? data.shutdownDate : "",
-            stopEndDate: data.shutdownEndDate ? data.shutdownEndDate : "",
+            stopEndDate: data.shutdownEndDate
+              ? data.shutdownEndDate
+              : getTimeStr(true),
             checkDate: data.inspectionDate ? data.inspectionDate : ""
           };
           this.originTree = data.productCategory
@@ -672,6 +674,7 @@ export default {
           //     phone: person[1]
           //   });
           // }
+          console.log(this.form);
         }
       }
       let category = await http.get(categoryUrl);
@@ -999,24 +1002,56 @@ export default {
     changeNormalVisible() {
       this.normalVisible = !this.normalVisible;
       if (!this.normalVisible) {
+        let list = this.enterpriseCategory.normalCategory;
+        for (let i = 0; i < list.length; i++) {
+          let index = this.getIndexInCategory(list[i]);
+          this.semiCategoryList[index].show = true;
+          this.seasonCategoryList[index].show = true;
+          this.shutdownCategoryList[index].show = true;
+        }
+        this.prevNormalCat = [];
         this.enterpriseCategory.normalCategory = [];
       }
     },
     changeSemiShutDownVisible() {
       this.semiShutdownVisible = !this.semiShutdownVisible;
       if (!this.semiShutdownVisible) {
+        let list = this.enterpriseCategory.semiShutdownCategory;
+        for (let i = 0; i < list.length; i++) {
+          let index = this.getIndexInCategory(list[i]);
+          this.categoryList[index].show = true;
+          this.seasonCategoryList[index].show = true;
+          this.shutdownCategoryList[index].show = true;
+        }
+        this.prevSemiShutdownCat = [];
         this.enterpriseCategory.semiShutdownCategory = [];
       }
     },
     changeSeasonShutDownVisible() {
       this.seasonShutdownVisible = !this.seasonShutdownVisible;
       if (!this.seasonShutdownVisible) {
+        let list = this.enterpriseCategory.seasonShutdownCategory;
+        for (let i = 0; i < list.length; i++) {
+          let index = this.getIndexInCategory(list[i]);
+          this.categoryList[index].show = true;
+          this.semiCategoryList[index].show = true;
+          this.shutdownCategoryList[index].show = true;
+        }
+        this.prevSeasonShutdownCat = [];
         this.enterpriseCategory.seasonShutdownCategory = [];
       }
     },
     changeShutDownVisible() {
       this.shutdownVisible = !this.shutdownVisible;
       if (!this.shutdownVisible) {
+        let list = this.enterpriseCategory.shutdownCategory;
+        for (let i = 0; i < list.length; i++) {
+          let index = this.getIndexInCategory(list[i]);
+          this.categoryList[index].show = true;
+          this.semiCategoryList[index].show = true;
+          this.seasonCategoryList[index].show = true;
+        }
+        this.prevShutdownCat = [];
         this.enterpriseCategory.shutdownCategory = [];
       }
     },

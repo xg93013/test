@@ -14,11 +14,11 @@ module.exports = {
       "/pro": {
         // target: 'http://lihong:8082/',
         // target: 'http://172.27.17.237:8080/',
-        // target: 'http://172.27.13.153:8443/',
+        target: 'http://172.27.13.153:8443/',
         // target: 'http://lihong:8443/',
         // target: 'http://172.27.13.51:8443/',
         // target: 'http://MAOJING:8443',
-        target: 'http://172.27.13.145:8443/',
+        // target: 'http://172.27.13.145:8443/',
         //				changeOrigin: true,
         // secure: false,
         pathRewrite: {

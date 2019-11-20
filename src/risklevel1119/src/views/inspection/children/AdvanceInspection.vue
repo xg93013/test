@@ -47,6 +47,10 @@
                         <el-input type="text" v-model="item.riskScore" class="inputs" disabled></el-input>&emsp;分
                       </div>
                       <div class="box-item">
+                        <span>系统自动补齐符合项总分值：</span>
+                        <el-input type="text" v-model="item.addTotal" class="inputs" disabled></el-input>&emsp;分
+                      </div>
+                      <div class="box-item">
                         <span>合理缺项总分值：</span>
                         <el-input type="text" v-model="item.missTotal" class="inputs" disabled></el-input>&emsp;分
                       </div>
@@ -183,7 +187,8 @@ export default {
           disagreeScore: score[i].disagreeScore,
           riskScore: score[i].riskScore,
           missTotal: score[i].missTotal,
-          missNum: score[i].missNum
+          missNum: score[i].missNum,
+          addTotal: score[i].totalScore - score[i].selectTotal
         });
       }
       this.scoreList = arr;
@@ -209,12 +214,12 @@ export default {
     getResult() {
       let result = this.$refs.advanceTableRefs.getResult();
       let total = 0;
-      if (this.scoreList.length > 0) {
-        total = this.scoreList[0].totalScore;
-      }
-      // for (let i = 0; i < this.scoreList.length; i++) {
-      //   total += this.scoreList[i].totalScore;
+      // if (this.scoreList.length > 0) {
+      //   total = this.scoreList[0].totalScore;
       // }
+      for (let i = 0; i < this.scoreList.length; i++) {
+        total += this.scoreList[i].totalScore;
+      }
       let form = {
         items: result,
         remark: this.others ? this.others.trim() : "",

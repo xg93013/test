@@ -19,7 +19,7 @@
       <el-table-column
         :prop="item.prop"
         :label="item.label"
-        :min-width="item.width"
+        :width="item.width"
         :align="item.align"
         :sortable="item.sortable"
         v-for="(item, index) in tableColumn"
@@ -28,7 +28,7 @@
       <el-table-column
         :prop="item.prop"
         :label="item.label"
-        :min-width="item.width"
+        :width="item.width"
         :align="item.align"
         :sortable="item.sortable"
         v-for="(item, index) in editColumn"
@@ -36,38 +36,22 @@
       >
         <template slot-scope="scope">
           <div v-if="scope.column.property == 'result'" class="select-box">
-            <span v-if="moreCheck" class="result-score">
+            <span class="result-score">
               <span class="radio-item" @click="changeCheckBox('nopass', scope.row, '不符合')">
                 <span class="out" :class="{'active':scope.row['nopass'] == '不符合'}">
                   <label></label>
                 </span>
                 <span class="no-pass">不符合</span>
               </span>
-              <span class="radio-item" @click="changeCheckBox('nopass', scope.row, '基本符合')">
+              <span
+                v-if="moreCheck"
+                class="radio-item"
+                @click="changeCheckBox('nopass', scope.row, '基本符合')"
+              >
                 <span class="out" :class="{'active':scope.row['nopass'] == '基本符合'}">
                   <label></label>
                 </span>
                 <span class="normal-pass">基本符合</span>
-              </span>
-              <span class="radio-item" @click="changeCheckBox('nopass', scope.row, '符合')">
-                <span class="out" :class="{'active':scope.row['nopass'] == '符合'}">
-                  <label></label>
-                </span>
-                <span class="pass">符合</span>
-              </span>
-              <span class="radio-item" @click="changeCheckBox('isReasonable', scope.row)">
-                <span class="out" :class="{'active':scope.row['isReasonable'] == true}">
-                  <label></label>
-                </span>
-                <span class="resonable">合理缺项</span>
-              </span>
-            </span>
-            <span v-else class="result-score">
-              <span class="radio-item" @click="changeCheckBox('nopass', scope.row, '不符合')">
-                <span class="out" :class="{'active':scope.row['nopass'] == '不符合'}">
-                  <label></label>
-                </span>
-                <span class="no-pass">不符合</span>
               </span>
               <span class="radio-item" @click="changeCheckBox('nopass', scope.row, '符合')">
                 <span class="out" :class="{'active':scope.row['nopass'] == '符合'}">
@@ -140,11 +124,12 @@
           <span v-else>{{scope.row[scope.column.property]}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="190" v-if="moreCheck&&type=='view'" align="center" label="汇总">
+      <el-table-column width="200" v-if="moreCheck&&type=='view'" align="center" label="汇总">
         <template slot-scope="scope">
           <div>
             <p>合理缺项分值：{{scope.row.missTotal}} 分</p>
             <p>总分/得分：{{scope.row.totalScore}} / {{scope.row.riskScore}}</p>
+            <p v-show="showAddTotal">自动补齐符合项分值：{{scope.row.addTotal }}分</p>
             <p>得分比%：{{scope.row.percent}} %</p>
           </div>
         </template>
@@ -161,7 +146,7 @@
       <el-table-column
         :prop="item.prop"
         :label="item.label"
-        :min-width="item.width"
+        :width="item.width"
         v-for="(item, index) in tableColumn"
         :key="'columna'+index"
         :class-name="item.prop=='checkProject'?'start-select':(item.prop=='checkContent'?'gray-select':'')"
@@ -182,38 +167,54 @@
       <el-table-column
         :prop="item.prop"
         :label="item.label"
-        :min-width="item.width"
+        :width="item.width"
         :align="item.align"
         v-for="(item, index) in editColumn"
         :key="'editcolumna'+index"
         :class-name="item.prop=='score'?'gray-select':''"
       >
         <template slot-scope="scope">
-          <div v-if="scope.column.property == 'nopass'" class="select-box">
-            <span v-if="['', null].includes(scope.row[scope.column.property])">-</span>
-            <div v-else @click="changeDefaultCheckBox(item, scope.row)">
-              <span v-if="moreCheck">
-                <span class="normal-pass" v-if="scope.row[scope.column.property] == '符合'">
-                  <svg-icon iconClass="check-box"></svg-icon>
+          <div v-if="scope.column.property == 'result'" class="select-box">
+            <span class="result-score">
+              <!-- CONFORM INCONFORMITY BASICALLY_CONFORM  REASONABLE_EXCLUSION -->
+              <span
+                class="radio-item"
+                @click="changeDefaultCheckBox('result', scope.row, 'INCONFORMITY')"
+              >
+                <span class="out" :class="{'active':scope.row['result'] == 'INCONFORMITY'}">
+                  <label></label>
                 </span>
-                <span class="error" v-else-if="scope.row[scope.column.property] == '不符合'">
-                  <svg-icon iconClass="errors"></svg-icon>
-                </span>
-                <span v-else class="pass">
-                  <svg-icon iconClass="check-box"></svg-icon>
-                </span>
+                <span class="no-pass">不符合</span>
               </span>
-              <span v-else>
-                <span class="normal-pass" v-if="scope.row[scope.column.property] == '符合'">
-                  <svg-icon iconClass="check-box"></svg-icon>
+              <span
+                v-if="moreCheck"
+                class="radio-item"
+                @click="changeDefaultCheckBox('result', scope.row, 'BASICALLY_CONFORM')"
+              >
+                <span class="out" :class="{'active':scope.row['result'] == 'BASICALLY_CONFORM'}">
+                  <label></label>
                 </span>
-                <span class="pass" v-else-if="scope.row[scope.column.property] == '不符合'">
-                  <svg-icon iconClass="check-box"></svg-icon>
-                </span>
+                <span class="normal-pass">基本符合</span>
               </span>
-
-              <span>{{scope.row[scope.column.property]}}</span>
-            </div>
+              <span
+                class="radio-item"
+                @click="changeDefaultCheckBox('result', scope.row, 'CONFORM')"
+              >
+                <span class="out" :class="{'active':scope.row['result'] == 'CONFORM'}">
+                  <label></label>
+                </span>
+                <span class="pass">符合</span>
+              </span>
+              <span
+                class="radio-item"
+                @click="changeDefaultCheckBox('result', scope.row, 'REASONABLE_EXCLUSION')"
+              >
+                <span class="out" :class="{'active':scope.row['result'] == 'REASONABLE_EXCLUSION'}">
+                  <label></label>
+                </span>
+                <span class="resonable">合理缺项</span>
+              </span>
+            </span>
           </div>
           <div v-else-if="scope.column.property == 'calScore'">
             <span>-</span>
@@ -317,7 +318,8 @@ export default {
       currentNode: "",
       scoreResult: "",
       totalScore: 0,
-      prevTableData: []
+      prevTableData: [],
+      showAddTotal: false
     };
   },
   components: {
@@ -358,7 +360,7 @@ export default {
         prop: "checkProject",
         // sortable: 'custom', 自定义排序
         sortable: false,
-        width: 150,
+        width: 170,
         level: 1,
         data: []
       },
@@ -367,7 +369,7 @@ export default {
         label: "检查内容",
         sortable: false,
         prop: "checkContent",
-        width: 220,
+        width: 210,
         level: 2,
         data: []
       }
@@ -378,22 +380,23 @@ export default {
         label: "分值",
         prop: "score",
         sortable: false,
-        width: 70,
+        width: 80,
         align: "center"
       },
       {
         id: "d",
         label: "结果判定",
         prop: "result",
-        width: this.moreCheck ? "280" : "180",
+        width: this.moreCheck ? "290" : "230",
         align: "center"
       },
-      // {
-      //   id: "e",
-      //   label: this.moreCheck ? "得分" : "扣分项",
-      //   prop: "calScore",
-      //   align: "center"
-      // },
+      {
+        id: "e",
+        label: this.moreCheck ? "得分" : "扣分",
+        width: 80,
+        prop: "calScore",
+        align: "center"
+      },
       // {
       //   id: "f",
       //   label: "是否合理缺项",
@@ -404,38 +407,23 @@ export default {
         id: "h",
         label: "备注",
         prop: "remarks",
-        width: 90,
+        // width: 90,
         align: "center"
       },
       {
         id: "g",
         label: "操作",
+        width: 100,
         prop: "operation",
         align: "center"
       }
     ];
-    if (this.moreCheck) {
-      this.editColumn.splice(2, 0, {
-        id: "e",
-        label: "得分",
-        width: 80,
-        prop: "calScore",
-        align: "center"
-      });
-    } else {
-      this.editColumn.splice(2, 0, {
-        id: "e",
-        label: "扣分",
-        width: 80,
-        prop: "calScore",
-        align: "center"
-      });
-    }
 
     this.editTableData.push({
       date: "aaa",
       checkProject: "default",
       checkContent: "自动填充",
+      result: "",
       nopass: "符合",
       score: "自动填充"
     });
@@ -773,17 +761,9 @@ export default {
         }
       }
     },
-    changeDefaultCheckBox(item, row) {
-      let arr = this.moreCheck
-        ? ["符合", "不符合", "基本符合"]
-        : ["符合", "不符合"];
-      if (item.prop == "nopass") {
-        let index = arr.indexOf(row[item.prop]);
-        index++;
-        if (index >= arr.length) {
-          index = 0;
-        }
-        row[item.prop] = arr[index];
+    changeDefaultCheckBox(prop, row, label) {
+      if (this.type != "view" && this.type != "detail") {
+        row[prop] = label;
       }
     },
     getScore() {
@@ -922,7 +902,7 @@ export default {
               parentId: arr[i].parentId,
               score: arr[i].score,
               nopass: "不符合",
-              calScore: "",
+              calScore: this.moreCheck ? 0 : arr[i].score,
               remarks: "",
               isReasonable: false
             };
@@ -996,7 +976,8 @@ export default {
     setDefault(data) {
       this.treeObj.defaultData = deepClone(data);
     },
-    async getDatas() {
+    // flag true 重置获取数据
+    async getDatas(flag) {
       let url = !this.moreCheck ? TASK_TASKDYNAMIC : TASK_TASKADVANCEMENT;
       let res = await http.get(url + "/" + this.taskId);
       if (res) {
@@ -1030,6 +1011,7 @@ export default {
             inObj.remarks = datas[i].dataList[j].remark;
             inObj.itemNumber = datas[i].dataList[j].itemNumber;
             inObj.dataList = [];
+            // CONFORM INCONFORMITY BASICALLY_CONFORM  REASONABLE_EXCLUSION
             if (result == "CONFORM") {
               inObj.nopass = "符合";
               inObj.isReasonable = false;
@@ -1072,7 +1054,9 @@ export default {
         if (this.type != "view") {
           this.setTreeDefaultData();
         }
-
+        if (flag) {
+          this.$refs.downTreeRefs.reset();
+        }
         this.$emit("getRemarks", res.data.data.remark);
       }
       // this.originData = [
@@ -1133,16 +1117,17 @@ export default {
       }
     },
     reset() {
-      this.tableData = [];
-      this.resultTree = {
-        id: 0,
-        dimName: "start",
-        dataList: deepClone(this.originData)
-      };
-      this.showTableData();
-      // 下拉树默认选中
-      this.setTreeDefaultData();
-      this.$refs.downTreeRefs.reset();
+      // this.tableData = [];
+      // this.resultTree = {
+      //   id: 0,
+      //   dimName: "start",
+      //   dataList: deepClone(this.originData)
+      // };
+      // this.showTableData();
+      // // 下拉树默认选中
+      // this.setTreeDefaultData();
+      this.getDatas(true);
+      // this.$refs.downTreeRefs.reset();
       // this.getDatas();
     },
     getResult() {
@@ -1205,6 +1190,7 @@ export default {
       }
     },
     setViewData() {
+      this.showAddTotal = true;
       let data = !this.moreCheck
         ? getStorage("dynamicView")[0]
         : getStorage("advanceView")[0];
@@ -1220,6 +1206,7 @@ export default {
           resultData[i].riskScore = scoreObj.riskScore;
           resultData[i].disagreeScore = scoreObj.disagreeScore;
           resultData[i].percent = scoreObj.percent;
+          resultData[i].addTotal = scoreObj.totalScore - scoreObj.selectTotal;
         }
       }
 
@@ -1232,6 +1219,7 @@ export default {
       this.getViewTotal();
     },
     setViewTotalData() {
+      this.showAddTotal = false;
       let data = !this.moreCheck
         ? getStorage("dynamicView")[0]
         : getStorage("advanceView")[0];
@@ -1322,6 +1310,7 @@ export default {
             resultData[i].riskScore = scoreObj.riskScore;
             resultData[i].disagreeScore = scoreObj.disagreeScore;
             resultData[i].percent = scoreObj.percent;
+            resultData[i].addTotal = scoreObj.totalScore - scoreObj.selectTotal;
           }
         }
 
@@ -1389,7 +1378,8 @@ export default {
         disagreeScore: 0,
         missTotal: 0,
         missNum: 0,
-        percent: 0
+        percent: 0,
+        selectTotal: 0
       };
       for (let i = 0; i < arr.length; i++) {
         if (
@@ -1419,11 +1409,15 @@ export default {
         if (arr[i].isReasonable) {
           obj.missNum += 1;
         }
-        // obj.totalScore += Number(arr[i].score);
+        obj.selectTotal += Number(arr[i].score);
       }
       let percent =
         obj.totalScore - obj.missTotal != 0
-          ? Math.floor((obj.riskScore / (obj.totalScore - obj.missTotal)) * 100)
+          ? Math.floor(
+              ((obj.riskScore + (obj.totalScore - obj.selectTotal)) /
+                (obj.totalScore - obj.missTotal)) *
+                100
+            )
           : 0;
       obj.percent = percent;
       return obj;

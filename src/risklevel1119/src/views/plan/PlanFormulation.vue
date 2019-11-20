@@ -182,6 +182,7 @@ export default {
           label: "已发布"
         }
       ],
+      planNameList: [],
       entNameList: [],
       tableData: [],
       tableHeader: [
@@ -287,16 +288,22 @@ export default {
       let res = await http.get(PLAN_STATUS);
       if (res) {
         let datas = res.data.data;
+        let total = 0;
         for (let i = 0; i < datas.length; i++) {
           if (datas[i].planStatus == "INIT") {
             this.statusCount.noNum = datas[i].count;
+            total += datas[i].count;
           }
           if (datas[i].planStatus == "AUTHORIZED") {
             this.statusCount.okNum = datas[i].count;
+            total += datas[i].count;
+          }
+          if (datas[i].planStatus == "ACTION") {
+            total += datas[i].count;
           }
         }
-        this.statusCount.allNum =
-          this.statusCount.noNum + this.statusCount.okNum;
+        this.statusCount.allNum = total;
+        this.statusCount.okNum = total - this.statusCount.noNum;
       }
     },
     async getDatas() {
