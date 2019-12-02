@@ -1,15 +1,87 @@
 import React from "react";
 import echarts from "echarts";
-import { throttle } from "../../../../unit/pub";
 
 class Index extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = {
+            titleData: {
+                rank: 0,
+                desc: 0
+            }
+        }
     }
 
-    getCharts(data) {
+    getCharts(originData) {
+        //             "score": 25,
+        //   "insNumEtp": 0, 人均年巡检次数得分
+        //   "avgInsNum": 1,平均巡检参与人数(人/次)
+        //   "okCheckRatio": 0.5,未延期整改复查率
+        //   "maxOpDays": 198,最长经办时长
+        //   "insNum": 9, 巡检次数
+        //   "checkRatio": 0.5, 整改复查率（包括延期、未延期）
+        //   "insNumSup": 0, 人均巡检次数
+        //   "avgOpDays": 98 平均经办时长
+        // 抽样检验指标
+        // "check": {
+        //     "score": 14,
+        //     "checkNum": 66, 抽检次数
+        //     "avgCheckNumEtp": 4.2, 主体年平均抽检次数
+        //     "avgCheckSup": 1, 平均抽检参与人数
+        //     "avgCheckNumSup": 0.3 人均抽检次数
+        //   },
+        let data = [{
+            name: '日常巡检指标',
+            value: originData.ins.score,
+            children: [{
+                name: '日常巡检次数',
+                value: originData.ins.insNum
+            }, {
+                name: '人均日常巡检次数(次/年)',
+                value: originData.ins.insNumSup
+            }, {
+                name: '主体年平均巡检次数(次/年)',
+                value: originData.ins.insNumEtp
+            }, {
+                name: '平均经办时长(天)',
+                value: originData.ins.avgOpDays
+            }, {
+                name: '最长经办时长(天)',
+                value: originData.ins.maxOpDays
+            }, {
+                name: '平均巡检参与人数(人/次)',
+                value: originData.ins.avgInsNum
+            }, {
+                name: '整改复查率(包括延期、未延期)(%)',
+                value: (originData.ins.checkRatio * 100).toFixed(2)
+            }, {
+                name: '未延期整改复查率(%)',
+                value: (originData.ins.okCheckRatio * 100).toFixed(2)
+            }]
+        }, {
+            name: '抽样巡检指标',
+            value: originData.check.score,
+            children: [{
+                name: '抽检次数',
+                value: originData.check.checkNum
+            }, {
+                name: '人均日常抽检次数(次/年)',
+                value: originData.check.avgCheckNumSup
+            }, {
+                name: '主体年平均抽检次数(次/年)',
+                value: originData.check.avgCheckNumEtp
+            }, {
+                name: '平均抽检参与人数(人/次)',
+                value: originData.check.avgCheckSup
+            }]
+        }];
+        this.setState({
+            titleData: {
+                rank: originData.top,
+                desc: (!originData.topChange && originData.topChange !== 0) ? '-' : originData.topChange
+            }
+        })
         let option = {
             angleAxis: {
                 axisLine: {
@@ -24,6 +96,7 @@ class Index extends React.Component {
                 axisLabel: {
                     show: false
                 },
+                min: -2,
                 boundaryGap: ["50%", 0],
             },
             radiusAxis: {
@@ -40,7 +113,26 @@ class Index extends React.Component {
                 data: ['日常巡检指标', '抽样巡检指标'],
                 z: 10
             },
-            polar: {},
+            polar: {
+                radius: '85%'
+            },
+            tooltip: {
+                show: true,
+                confine: true,
+                textStyle: {
+                    color: '#eee',
+                },
+                formatter: (params) => {
+                    // console.log(params)
+                    let htmls = "";
+                    if (params.data.children) {
+                        params.data.children.forEach(item => {
+                            htmls += `${item.name}：${item.value}<br/>`
+                        })
+                    }
+                    return htmls
+                }
+            },
             series: [{
                 type: 'bar',
                 data: data,
@@ -50,7 +142,7 @@ class Index extends React.Component {
                 z: 2,
                 itemStyle: {
                     color: "#1F9CF9",
-                    barBorderRadius: [5, 5, 0, 0]
+                    barBorderRadius: 7
                 },
                 label: {
                     show: true,
@@ -58,14 +150,15 @@ class Index extends React.Component {
                 }
             }, {
                 type: 'bar',
-                data: [100, 100],
+                data: [20, 20],
                 coordinateSystem: 'polar',
                 name: 'B',
                 z: 1,
                 barWidth: 15,
                 barGap: "-100%",
                 itemStyle: {
-                    color: '#E4E7EC'
+                    color: '#E4E7EC',
+                    barBorderRadius: 7
                 },
                 emphasis: {
                     itemStyle: {
@@ -76,7 +169,6 @@ class Index extends React.Component {
         }
         let chart = echarts.init(document.getElementById('actions-chart'));
         chart.setOption(option);
-        window.addEventListener('resize', throttle(chart.resize));
     }
 
     componentDidMount() {
@@ -84,22 +176,12 @@ class Index extends React.Component {
     }
 
     render() {
-        let titleData = this.props.titleData;
+        let titleData = this.state.titleData;
         return (
             <div className="modal-chart">
-                <div className="title">各区县综合效能等级分布<span>（本期排名：{titleData.rank}，较上期{ (titleData.desc > 0 ? '上升' : '下降') + Math.abs(titleData.desc) }位）</span></div>
-                <div className="main-chart" id="actions-chart">
-                    {/* <div className="circle-box">
-                        <div className="cirleft">
-                            <div className="bar leftbar" style={{ height: '20%' }}><span title="日常巡检指标">日常巡检指标</span></div>
-                        </div>
-                        <div className="cirright">
-                            <div className="bar rightbar" style={{ height: '30%' }}><span title="抽样巡检指标">抽样巡检指标</span></div>
-                        </div>
-                        <div className="lines"></div>
-                    </div> */}
-                </div>
-                <span className="bar-name">日常巡检指标</span>
+                <div className="title">监管行为指标<span>（本期排名：{titleData.rank}，较上期{titleData.desc === '-' ? '--' : (titleData.desc !== 0 ? (titleData.desc > 0 ? '上升' : '下降') + Math.abs(titleData.desc) + '位' : '持平')}）</span></div>
+                <div className="main-chart" id="actions-chart"></div>
+                <span className="bar-name">抽样检验指标</span>
             </div>
         )
     }

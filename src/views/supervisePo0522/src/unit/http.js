@@ -20,7 +20,8 @@ const handleResponse = res => {
                 errAlert(res.data.msg);
                 return;
             } else if (code === 101) { //未登录状态，直接返回登录页
-                // window.location.href = baseUrl
+                let baseUrl = sessionStorage.getItem("newBaseUrl");
+                window.location.href = baseUrl
                 return;
             }
         } else if (res.status === 500) {
@@ -32,8 +33,8 @@ const handleResponse = res => {
 };
 
 const pubHttp = (type, url, params, contentType) => {
-    //	let uri = encodeURI(baseUrl + url);
-    let uri = baseUrl + url
+    let uri = encodeURI(baseUrl + url);
+    // let uri = baseUrl + url
     return (async () => {
         try {
             let data = {
@@ -51,9 +52,6 @@ const pubHttp = (type, url, params, contentType) => {
             let res = await axios(data)
             return handleResponse(res);
         } catch (err) {
-            if (getError) {
-                return err;
-            }
             if (err.response) {
                 if (err.response.statusText) {
                     errAlert(err.response.statusText)
@@ -68,24 +66,25 @@ const pubHttp = (type, url, params, contentType) => {
 }
 
 const http = {
-    async get(url, params = {}, contentType = 'application/x-www-form-urlencoded', getError) {
-        return pubHttp('get', url, params, contentType, getError)
+
+    async get(url, params = {}, contentType = 'application/x-www-form-urlencoded') {
+        return pubHttp('get', url, params, contentType)
     },
 
-    async post(url, params = {}, contentType = 'application/json', getError) {
-        return pubHttp('post', url, params, contentType, getError)
+    async post(url, params = {}, contentType = 'application/json') {
+        return pubHttp('post', url, params, contentType)
     },
 
-    async put(url, params = {}, contentType = 'application/json', getError) {
-        return pubHttp('put', url, params, contentType, getError)
+    async put(url, params = {}, contentType = 'application/json') {
+        return pubHttp('put', url, params, contentType)
     },
 
-    async delete(url, params = {}, contentType = 'application/json', getError) {
-        return pubHttp('delete', url, params, contentType, getError)
+    async delete(url, params = {}, contentType = 'application/json') {
+        return pubHttp('delete', url, params, contentType)
     },
 
-    async patch(url, param = {}, contentType = 'application/json', getError) {
-        return pubHttp('patch', url, param, contentType, getError)
+    async patch(url, param = {}, contentType = 'application/json') {
+        return pubHttp('patch', url, param, contentType)
     }
 
 }

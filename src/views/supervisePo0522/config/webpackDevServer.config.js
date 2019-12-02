@@ -84,7 +84,9 @@ module.exports = function (proxy, allowedHost) {
         public: allowedHost,
         proxy: {
             '/pro': {
-                target: 'https://lihong:8887/',
+                // target: 'https://lihong:8887/',
+                target: 'https://172.27.13.163:8066/',
+                // target: 'http://172.27.13.165:8080',
                 pathRewrite: {
                     '^/pro': '/'
                 },

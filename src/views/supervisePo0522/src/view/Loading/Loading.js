@@ -14,7 +14,7 @@ class Loading extends React.Component {
                 className={"loading-box " + (loading ? "loading-show" : "")}
                 style={{
                     position: fixed ? "fixed" : "absolute",
-                    top: "80px",
+                    top: "50px",
                     left: 0
                 }}
             >

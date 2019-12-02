@@ -7,9 +7,6 @@ class Index extends React.Component {
         super(props)
         this.state = {}
     }
-    // changeTime(time) {
-    //     console.log(time);
-    // }
     componentDidMount() { }
 
     render() {
@@ -27,10 +24,10 @@ class Index extends React.Component {
                                 <p><span>监管效能公式：</span>效能值=监管能力*15%+监管行为*40%+监管效果*30%+其它指标*15%。</p>
                             </div>
                         )} placement="rightTop" title="" trigger="hover">
-                            <Icon type="question-circle" style={ { cursor:'pointer' }}/>
+                            <Icon type="question-circle" style={{ cursor: 'pointer', marginLeft: "2px" }} />
                         </Popover></div>
                     <div className="right">
-                        <DateSelect changeTime={(time) => {this.props.changeTime(time)}}/>
+                        <DateSelect changeTime={(time) => { this.props.changeTime(time) }} />
                     </div>
                 </div>
                 <div>
@@ -39,25 +36,26 @@ class Index extends React.Component {
                             <div className="top-item" key={i}>
                                 <div className="item-con">
                                     <div className="left">
-                                        {/* <span><img src="" /></span> */}
                                         {item.name}({item.unit})
                                     </div>
                                     <span className="text">{item.count}</span>
                                     <div className="right">
-                                        <Popover placement="rightTop" title={''} content={
-                                            (
-                                                <div className="area-list">
-                                                    {
-                                                        item.city && item.city.length > 0 ? item.city.map((itema, ia) => (
-                                                            <p key={i + '' + ia}><span>{itema.area}</span>{itema.count}</p>
-                                                        )) : ''
-                                                    }
-                                                </div>
-                                            )
-                                        } trigger="hover">
-                                            <Icon type="right" style={ { cursor:'pointer' }}/>
-                                        </Popover>
-
+                                        {   (i > 0 && item.city.length > 0) ?
+                                            <Popover placement="rightTop" title={''} content={
+                                                (
+                                                    <div className="area-list">
+                                                        {
+                                                            item.city && item.city.length > 0 ? item.city.map((itema, ia) => (
+                                                                <p key={i + '' + ia}><span>{itema.area}</span><label>{itema.num}</label></p>
+                                                            )) : ''
+                                                        }
+                                                    </div>
+                                                )
+                                            } trigger="hover">
+                                                <Icon type="right" style={{ cursor: 'pointer' }} />
+                                            </Popover>
+                                            :''
+                                        }
                                     </div>
                                 </div>
                             </div>

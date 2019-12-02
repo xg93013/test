@@ -22,6 +22,7 @@
             width: 30px;
             height: 30px;
             margin-left: 10px;
+            cursor: pointer;
         }
     }
 }
@@ -134,10 +135,10 @@
                         padding-left: 25px;
                     }
                     .text {
-                        left: 50%;
+                        left: 20px;
                         font-size: 48px;
                         color: #fff;
-                        transform: translate(-50%, -50%);
+                        transform: translateY(-50%);
                     }
                     .right {
                         right: 20px;
@@ -168,7 +169,7 @@
                         .title {
                             position: absolute;
                             top: 0;
-                            left: 20px;
+                            left: 10px;
                             height: 40px;
                             color: #323232;
                             line-height: 40px;
@@ -184,6 +185,11 @@
                             height: calc(100% - 40px);
                             &.potency-sort {
                                 top: 0;
+                                height: 100%;
+                            }
+                            &.potency-map {
+                                top: 0;
+                                bottom: 0;
                                 height: 100%;
                             }
                         }
@@ -214,16 +220,26 @@
                                 }
                                 &:nth-child(1) {
                                     border-radius: 15px 0 0 15px;
+                                    border-left: 1px solid #ccc;
                                     &::before {
                                         width: 0;
                                     }
                                 }
                                 &:nth-child(4) {
                                     border-radius: 0 15px 15px 0;
+                                    border-right: 1px solid #ccc;
                                 }
                                 &.current {
                                     background: #2D8BEF;
                                     color: #fff;
+                                    border-top: 1px solid #2D8BEF;
+                                    border-bottom: 1px solid #2D8BEF;
+                                    &:nth-child(1) {
+                                        border-left: 1px solid #2D8BEF;
+                                    }
+                                    &:nth-child(4) {
+                                        border-right: 1px solid #2D8BEF;
+                                    }
                                 }
                             }
                         }
@@ -253,7 +269,7 @@
                             }
                         }
                         .leftTitle {
-                            left: -15px;
+                            left: -17px;
                         }
                         .rightTitle {
                             right: -30px;
@@ -317,12 +333,17 @@
         p {
             font-size: 14px;
             color: #333;
-            height: 20px;
-            line-height: 20px;
+            height: 16px;
+            line-height: 16px;
             font-weight: 400;
+            overflow: hidden;
+            margin-bottom: 0.8em;
             span {
                 display: inline-block;
-                min-width: 100px;
+                min-width: 90px;
+            }
+            label {
+                float: right;
             }
         }
         p:last-child {
@@ -330,11 +351,13 @@
         }
     }
     .radar-tip {
-        padding: 4px 0;
+        padding: 2px 0;
         p {
             height: 12px;
+            font-size: 14px;
+            color: #eee;
             line-height: 12px;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
         p:last-child {
             margin-bottom: 0;

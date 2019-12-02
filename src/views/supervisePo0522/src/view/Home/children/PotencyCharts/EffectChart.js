@@ -1,6 +1,5 @@
 import React from "react";
 import echarts from "echarts";
-import { throttle } from "../../../../unit/pub";
 import { Popover } from "antd";
 
 class Index extends React.Component {
@@ -9,19 +8,46 @@ class Index extends React.Component {
         super(props)
         this.state = {
             pointData: [],
-            maxData: 300
+            maxData: 300,
+            tooltipData: {
+                complaintsNum: 0, // 投诉数量
+                complaintsPeople: 0, // 投诉人数
+                unqualified: 0, // 监督抽检样品不合格率
+                excellent: 0, // 优良率
+                coincidence: 0, // 符合率
+                simpleCoincidence: 0, // 基本符合率
+                pass: 0 // 通过率
+            },
+            titleData: {
+                rank: 0,
+                desc: 0
+            }
         }
     }
 
-    getCharts(data) {
+    getCharts(originData) {
         let max = 0;
+        let data = [originData.punish.score, originData.check.score, originData.ins.score];
         let arr = [...data].sort((a, b) => {
             return b - a
         });
         max = arr[0];
         this.setState({
             maxData: max,
-            pointData: data
+            pointData: data,
+            tooltipData: {
+                punishMoneyAmount: originData.punish.punishMoneyAmount, // 
+                punishEtpAmount: originData.punish.punishEtpAmount, // 
+                unqualified: originData.check.checkNoRatio, // 监督抽检样品不合格率
+                excellent: originData.ins.excellentRatio, // 优良率
+                coincidence: originData.ins.conformityRatio, // 符合率
+                simpleCoincidence: originData.ins.basicConformityRatio, // 基本符合率
+                pass: originData.ins.passRatio // 通过率
+            },
+            titleData: {
+                rank: originData.top,
+                desc: (!originData.topChange && originData.topChange !== 0) ? '-' : originData.topChange
+            }
         })
         let option = {
             radar: {
@@ -108,7 +134,6 @@ class Index extends React.Component {
         }
         let chart = echarts.init(document.getElementById('effect-chart'));
         chart.setOption(option);
-        window.addEventListener('resize', throttle(chart.resize));
     }
 
     componentDidMount() {
@@ -118,43 +143,40 @@ class Index extends React.Component {
     render() {
         let {
             pointData,
-            maxData
+            maxData,
+            tooltipData,
+            titleData
         } = this.state;
-        let {
-            titleData,
-            tooltipData
-        }
-        = this.props;
         return (
             <div className="modal-chart">
-                <div className="title">监管效果指标<span>（本期排名：{titleData.rank}，较上期{ (titleData.desc > 0 ? '上升' : '下降') + Math.abs(titleData.desc) }位）</span></div>
+                <div className="title">监管效果指标<span>（本期排名：{titleData.rank}，较上期{titleData.desc === '-' ? '--' : (titleData.desc !== 0 ? (titleData.desc > 0 ? '上升' : '下降') + Math.abs(titleData.desc) + '位' : '持平')}）</span></div>
                 <div className="main-chart" id="effect-chart"></div>
                 <div className="out-box">
                     <div className="in-box">
                         <Popover overlayClassName="potencyContainer" content={(
                             <div className="radar-tip">
-                                <p>投诉数量：{ tooltipData.complaintsNum }</p>
-                                <p>投诉人数：{ tooltipData.complaintsPeople }</p>
+                                <p>罚没金额（万元）：{tooltipData.punishMoneyAmount}</p>
+                                <p>罚没企业数（个）：{tooltipData.punishEtpAmount}</p>
                             </div>
-                        )} placement="bottom" title="" trigger="hover">
-                            <div className="point" style={{ top: (maxData - pointData[0]) / (maxData * 2) * 100 + '%', left: '50%'}}></div>
+                        )} placement="bottom" title="" trigger="hover" mouseEnterDelay={0} mouseLeaveDelay={0} >
+                            <div className="point" style={{ top: (maxData - pointData[0]) / (maxData * 2) * 100 + '%', left: '50%' }}></div>
                         </Popover>
                         <Popover overlayClassName="potencyContainer" content={(
                             <div className="radar-tip">
-                                <p>监督抽检样品不合格率：{ tooltipData.unqualified }</p>
+                                <p>监督抽检样品不合格率：{(tooltipData.unqualified * 100).toFixed(2)}%</p>
                             </div>
-                        )} placement="bottom" title="" trigger="hover">
-                            <div className="point" style={{ top: (maxData + pointData[1] * Math.sin(2*Math.PI/360*30).toFixed(2)) / (maxData * 2) * 100 + '%', left: (maxData - (pointData[1]*Math.cos(2*Math.PI/360*30).toFixed(2))) / (maxData * 2) * 100 + '%' }}></div>
+                        )} placement="bottom" title="" trigger="hover" mouseEnterDelay={0} mouseLeaveDelay={0}>
+                            <div className="point" style={{ top: (maxData + pointData[1] * Math.sin(2 * Math.PI / 360 * 30).toFixed(2)) / (maxData * 2) * 100 + '%', left: (maxData - (pointData[1] * Math.cos(2 * Math.PI / 360 * 30).toFixed(2))) / (maxData * 2) * 100 + '%' }}></div>
                         </Popover>
                         <Popover overlayClassName="potencyContainer" content={(
                             <div className="radar-tip">
-                                <p>优良率：{ tooltipData.excellent }</p>
-                                <p>符合率：{ tooltipData.coincidence }</p>
-                                <p>基本符合率：{ tooltipData.simpleCoincidence }</p>
-                                <p>通过率：{ tooltipData.pass }</p>
+                                <p>优良率：{(tooltipData.excellent * 100).toFixed(2)}%</p>
+                                <p>符合率：{(tooltipData.coincidence * 100).toFixed(2)}%</p>
+                                <p>基本符合率：{(tooltipData.simpleCoincidence * 100).toFixed(2)}%</p>
+                                <p>通过率：{(tooltipData.pass * 100).toFixed(2)}%</p>
                             </div>
-                        )} placement="bottom" title="" trigger="hover">
-                            <div className="point" style={{ top: (maxData + pointData[2] * Math.sin(2*Math.PI/360*30).toFixed(2)) / (maxData * 2) * 100 + '%', left: (maxData + (pointData[2]*Math.cos(2*Math.PI/360*30).toFixed(2))) / (maxData * 2) * 100 + '%' }}></div>
+                        )} placement="bottom" title="" trigger="hover" mouseEnterDelay={0} mouseLeaveDelay={0}>
+                            <div className="point" style={{ top: (maxData + pointData[2] * Math.sin(2 * Math.PI / 360 * 30).toFixed(2)) / (maxData * 2) * 100 + '%', left: (maxData + (pointData[2] * Math.cos(2 * Math.PI / 360 * 30).toFixed(2))) / (maxData * 2) * 100 + '%' }}></div>
                         </Popover>
                     </div>
 
