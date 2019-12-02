@@ -5,3 +5,11 @@ vue-qq
 
 vue-page-designer // drag-demo
 PDF.js-master // pdf editer
+
+
+software
+XnViewMP
+Xftp
+Xshell
+postman
+
