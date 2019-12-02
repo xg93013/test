@@ -1,20 +1,49 @@
 <template>
   <div id="analysis" class="charts">
-    <div class="charts-title">商家分析动态
-      <div class="export" @click="downLoad">{{downTxt}}</div>
+    <div class="charts-title">
+      商家分析动态
+      <div v-if="isExport" class="export" @click="downLoad">{{downTxt}}</div>
     </div>
     <div class="table-nav">
-      <el-tooltip class="item" effect="dark" content="商家名称" placement="top">
-        <div>商家名称</div>
+      <el-tooltip
+        :open-delay="300"
+        :disabled="disabled"
+        class="item"
+        effect="dark"
+        content="商家名称"
+        placement="left"
+      >
+        <div ref="nav0" @mouseenter="overEnter('nav0')" @mouseleave="overLeave">商家名称</div>
       </el-tooltip>
-      <el-tooltip class="item" effect="dark" content="所属平台" placement="top">
-        <div>所属平台</div>
+      <el-tooltip
+        :open-delay="300"
+        :disabled="disabled"
+        class="item"
+        effect="dark"
+        content="所属平台"
+        placement="left"
+      >
+        <div ref="nav1" @mouseenter="overEnter('nav1')" @mouseleave="overLeave">所属平台</div>
       </el-tooltip>
-      <el-tooltip class="item" effect="dark" content="所属区域" placement="top">
-        <div>所属区域</div>
+      <el-tooltip
+        :open-delay="300"
+        :disabled="disabled"
+        class="item"
+        effect="dark"
+        content="所属区域"
+        placement="left"
+      >
+        <div ref="nav2" @mouseenter="overEnter('nav2')" @mouseleave="overLeave">所属区域</div>
       </el-tooltip>
-      <el-tooltip class="item" effect="dark" content="经营状态" placement="top">
-        <div>经营状态</div>
+      <el-tooltip
+        :open-delay="300"
+        :disabled="disabled"
+        class="item"
+        effect="dark"
+        content="经营状态"
+        placement="left"
+      >
+        <div ref="nav3" @mouseenter="overEnter('nav3')" @mouseleave="overLeave">经营状态</div>
       </el-tooltip>
     </div>
     <div class="table-con">
@@ -22,17 +51,50 @@
         v-if="prevColor"
         v-for="(item,index) in datas"
         :key="index"
-        :class="{tran:isTran}"
+        :class="{tran:isTran,'showTopLongs':showWordCloud==false}"
         :style="{marginTop: index==0?tenHeight+'px':'',background:index%2==0?'': color.color}"
       >
-        <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
-          <div>{{item.name}}</div>
+        <el-tooltip
+          :disabled="disabled"
+          class="item"
+          effect="dark"
+          :content="item.name"
+          placement="left"
+          :open-delay="300"
+        >
+          <div
+            :ref="'name'+index"
+            @mouseenter="overEnter('name'+index)"
+            @mouseleave="overLeave"
+          >{{item.name}}</div>
         </el-tooltip>
-        <el-tooltip class="item" effect="dark" :content="wm[item.platform]" placement="top">
-          <div>{{wm[item.platform]}}</div>
+        <el-tooltip
+          :disabled="disabled"
+          class="item"
+          effect="dark"
+          :content="wm[item.platform]"
+          :open-delay="300"
+          placement="left"
+        >
+          <div
+            :ref="'platform'+index"
+            @mouseenter="overEnter('platform'+index)"
+            @mouseleave="overLeave"
+          >{{wm[item.platform]}}</div>
         </el-tooltip>
-        <el-tooltip class="item" effect="dark" :content="item.region" placement="top">
-          <div>{{item.region}}</div>
+        <el-tooltip
+          :disabled="disabled"
+          class="item"
+          effect="dark"
+          :content="item.region"
+          placement="left"
+          :open-delay="300"
+        >
+          <div
+            :ref="'region'+index"
+            @mouseenter="overEnter('region'+index)"
+            @mouseleave="overLeave"
+          >{{item.region}}</div>
         </el-tooltip>
         <div :class="{illegal:item.status=='ILLEGAL'}">{{item.status=="ILLEGAL"?"违规":"正常"}}</div>
       </div>
@@ -40,17 +102,50 @@
         v-if="!prevColor"
         v-for="(item,index) in datas"
         :key="index"
-        :class="{tran:isTran}"
+        :class="{tran:isTran,'showTopLongs':showWordCloud==false}"
         :style="{marginTop: index==0?tenHeight+'px':'',background:index%2==0?color.color:''}"
       >
-        <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
-          <div>{{item.name}}</div>
+        <el-tooltip
+          :disabled="disabled"
+          class="item"
+          effect="dark"
+          :content="item.name"
+          placement="left"
+          :open-delay="300"
+        >
+          <div
+            :ref="'name'+index"
+            @mouseenter="overEnter('name'+index)"
+            @mouseleave="overLeave"
+          >{{item.name}}</div>
         </el-tooltip>
-        <el-tooltip class="item" effect="dark" :content="wm[item.platform]" placement="top">
-          <div>{{wm[item.platform]}}</div>
+        <el-tooltip
+          :disabled="disabled"
+          class="item"
+          effect="dark"
+          :content="wm[item.platform]"
+          placement="left"
+          :open-delay="300"
+        >
+          <div
+            :ref="'platform'+index"
+            @mouseenter="overEnter('platform'+index)"
+            @mouseleave="overLeave"
+          >{{wm[item.platform]}}</div>
         </el-tooltip>
-        <el-tooltip class="item" effect="dark" :content="item.region" placement="top">
-          <div>{{item.region}}</div>
+        <el-tooltip
+          :disabled="disabled"
+          class="item"
+          effect="dark"
+          :content="item.region"
+          placement="left"
+          :open-delay="300"
+        >
+          <div
+            :ref="'region'+index"
+            @mouseenter="overEnter('region'+index)"
+            @mouseleave="overLeave"
+          >{{item.region}}</div>
         </el-tooltip>
         <div :class="{illegal:item.status=='ILLEGAL'}">{{item.status=="ILLEGAL"?"违规":"正常"}}</div>
       </div>
@@ -66,8 +161,10 @@ const { EXPORT_ANALYSIS } = apis;
 export default {
   data() {
     return {
+      disabled: true,
       datas: [],
       tenHeight: 0,
+      showWordCloud: false,
       isTran: false,
       color: {
         color: "#f6f6f6"
@@ -83,12 +180,28 @@ export default {
       baseUrl: process.env.NODE_ENV == "development" ? "/apis" : ""
     };
   },
+  created() {
+    this.showWordCloud = this.$store.state.pages.includes("evaluateAnalysis");
+  },
   computed: {
     ...mapState({
       isFullScreen: state => state.isFullScreen
     })
   },
   methods: {
+    overEnter(id) {
+      //控制文字溢出弹框
+      let el =
+        this.$refs[id] instanceof Array ? this.$refs[id][0] : this.$refs[id];
+      if (el.scrollWidth > el.clientWidth) {
+        this.disabled = false;
+      } else {
+        this.disabled = true;
+      }
+    },
+    overLeave(key) {
+      this.disabled = true;
+    },
     downLoad() {
       ///下载excel表格
       if (this.isDown) {
@@ -135,7 +248,7 @@ export default {
       }
     },
     getData(res) {
-      let listNum = 16;
+      let listNum = 6;
       let num =
         document.getElementsByClassName("table-con")[0].offsetHeight / listNum;
       if (this.datas.length) {
@@ -177,6 +290,10 @@ export default {
     analysis: {
       type: Array,
       default: []
+    },
+    isExport: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
@@ -264,6 +381,9 @@ export default {
       }
       .illegal {
         color: #fd0202;
+      }
+      &.showTopLongs {
+        height: 6.66%;
       }
     }
   }

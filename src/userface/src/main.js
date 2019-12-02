@@ -13,17 +13,17 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 
 router.beforeEach((to, from, next) => { ///用户页面权限控制
-	if(to.name == "login") {
+	if (to.name == "login") {
 		next()
 	} else {
 		let pages = store.state.pages;
-		if(pages.length){
-			if(!pages.includes(to.name)){
+		if (pages.length) {
+			if (!pages.includes(to.name)) {
 				next("/error")
-			}else{
+			} else {
 				next()
 			}
-		}else{
+		} else {
 			next()
 		}
 	}

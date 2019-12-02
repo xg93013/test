@@ -15,7 +15,8 @@ export default {
       myChart: null,
       color: ["#DF6562", "#EFC235", "#4EA739", "#2A6BAF", "#805CCA"],
       allData: [],
-      legendData: ["身体不适", "食物变质", "有异物", "配送不当", "其他"],
+      legendData: [],
+      selected: {},
       xData: [],
       seriesData: []
     };
@@ -39,8 +40,12 @@ export default {
       });
     },
     allRiskTypes(a) {
-      // console.log(a);
       this.legendData = [...a];
+      a.forEach(item => {
+        if (!this.selected.hasOwnProperty(item)) {
+          this.selected[item] = true;
+        }
+      });
     }
   },
   methods: {
@@ -57,7 +62,7 @@ export default {
         let oneSeries = {
           name: itema,
           type: "line",
-          // stack: "a",
+          stack: "a",
           data: [],
           areaStyle: {
             color: this.color[index],
@@ -69,14 +74,16 @@ export default {
           let isKey = false; // 存在该类型
           let isIndex = 0;
           if (itemb.counts.length != 0) {
-            itemb.counts.forEach((itemc, indexc) => {
-              if (itemc.riskType === itema) {
+            for (let i = 0; i < itemb.counts.length; i++) {
+              if (itemb.counts[i].riskType === itema) {
                 isKey = true;
-                isIndex = indexc;
+                isIndex = i;
+                break;
               } else {
                 isKey = false;
+                continue;
               }
-            });
+            }
           }
 
           if (isKey) {
@@ -89,10 +96,18 @@ export default {
       });
       this.getCharts();
     },
+    init() {
+      this.myChart = echarts.init(document.getElementById("trendBox"));
+      this.myChart.on("legendselectchanged", e => {
+        this.selected = {
+          ...e.selected
+        };
+      });
+      window.addEventListener("resize", throttle(this.myChart.resize));
+    },
     getCharts() {
       let color = this.color;
       let data = this.allData;
-      this.myChart = echarts.init(document.getElementById("trendBox"));
       let option = {
         tooltip: {
           trigger: "axis",
@@ -101,7 +116,7 @@ export default {
             let addHtml = "";
             params.forEach((item, index) => {
               addHtml += `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${
-                color[index]
+                color[item.seriesIndex]
               }"></span>
               <span>${item.seriesName}：</span><span>${item.value}</span><br/>`;
               total += item.value;
@@ -118,11 +133,12 @@ export default {
         legend: {
           top: 10,
           right: 20,
-          data: this.legendData
+          data: this.legendData,
+          selected: this.selected
         },
         grid: {
-          left: 50,
-          right: 50,
+          left: 30,
+          right: 30,
           bottom: 16,
           top: 40,
           containLabel: true
@@ -159,14 +175,14 @@ export default {
         series: this.seriesData
       };
       this.myChart.setOption(option, true);
-      window.addEventListener("resize", throttle(this.myChart.resize));
     }
   },
   beforeDestroy() {
     this.myChart.clear();
   },
   mounted() {
-    this.getCharts();
+    // this.getCharts();
+    this.init();
   }
 };
 </script>

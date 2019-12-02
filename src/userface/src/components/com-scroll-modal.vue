@@ -39,11 +39,16 @@
               :prop="item.prop"
               :align="item.align"
               :key="index"
-              :show-overflow-tooltip="true"
+              :show-overflow-tooltip="false"
             >
               <template slot-scope="scope">
                 <!-- <span v-if="item.prop=='platform'">{{switchPlatForm(scope.row[item.prop])}}</span> -->
-                <span>{{scope.row[item.prop]}}</span>
+                <!-- <span>{{scope.row[item.prop]}}</span> -->
+                <span
+                  v-if="item.prop=='content'"
+                  v-html="formatContents(scope.row['riskWords'],scope.row[item.prop])"
+                ></span>
+                <span v-else>{{scope.row[item.prop]}}</span>
               </template>
             </el-table-column>
           </el-table>
@@ -72,6 +77,9 @@
 <script>
 import comPageBox from "@/components/com-page-box.vue";
 import http from "@/unit/http";
+import apis from "@/unit/apis";
+import { formatContent } from "@/unit/pub";
+const { ALL_RISKTYPES } = apis;
 export default {
   components: {
     comPageBox
@@ -191,12 +199,16 @@ export default {
       this.visible = false;
     },
     changePage(page) {
-      this.currentPage = Number(page);
-      this.getTableData();
+      if (Number(page) <= this.totalPage) {
+        this.currentPage = Number(page);
+        this.getTableData();
+      }
     },
     changePagea(page) {
-      this.currentPagea = Number(page);
-      this.getTableDataa();
+      if (Number(page) <= this.totalPagea) {
+        this.currentPagea = Number(page);
+        this.getTableDataa();
+      }
     },
     // 左侧表格
     getTotalData() {
@@ -262,8 +274,9 @@ export default {
         data.forEach(item => {
           this.tableDataa.push({
             platform: this.switchPlatForm(item.platform),
-            commentAt: item.commentAt.substr(0, 10),
-            content: item.content
+            commentAt: item.commentAt,
+            content: item.content,
+            riskWords: item.riskWords
           });
         });
         this.totalElementsa = res.result.total;
@@ -278,6 +291,9 @@ export default {
       } else {
         this.showLoadinga = false;
       }
+    },
+    formatContents(riskWords, content) {
+      return formatContent(riskWords, content);
     },
     handleClose() {
       setTimeout(() => {
@@ -365,7 +381,7 @@ export default {
   .el-table th {
     background: #f5f9fd;
     font-weight: normal;
-    color: #333;
+    color: #2769b0;
     border-bottom: none;
   }
   .el-table__header {

@@ -1,23 +1,14 @@
 <template>
-  <div
-    id='login'
-    v-show="pageShow"
-  >
+  <div id="login" v-show="pageShow">
     <div class="login-box-bg">
-      <div
-        class="login-box"
-        v-loading="loading"
-        element-loading-text="登录中..."
-      >
-        <el-form
-          :model="loginData"
-          class="login-form"
-          :rules="rules"
-          ref="ruleForm"
-        >
+      <div class="login-box" v-loading="loading" element-loading-text="登录中...">
+        <el-form :model="loginData" class="login-form" :rules="rules" ref="ruleForm">
           <el-row style="margin-bottom:20px">
             <el-col align="center">
-              <span style="font-size:28px;letter-spacing: 4px;color:#276AB0;font-weight:bold;">网络餐饮风险地图</span>
+              <span
+                style="font-size:28px;color:#276AB0;font-weight:bold;"
+                :style="{'letter-spacing':urlMsg.orgName.length>10?'1px':'4px'}"
+              >{{urlMsg.orgName}}</span>
             </el-col>
           </el-row>
           <el-form-item prop="username">
@@ -53,70 +44,38 @@
                   @keyup.enter.native="login"
                 />
               </el-col>
-              <el-col
-                :offset=1
-                :span="9"
-              >
-                <div
-                  class="code"
-                  @click="getCode"
-                >
-                  <img
-                    v-show="codeUrl"
-                    :src="codeUrl"
-                  />
+              <el-col :offset="1" :span="9">
+                <div class="code" @click="getCode">
+                  <img v-show="codeUrl" :src="codeUrl" />
                 </div>
               </el-col>
             </el-row>
           </el-form-item>
           <el-row style="margin-top: 30px">
-            <el-col
-              align="center"
-              style="position:relative"
-            >
+            <el-col align="center" style="position:relative">
               <div
                 v-show="loginerr"
                 style="position:absolute;left:0;top:-30px;color:#f56c6c;font-size:12px"
               >{{loginerrTxt}}</div>
-              <el-button
-                class="login-btn"
-                style="width:300px"
-                size="small"
-                @click="login"
-              >登录</el-button>
+              <el-button class="login-btn" style="width:300px" size="small" @click="login">登录</el-button>
             </el-col>
           </el-row>
           <el-row style="margin-top: 10px">
             <el-col align="center">
-              <el-button
-                class="forget"
-                size="small"
-                type="text"
-                @click="show=true"
-              >忘记密码</el-button>
+              <el-button class="forget" size="small" type="text" @click="show=true">忘记密码</el-button>
             </el-col>
           </el-row>
         </el-form>
       </div>
     </div>
-    <div class="footer">©2018&nbsp;&nbsp;&nbsp;&nbsp;成都数之联科技有限公司.&nbsp;&nbsp;All rights reserved.</div>
-    <el-dialog
-      title="忘记密码"
-      :visible.sync="show"
-      width="300px"
-    >
+    <div class="footer" v-if="urlMsg.supportContact">技术支持：&nbsp;&nbsp;{{urlMsg.supportContact}}</div>
+    <el-dialog title="忘记密码" :visible.sync="show" width="300px">
       <el-row>
-        <el-col align="center">
-          请联系系统管理员。
-        </el-col>
+        <el-col align="center">请联系系统管理员。</el-col>
       </el-row>
       <el-row style="margin-top:20px">
         <el-col align="center">
-          <el-button
-            size="small"
-            type="primary"
-            @click="show=false"
-          >确定</el-button>
+          <el-button size="small" type="primary" @click="show=false">确定</el-button>
         </el-col>
       </el-row>
     </el-dialog>
@@ -127,10 +86,14 @@
 import http from "@/unit/http";
 import apis from "@/unit/apis";
 import axios from "axios";
-const { LOGIN, VERIFY_CODE, ACL } = apis;
+const { LOGIN, VERIFY_CODE, ACL, AUTH_LOGO } = apis;
 export default {
   data() {
     return {
+      urlMsg: {
+        orgName: "",
+        supportContact: ""
+      },
       pageShow: false,
       codeUrl: "",
       loginerr: false,
@@ -142,7 +105,8 @@ export default {
         backend: false,
         password: "",
         username: "",
-        verifyCode: ""
+        verifyCode: "",
+        dbCode: ""
       },
       rules: {
         username: [
@@ -176,6 +140,34 @@ export default {
         this.loginerr = false;
       }
     },
+    urlIsError() {
+      let pathName = location.pathname.replace(/(^\/*)|(\/*$)/g, "");
+      let pathArr = pathName ? pathName.split("/") : ["", ""];
+      if (pathArr.length !== 2) {
+        this.$router.replace("errora");
+      } else {
+        this.loginData.dbCode = pathArr[1];
+        axios
+          .get(
+            this.baseUrl +
+              AUTH_LOGO +
+              (pathName
+                ? "?" + "midUrl=" + pathArr[0] + "&dbcode=" + pathArr[1]
+                : "")
+          )
+          .then(res => {
+            let { result } = res.data;
+            if (result) {
+              this.urlMsg = result;
+              document.getElementsByTagName("title")[0].innerText =
+                result.orgName;
+              this.isLogin();
+            } else {
+              this.$router.replace("errora");
+            }
+          });
+      }
+    },
     isLogin() {
       axios
         .get(this.baseUrl + ACL)
@@ -196,11 +188,16 @@ export default {
         this.getLogin();
       });
     },
-    getCode() {
+    async getCode() {
       if (this.codeLoading) {
         return false;
       }
       this.codeLoading = true;
+      let res = await axios({
+        method: "get",
+        url: this.baseUrl + VERIFY_CODE + Date.parse(new Date()) + ".jpg",
+        responseType: "blob"
+      });
       axios({
         method: "get",
         url: this.baseUrl + VERIFY_CODE + Date.parse(new Date()) + ".jpg",
@@ -284,7 +281,7 @@ export default {
     }
   },
   mounted() {
-    this.isLogin();
+    this.urlIsError();
   }
 };
 </script>

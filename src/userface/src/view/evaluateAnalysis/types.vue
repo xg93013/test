@@ -59,7 +59,8 @@ export default {
           },
           {
             prop: "frequency",
-            label: "风险词出现次数"
+            label: "风险词出现次数",
+            align: "center"
           },
           {
             prop: "shopAddress",
@@ -67,18 +68,25 @@ export default {
           },
           {
             prop: "operation",
-            label: "相关评论"
+            label: "相关评论",
+            align: "center"
           }
         ],
         tableColumnsa: [
           {
+            prop: "index",
+            label: "",
+            width: "50"
+          },
+          {
             prop: "commentAt",
             label: "评论时间",
-            align: "center"
+            width: "180"
           },
           {
             prop: "platform",
-            label: "平台"
+            label: "平台",
+            width: "120"
           },
           {
             prop: "content",
@@ -132,6 +140,23 @@ export default {
       });
       window.addEventListener("resize", throttle(this.myChart.resize));
     },
+    initWordChart() {
+      this.wordChart = echarts.init(document.getElementById("wordTop"));
+      this.wordChart.off("click");
+      this.wordChart.on("click", e => {
+        this.tableModal.commonTitlea = e.name;
+        this.tableModal.pageUrl = RISKTYPE_ANALYSIS_DETAIL;
+        this.tableModal.pageUrla = COMMENT_DETAIL;
+        this.$refs.wordTopModalRefs.showDialog(e.name, e.name);
+      });
+      this.wordChart.on("mouseover", v => {
+        this.isHover = true;
+      });
+      this.wordChart.on("mouseout", v => {
+        this.isHover = false;
+      });
+      window.addEventListener("resize", throttle(this.wordChart.resize));
+    },
     getDataa() {
       this.seriesDataa = [];
       this.myChart.dispatchAction({
@@ -175,16 +200,6 @@ export default {
       this.wordTopChart();
     },
     ratioChart() {
-      // console.log(this.seriesDataa);
-      // this.seriesDataa = [];
-      // for (let i = 0; i < 4; i++) {
-      //   this.seriesDataa.push({
-      //     value: 0,
-      //     percent: "0%",
-      //     name: "身体不适不适" + i
-      //   });
-      // }
-
       let option = {
         tooltip: {
           trigger: "item",
@@ -193,45 +208,43 @@ export default {
         series: [
           {
             type: "pie",
-            radius: ["55%", "80%"],
+            radius: ["40%", "59%"],
             center: ["50%", "50%"],
             color: ["#DF6562", "#EFC235", "#4EA739", "#2A6BAF", "#805CCA"],
             data: this.seriesDataa,
             labelLine: {
               normal: {
                 show: true,
-                length: 20,
-                length2: 20
+                length: 14,
+                length2: 14
               }
             },
             label: {
               normal: {
                 formatter(value) {
                   return (
-                    "{d|" +
-                    " " +
+                    "\n{d|" +
                     value.name +
                     "}" +
                     "{c|\n词频：" +
                     value.data.value +
                     "\n占比：" +
                     value.data.percent +
-                    "}"
+                    "}\n"
                   );
                 },
                 rich: {
                   c: {
                     fontSize: 14,
                     align: "left",
-                    padding: 4,
-                    lineHeight: 20,
-                    align: "left"
+                    // padding: 4,
+                    lineHeight: 18
                   },
                   d: {
                     fontWeight: "bold",
                     fontSize: 14,
                     align: "left",
-                    lineHeight: 20
+                    lineHeight: 18
                   }
                 }
               }
@@ -240,14 +253,15 @@ export default {
         ]
       };
       this.myChart.setOption(option, true);
-      this.myChart.dispatchAction({
-        type: "highlight",
-        seriesIndex: 0,
-        dataIndex: this.num
-      });
+      if (this.seriesDataa.length > 1) {
+        this.myChart.dispatchAction({
+          type: "highlight",
+          seriesIndex: 0,
+          dataIndex: this.num
+        });
+      }
     },
     wordTopChart() {
-      this.wordChart = echarts.init(document.getElementById("wordTop"));
       let option = {
         formatter(value) {
           return `${value[0].name}:${value[0].value}次`;
@@ -261,7 +275,7 @@ export default {
         grid: {
           left: "20",
           right: "30",
-          bottom: "20",
+          bottom: "30",
           top: "30",
           containLabel: true
         },
@@ -327,16 +341,7 @@ export default {
           }
         ]
       };
-
       this.wordChart.setOption(option);
-      this.wordChart.off("click");
-      this.wordChart.on("click", e => {
-        this.tableModal.commonTitlea = e.name;
-        this.tableModal.pageUrl = RISKTYPE_ANALYSIS_DETAIL;
-        this.tableModal.pageUrla = COMMENT_DETAIL;
-        this.$refs.wordTopModalRefs.showDialog(e.name, e.name);
-      });
-      window.addEventListener("resize", throttle(this.wordChart.resize));
     }
   },
   beforeDestroy() {
@@ -345,7 +350,7 @@ export default {
   },
   mounted() {
     this.init();
-    this.wordTopChart();
+    this.initWordChart();
   }
 };
 </script>

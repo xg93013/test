@@ -10,10 +10,14 @@
             :prop="item.prop"
             :align="item.align"
             :key="index"
-            :show-overflow-tooltip="true"
+            :show-overflow-tooltip="false"
           >
             <template slot-scope="scope">
-              <span>{{scope.row[item.prop]}}</span>
+              <span
+                v-if="item.prop=='content'"
+                v-html="formatContents(scope.row['riskWords'], scope.row[item.prop])"
+              ></span>
+              <span v-else>{{scope.row[item.prop]}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -39,6 +43,7 @@
 <script>
 import comPageBox from "@/components/com-page-box.vue";
 import http from "@/unit/http";
+import { formatContent } from "@/unit/pub";
 export default {
   components: {
     comPageBox
@@ -115,22 +120,22 @@ export default {
       let url = "";
       this.tableData = [];
       this.showLoading = true;
-      if (this.paramsa === "") {
+      if (this.paramsa === "全部" || this.paramsa === "") {
         url =
           this.pageUrl +
-          "/" +
+          "?shopCode=" +
           this.params +
-          "?pageNo=" +
+          "&pageNo=" +
           this.currentPage +
           "&pageSize=10";
       } else {
         url =
           this.pageUrl +
-          "/" +
+          "?shopCode=" +
           this.params +
-          "/" +
+          "&riskType=" +
           this.paramsa +
-          "?pageNo=" +
+          "&pageNo=" +
           this.currentPage +
           "&pageSize=10";
       }
@@ -141,8 +146,9 @@ export default {
         data.forEach((item, index) => {
           this.tableData.push({
             index: index + 1,
-            commentAt: item.commentAt.substr(0, 10),
+            commentAt: item.commentAt,
             platform: this.switchPlatForm(item.platform),
+            riskWords: item.riskWords,
             content: item.content
           });
         });
@@ -158,6 +164,9 @@ export default {
       } else {
         this.showLoading = false;
       }
+    },
+    formatContents(riskWords, content) {
+      return formatContent(riskWords, content);
     },
     handleClose() {}
   }

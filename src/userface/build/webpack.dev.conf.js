@@ -22,6 +22,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
     // these devServer options should be customized in /config/index.js
     devServer: {
+        // https: true,
         clientLogLevel: 'warning',
         historyApiFallback: {
             rewrites: [
@@ -55,7 +56,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
             template: 'index.html',
             inject: true,
             favicon: '',
-//          favicon: './static/logo_icon.png'
+            //          favicon: './static/logo_icon.png'
         }),
         // copy custom static assets
         new CopyWebpackPlugin([{
@@ -74,7 +75,7 @@ module.exports = new Promise((resolve, reject) => {
         } else {
             // publish the new Port, necessary for e2e tests
             process.env.PORT = port
-                // add port to devServer config
+            // add port to devServer config
             devWebpackConfig.devServer.port = port
 
             // Add FriendlyErrorsPlugin

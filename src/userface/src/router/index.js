@@ -24,6 +24,8 @@ const dataReport = r => require.ensure([], () => r(require('../view/dataReport/d
 const account = r => require.ensure([], () => r(require('../view/account/account')), 'account') ///账户管理
 
 const error = r => require.ensure([], () => r(require('../view/error')), 'error') ///错误界面
+
+const errora = r => require.ensure([], () => r(require('../view/errora')), 'errora') ///错误界面
 export default new Router({
     routes: [{
         path: '/',
@@ -37,6 +39,10 @@ export default new Router({
         path: 'error',
         name: 'error',
         component: error
+    }, {
+        path: '/errora',
+        name: 'errora',
+        component: errora
     }, {
         path: '/index',
         name: 'index',

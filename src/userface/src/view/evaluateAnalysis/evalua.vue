@@ -7,19 +7,34 @@
           <div class="item lefts">
             <span>
               {{item.userName.substr(0,1)}}
-              <label v-for="itema in item.userName">*</label>
+              <label
+                v-for="(itema,index) in item.userName"
+                v-if="index<6"
+                :key="index+'evalua'"
+              >*</label>
             </span>
           </div>
           <div class="item centers">
-            <div class="icons">
-              <img :src="item.platformPath">
-              <span>{{item.storeName}}</span>
-            </div>
+            <el-tooltip
+              class="tipname"
+              effect="dark"
+              :content="item.storeName"
+              placement="top-start"
+            >
+              <div class="icons">
+                <div class="img">
+                  <img :src="item.platformPath">
+                </div>
+                <div class="name">
+                  <div class="inners">{{item.storeName}}</div>
+                </div>
+              </div>
+            </el-tooltip>
           </div>
           <div class="item rights">{{item.date}}</div>
         </div>
         <div class="comment-text">
-          <p>{{item.des}}</p>
+          <p v-html="formatContents(item.riskWords,item.des)"></p>
         </div>
       </div>
       <div class="empty" v-show="commentsList.length == 0">暂无数据</div>
@@ -27,18 +42,11 @@
   </div>
 </template>
 <script>
+import { formatContent } from "@/unit/pub";
 export default {
   data() {
     return {
-      commentsList: [
-        // {
-        //   platformPath: require("../../images/elm.png"),
-        //   storeName: "stores",
-        //   userName: "users",
-        //   date: "2017-02-02",
-        //   des: "内容"
-        // }
-      ]
+      commentsList: []
     };
   },
   props: {
@@ -58,8 +66,9 @@ export default {
           )}.png`),
           storeName: item.shopName,
           userName: item.author,
-          date: item.commentAt.substr(0, 10),
-          des: item.content
+          date: item.commentAt,
+          des: item.content,
+          riskWords: item.riskWords
         });
       });
     }
@@ -82,6 +91,9 @@ export default {
       }
       return result;
     },
+    formatContents(riskWords, content) {
+      return formatContent(riskWords, content);
+    },
     getData() {}
   }
 };
@@ -91,7 +103,9 @@ export default {
   width: 100%;
   .con-box {
     padding: 10px 20px;
-    overflow: auto;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
     position: relative;
     .comment-list {
       width: 100%;
@@ -109,22 +123,37 @@ export default {
           flex: 1;
           font-size: 12px;
         }
+        .lefts {
+          flex: 0 0 85px;
+          width: 85px;
+        }
         .rights {
+          flex: 0 0 145px;
+          width: 145px;
+          font-size: 12px;
           text-align: right;
         }
         .centers {
-          text-align: center;
+          flex: 1;
           color: #333;
+          overflow: hidden;
           .icons {
-            display: inline;
-            overflow: hidden;
-            img {
-              float: left;
+            display: flex;
+            .img {
+              flex: 0 0 30px;
+              width: 30px;
               margin-top: 4px;
+              text-align: center;
             }
-            span {
-              float: left;
-              margin-left: 4px;
+            .name {
+              flex: 1;
+              overflow: hidden;
+              .inners {
+                padding: 0 2px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              }
             }
           }
         }

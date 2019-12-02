@@ -2,7 +2,12 @@
   <div id="sort" class="sort">
     <div class="title">
       <span class="sort-tab" :class="{'active':tabIndex===0}" @click="changeTab(0)">业态风险词频排序</span>
-      <span class="sort-tab" :class="{'active':tabIndex===1}" @click="changeTab(1)">区域风险词频排序</span>
+      <span
+        v-if="!isZone"
+        class="sort-tab"
+        :class="{'active':tabIndex===1}"
+        @click="changeTab(1)"
+      >区域风险词频排序</span>
     </div>
     <div id="sortBox"></div>
     <comScrollModal
@@ -14,7 +19,7 @@
       :tableColumnsa="tableModal.tableColumnsa"
       ref="sortModalRefs"
     />
-    <div class="empty" v-show="isEmpty">暂无数据</div>
+    <div class="emptys" v-show="isEmpty">暂无数据</div>
   </div>
 </template>
 
@@ -34,6 +39,7 @@ export default {
   },
   data() {
     return {
+      isZone: false,
       myChart: null,
       tabIndex: 0,
       xdata: [],
@@ -41,7 +47,7 @@ export default {
       dataa: [],
       datab: [],
       regionCodes: [],
-      isEmpty: true,
+      isEmpty: false,
       tableModal: {
         pageUrl: "",
         pageUrla: "",
@@ -59,7 +65,8 @@ export default {
           },
           {
             prop: "frequency",
-            label: "风险词出现次数"
+            label: "风险词出现次数",
+            align: "center"
           },
           {
             prop: "shopAddress",
@@ -67,18 +74,25 @@ export default {
           },
           {
             prop: "operation",
-            label: "相关评论"
+            label: "相关评论",
+            align: "center"
           }
         ],
         tableColumnsa: [
           {
+            prop: "index",
+            label: "",
+            width: "50"
+          },
+          {
             prop: "commentAt",
             label: "评论时间",
-            align: "center"
+            width: "180"
           },
           {
             prop: "platform",
-            label: "平台"
+            label: "平台",
+            width: "120"
           },
           {
             prop: "content",
@@ -101,7 +115,7 @@ export default {
   watch: {
     wordSort(a) {
       this.dataa = a;
-      this.isEmpty = this.dataa.length == 0;
+      this.isEmpty = this.dataa.length === 0;
       if (this.tabIndex == 0) {
         this.getData(this.dataa);
       } else {
@@ -114,65 +128,14 @@ export default {
     },
 
     tabIndex(index) {
-      if (index == 0) {
-        this.tableModal.tableColumns = [
-          {
-            prop: "index",
-            label: "",
-            width: "50"
-          },
-          {
-            prop: "shopName",
-            label: "商家名称"
-          },
-          {
-            prop: "frequency",
-            label: "风险词出现次数"
-          },
-          {
-            prop: "shopAddress",
-            label: "商家地址"
-          },
-          {
-            prop: "operation",
-            label: "相关评论"
-          }
-        ];
-        this.getData(this.dataa);
-        this.isEmpty = this.dataa.length === 0;
-      } else {
-        this.tableModal.tableColumns = [
-          {
-            prop: "index",
-            label: "",
-            width: "50"
-          },
-          {
-            prop: "shopName",
-            label: "商家名称"
-          },
-          {
-            prop: "businessMode",
-            label: "业态",
-            align: "center"
-          },
-          {
-            prop: "frequency",
-            label: "风险词出现次数"
-          },
-          {
-            prop: "shopAddress",
-            label: "商家地址"
-          },
-          {
-            prop: "operation",
-            label: "相关评论"
-          }
-        ];
-        this.getData(this.datab);
-        this.isEmpty = this.datab.length === 0;
-      }
-      this.getChart();
+      this.$nextTick(() => {
+        if (index == 0) {
+          this.getData(this.dataa);
+        } else {
+          this.getData(this.datab);
+        }
+        this.getChart();
+      });
     }
   },
   methods: {
@@ -180,6 +143,7 @@ export default {
       this.tabIndex = index;
     },
     getData(data) {
+      this.isEmpty = data.length === 0;
       this.xdata = [];
       this.ydata = [];
       this.regionCodes = [];
@@ -197,10 +161,31 @@ export default {
       }
       this.getChart();
     },
+    init() {
+      this.myChart = echarts.init(document.getElementById("sortBox"));
+      this.myChart.off("click");
+      this.myChart.on("click", e => {
+        this.tableModal.commonTitlea = "风险词相关评论";
+        if (this.tabIndex === 0) {
+          this.tableModal.pageUrl = RISKWORD_BUSMODESORT_DETAIL;
+          this.tableModal.pageUrla = COMMENT_DETAIL;
+          this.$refs.sortModalRefs.showDialog(e.name, e.name, true);
+        } else {
+          this.tableModal.pageUrl = RISKWORD_ZONESORT_DETAIL;
+          this.tableModal.pageUrla = COMMENT_DETAIL;
+          this.$refs.sortModalRefs.showDialog(
+            e.name,
+            this.regionCodes[e.dataIndex],
+            true
+          );
+        }
+      });
+      window.addEventListener("resize", throttle(this.myChart.resize));
+    },
     getChart() {
+      let rotates = this.tabIndex == 0 ? 0 : 45;
       let xdata = this.xdata,
         ydata = this.ydata;
-      this.myChart = echarts.init(document.getElementById("sortBox"));
       let option = {
         color: ["#3B8AD9"],
         tooltip: {
@@ -226,6 +211,9 @@ export default {
             },
             axisLine: {
               show: false
+            },
+            axisLabel: {
+              rotate: rotates
             }
           }
         ],
@@ -250,37 +238,20 @@ export default {
           {
             name: "风险词频",
             type: "bar",
-            barWidth: "30",
+            barWidth: "18",
             data: ydata
           }
         ]
       };
       this.myChart.setOption(option);
-      this.myChart.off("click");
-      this.myChart.on("click", e => {
-        this.tableModal.commonTitlea = e.name;
-        if (this.tabIndex === 0) {
-          this.tableModal.pageUrl = RISKWORD_BUSMODESORT_DETAIL;
-          this.tableModal.pageUrla = COMMENT_DETAIL;
-          this.$refs.sortModalRefs.showDialog(e.name, e.name, true);
-        } else {
-          this.tableModal.pageUrl = RISKWORD_ZONESORT_DETAIL;
-          this.tableModal.pageUrla = COMMENT_DETAIL;
-          this.$refs.sortModalRefs.showDialog(
-            e.name,
-            this.regionCodes[e.dataIndex],
-            true
-          );
-        }
-      });
-      window.addEventListener("resize", throttle(this.myChart.resize));
     }
   },
   beforeDestroy() {
     this.myChart.clear();
   },
   mounted() {
-    this.getChart();
+    this.isZone = this.$store.state.userMsg.regionType === "ZONE";
+    this.init();
   }
 };
 </script>
@@ -308,7 +279,7 @@ export default {
     height: 100%;
     background: #fff;
   }
-  .empty {
+  .emptys {
     position: absolute;
     top: 50%;
     left: 50%;

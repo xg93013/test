@@ -12,6 +12,18 @@
           <el-table :data="tableData" border @selection-change="changeFun">
             <el-table-column type="selection" width="60" align="center"></el-table-column>
             <el-table-column prop="loginName" show-overflow-tooltip label="用户名" align="center"></el-table-column>
+            <el-table-column
+              prop="userType"
+              show-overflow-tooltip
+              label="账户类型"
+              align="center"
+              v-if="openDisplay"
+            >
+              <template slot-scope="scope">
+                <span v-if="scope.row.userType == 'NORMAL_USER'">普通账户</span>
+                <span v-else>演示账户</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="jur" show-overflow-tooltip label="功能权限" align="center">
               <template slot-scope="scope">
                 <template v-for="(item,index) in scope.row.permission">
@@ -49,7 +61,7 @@
                       @click="resetPassword(scope.row)"
                     >确定</el-button>
                   </div>
-                  <el-button type="text" slot="reference" @click="scope.row.visiblea = true">
+                  <el-button type="text" slot="reference">
                     <span style="color:#E6A23C">重置密码</span>
                   </el-button>
                 </el-popover>
@@ -66,7 +78,7 @@
                       @click="delAccount(scope.row)"
                     >确定</el-button>
                   </div>
-                  <el-button type="text" slot="reference" @click="scope.row.visible = true">
+                  <el-button type="text" slot="reference">
                     <span style="color:#f56c6c">删除</span>
                   </el-button>
                 </el-popover>
@@ -113,18 +125,23 @@
             @blur="formData.loginName=formData.loginName.replace(/\s/g,'')"
           />
         </el-form-item>
-        <el-form-item label="账户类型" prop="userType">
+        <el-form-item label="账户类型" prop="userType" v-show="openDisplay">
           <el-select
             clearable
             v-model="formData.userType"
             size="small"
             placeholder="选择账户类型"
+            :disabled="dialog.title=='修改账户'"
             @change="userTypeChange"
           >
             <el-option v-for="item in userTypes" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="系统配置" prop="certCoefficientInfo" v-show="formData.userType == 1">
+        <el-form-item
+          label="系统配置"
+          prop="certCoefficientInfo"
+          v-show="formData.userType == 'DISPLAY_USER'"
+        >
           <div class="config-box">
             <div class="config-item config-header">
               <span>时间</span>
@@ -135,7 +152,7 @@
             <div
               class="config-item"
               v-for="(item, kIndex) in formData.certCoefficientInfo"
-              :key="kIndex"
+              :key="kIndex+'sysconfig'"
             >
               <span>
                 <el-input
@@ -164,19 +181,20 @@
               <span class="last">
                 <i
                   class="el-icon-circle-plus"
-                  @click="addUserConfig"
+                  @click="addUserConfig(item.date)"
                   v-show="kIndex==formData.certCoefficientInfo.length-1&&kIndex<5"
                 ></i>
                 <i class="el-icon-remove" @click="delUserConfig(item)" v-show="kIndex!=0"></i>
               </span>
             </div>
-            <div class="tips">*监测商家总数、违规率系数不填写默认等于真实值
-              <br>*实际情况可能与配置值有少许波动
+            <div class="tips">
+              *监测商家总数、违规率系数不填写默认等于真实值
+              <br />*实际情况可能与配置值有少许波动
             </div>
           </div>
         </el-form-item>
         <el-form-item label="功能权限" prop="permission">
-          <el-input style="display:none" size="small" v-model="formData.permission.join('')"/>
+          <el-input style="display:none" size="small" v-model="formData.permission.join('')" />
           <div class="jurs">
             <span
               v-for="(item,index) in jurs.checkData"
@@ -207,7 +225,7 @@
           </div>
         </el-form-item>
         <el-form-item label="区域" prop="area">
-          <el-input style="display:none" size="small" v-model="formData.area.provinceId"/>
+          <el-input style="display:none" size="small" v-model="formData.area.provinceId" />
           <szlRegione
             @regChange="regChange"
             ref="szlRegione"
@@ -218,14 +236,14 @@
           />
         </el-form-item>
         <el-form-item label="备注" prop="note">
-          <el-input size="small" v-model="formData.note" @keyup.native="inputMsgChange('note')"/>
+          <el-input size="small" v-model="formData.note" @keyup.native="inputMsgChange('note')" />
         </el-form-item>
       </el-form>
       <el-row>
         <el-col align="center">
           <el-button
             size="small"
-            @click="addConfirm"
+            @click="clickAddBtn"
             :disabled="dialog.btnTxt!='创建'&&isTheSame"
           >{{dialog.btnTxt}}</el-button>
           <el-button size="small" @click="handleClose">取消</el-button>
@@ -239,6 +257,7 @@
 import szlRegione from "@/components/szl-regione.vue";
 import http from "@/unit/http";
 import apis from "@/unit/apis";
+import { throttle } from "@/unit/pub";
 const { TENANT, PERMISSION, PASSWORD_RESET } = apis;
 export default {
   data() {
@@ -261,18 +280,19 @@ export default {
     };
 
     const userTypeFun = (rule, value, callback) => {
-      if (value == "") {
-        return callback(new Error("账户类型不能为空"));
+      if (this.openDisplay) {
+        if (value == "") {
+          return callback(new Error("账户类型不能为空"));
+        }
       }
-
       return callback();
     };
 
     const sysConfigFun = (rule, value, callback) => {
       let reg = new RegExp(/^[1-9]\d{3}-(0[1-9]|1[0-2])$/);
       let numReg = new RegExp(/^[0-9]*$/);
-      let floatReg = new RegExp(/^[+-]?(0|([1-9]\d*))(\.\d+)?$/g);
-      if (value.length && this.formData.userType == 1) {
+      let floatReg = new RegExp(/^(\d+|\d+\.\d{1,2})$/);
+      if (value.length && this.formData.userType == "DISPLAY_USER") {
         value.forEach((item, index) => {
           let percentNums = item.certRateCoefficient;
           if (item.date == "" || item.date == null) {
@@ -307,7 +327,9 @@ export default {
               percentNums < 0 ||
               percentNums > 100
             ) {
-              return callback(new Error("商家违规率必须为正确百分比！"));
+              return callback(
+                new Error("商家违规率必须为正确百分比，最多两位小数！")
+              );
             }
           }
         });
@@ -374,24 +396,19 @@ export default {
         note: "",
         tenantId: "",
         userType: "",
-        certCoefficientInfo: [
-          {
-            date: "",
-            certStoreCoefficient: "",
-            certRateCoefficient: ""
-          }
-        ]
+        certCoefficientInfo: []
       },
       userTypes: [
         {
-          id: "0",
+          id: "NORMAL_USER",
           name: "普通账户"
         },
         {
-          id: "1",
+          id: "DISPLAY_USER",
           name: "演示账户"
         }
       ],
+      openDisplay: false, // 设置账户类型权限
       currentTime: "",
       isTheSame: true,
       currentChange: "",
@@ -448,7 +465,8 @@ export default {
         checkData: [],
         defaultChecked: []
       },
-      checkAccount: []
+      checkAccount: [],
+      clickAddBtn: () => {}
     };
   },
   components: {
@@ -526,13 +544,7 @@ export default {
         note: "",
         tenantId: "",
         userType: "",
-        certCoefficientInfo: [
-          {
-            date: this.currentTime,
-            certStoreCoefficient: "",
-            certRateCoefficient: ""
-          }
-        ]
+        certCoefficientInfo: []
       };
       if (userMsg.provinceId) {
         this.pdisable = true;
@@ -626,6 +638,9 @@ export default {
       }
     },
     async createAcount() {
+      if (!this.openDisplay) {
+        this.formData.userType = "NORMAL_USER";
+      }
       ///新建,修改账户
       [this.dialog.loading, this.dialog.loadingTxt] = [true, "保存中..."];
       let res =
@@ -638,9 +653,7 @@ export default {
           this.init();
           this.handleClose();
           if (this.dialog.btnTxt == "创建") {
-            let div = `<div style="display:inline-block;text-align:left">账户创建成功！<br/>初始密码为：${
-              res.result
-            }</div>`;
+            let div = `<div style="display:inline-block;text-align:left">账户创建成功！<br/>初始密码为：${res.result}</div>`;
             this.$alert(div, "提示", {
               dangerouslyUseHTMLString: true,
               center: true,
@@ -688,9 +701,7 @@ export default {
       let res = await http.put(PASSWORD_RESET + "/" + id);
       if (res) {
         if (res) {
-          let div = `<div style="display:inline-block;text-align:left">用户"${name}"重置密码成功！<br/>新密码为：${
-            res.result
-          }</div>`;
+          let div = `<div style="display:inline-block;text-align:left">用户"${name}"重置密码成功！<br/>新密码为：${res.result}</div>`;
           this.$alert(div, "提示", {
             dangerouslyUseHTMLString: true,
             center: true,
@@ -723,7 +734,12 @@ export default {
     },
     async deleteAccount(ids) {
       //删除账户
-      let res = await http.delete(TENANT + "?id=" + ids.join(","));
+      let res = await http.delete(
+        TENANT + "?id=" + ids.join(","),
+        {},
+        [],
+        true
+      );
       if (res) {
         this.$message({
           message: "删除账户成功",
@@ -745,12 +761,20 @@ export default {
     },
     userTypeChange(type) {
       // console.log(type);
-      if (type == 0) {
-        this.formData.certCoefficientInfo = "";
+      if (type == "NORMAL_USER") {
+        this.formData.certCoefficientInfo = [];
       } else {
-        this.formData.certCoefficientInfo = JSON.parse(
-          JSON.stringify(this.oldFormData.certCoefficientInfo)
-        );
+        if (this.dialog.btnTxt == "创建") {
+          this.setNormalConfig();
+        } else {
+          if (this.oldFormData.userType == "NORMAL_USER") {
+            this.setNormalConfig();
+          } else {
+            this.formData.certCoefficientInfo = JSON.parse(
+              JSON.stringify(this.oldFormData.certCoefficientInfo)
+            );
+          }
+        }
       }
       if (type == this.oldFormData.userType) {
         this.isTheSame = true;
@@ -758,9 +782,17 @@ export default {
         this.isTheSame = false;
       }
     },
-    addUserConfig() {
+    addUserConfig(item) {
+      let year = Number(item.split("-")[0]);
+      let month = Number(item.split("-")[1]);
+      if (month == 1) {
+        year = year - 1;
+        month = 12;
+      } else {
+        month = month - 1 < 10 ? "0" + (month - 1).toString() : month - 1;
+      }
       this.formData.certCoefficientInfo.push({
-        date: "",
+        date: year + "-" + month,
         certStoreCoefficient: "",
         certRateCoefficient: ""
       });
@@ -799,8 +831,10 @@ export default {
   },
   created() {
     this.init();
-    this.setNormalConfig();
+    this.clickAddBtn = throttle(this.addConfirm, 500);
     let userMsg = this.$store.state.userMsg;
+    this.openDisplay = userMsg.openDisplay;
+    // this.openDisplay = true;
     this.formData.area = {
       cityId: userMsg.cityId ? userMsg.cityId : "",
       provinceId: userMsg.provinceId ? userMsg.provinceId : "",
@@ -817,6 +851,9 @@ export default {
     }
     if (userMsg.zoneId) {
       this.adisable = true;
+    }
+    if (userMsg.openDisplay) {
+      this.setNormalConfig();
     }
   },
 

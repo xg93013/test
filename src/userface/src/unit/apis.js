@@ -1,5 +1,5 @@
 export default {
-    UPDATE_TIME: 5000000, //数据轮询更新时间
+    UPDATE_TIME: 5000, //数据轮询更新时间
     CARD_CODE: { //证照分析排序
         UN_PUBLICIZED: 0,
         VAGUE: 1,
@@ -12,6 +12,8 @@ export default {
     /*
      *登录相关 
      */
+
+    AUTH_LOGO: "/api/auth/logo", ///api/auth/logo/{midUrl}/{dbcode} 判断当前url是否正确
 
     LOGIN: "/api/auth/login", //登录，post
 
@@ -28,6 +30,7 @@ export default {
     /*
      *首页
      */
+    DYNAMIC_EXPORTDATA: "/api/comprehensive/dynamicExportData", //是否可以到处
 
     STATISTICS: "/api/comprehensive/statistics", // 综合统计 get
 
@@ -43,7 +46,7 @@ export default {
 
     EXPORT_ANALYSIS: "/api/comprehensive/exportDynamicIllegalShop", //商家分析动态导出 
 
-    RISKWORDCLOUD_TOP50: "/api/comment/riskWordCloudTop50", // 风险词云
+    RISKWORDCLOUD_TOP50: "/api/comprehensive/riskWordCloudTop50", // 风险词云
 
     /*
      *证照分析
@@ -77,6 +80,8 @@ export default {
 
     ALL_RISKTYPES: "/api/comment/riskTypes", // get 获取所有违规类型
 
+    ALL_RISKWORDS: "/api/comment/riskWords", // get 获取所有风险词
+
     RISKTYPE_TRENDS: "/api/comment/riskTypeTrends", //get 风险词频变化趋势
 
     RISKWORDBUSMODE_PREDICTION: "/api/comment/riskWordBusModePrediction", //get 高风险业态预测
@@ -103,5 +108,41 @@ export default {
 
     COMMENT_DETAIL: "/api/comment/commentDetails/", //get {shopId}{riskWord}根据店铺id和风险词查询评论详情
 
-    TOP_COMMENT_DETAIL: "/api/comment/topnCommentDetails" //get {shopId}{riskTypes}根据店铺id和风险类型查询评论详情， 为top50商家
+    TOP_COMMENT_DETAIL: "/api/comment/topnCommentDetails", //get {shopId}{riskTypes}根据店铺id和风险类型查询评论详情， 为top50商家
+
+    /**
+     * 风险分析
+     */
+    VENTURE_REGIONS: "/api/venture/regions", //获取区域
+
+    VENTURE_MAP: "/api/venture/map", //地图打点 post请求
+    //{
+    //   "level": 0,
+    //   "range": {
+    //     "northEast": {
+    //       "lat": 0,
+    //       "lng": 0
+    //     },
+    //     "southWest": {
+    //       "lat": 0,
+    //       "lng": 0
+    //     }
+    //   },
+    //   "region": "string",
+    //   "shopId": "string",
+    //   "shopName": "string"
+    // }
+    VENTURE_SHOPS: "/api/venture/shops", //关键字搜索
+
+    VENTURE_INDEX: "/api/venture/index",//获取风险指数api/venture/index?region=e1cc1e6d-691b-4ce8-bea7-ba35d8ea171e
+
+    VENTURE_DYNAMIC: "/api/venture/dynamic", //餐饮主体列表/api/venture/dynamic/1/10?region=e1cc1e6d-691b-4ce8-bea7-ba35d8ea171e
+
+    VENTURE_SUMMARY: "/api/venture/summary", //详情
+
+    DICT_IMAGE: "/api/dict/image", //获取图片 http://172.27.17.20:8080/api/dict/image?path=图片链接
+
+    VENTYRE_TREND: "/api/venture/trend", //变化趋势
+
+    VENTURE_COMMENT: "/api/venture/comment" //评论
 }

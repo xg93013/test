@@ -19,7 +19,7 @@
           :topFifty="topFifty"
           :allRiskTypes="allRiskTypes"
           @filterTop="filterTop"
-          v-loading="showTopLoading"
+          :showTopLoading="showTopLoading"
         />
       </div>
     </div>
@@ -35,6 +35,7 @@ import topFifty from "./topFifty";
 import http from "@/unit/http";
 import apis from "@/unit/apis";
 const {
+  ALL_RISKWORDS, // 所有风险词
   ALL_RISKTYPES, // 所有风险类型
   RISKTYPE_TRENDS, // 风险趋势变化
   RISKTYPE_ANALYSISRATIOS, // 风险类型对比
@@ -49,7 +50,6 @@ const {
 export default {
   data() {
     return {
-      defaultRiskTypes: ["身体不适", "食物变质", "有异物", "配送不当", "其他"],
       allRiskTypes: [],
       trend: [],
       types: [],
@@ -78,6 +78,7 @@ export default {
     if (this.myInter) {
       clearInterval(this.myInter);
       this.cancelAjax("CLOSE_AJAX");
+      this.$store.commit("changeTopFifty", "");
     }
     next();
   },
@@ -90,6 +91,13 @@ export default {
       });
     },
     async getData() {
+      let topUrl = "";
+      let topFilter = this.$store.state.topFiftyFilter;
+      if (topFilter === "" || topFilter === "全部") {
+        topUrl = RISKWORD_SHOPTOP50;
+      } else {
+        topUrl = RISKWORD_SHOPTOP50 + "?riskTypes=" + topFilter;
+      }
       let [
         allRiskTypes,
         trend,
@@ -109,14 +117,10 @@ export default {
         http.get(DYNAMIC_COMMENTS, {}, this.cancels),
         http.get(RISKWORD_BUSMODESORT, {}, this.cancels),
         http.get(RISKWORD_ZONESORT, {}, this.cancels),
-        http.get(RISKWORD_SHOPTOP50 + "/" + "全部", {}, this.cancels)
+        http.get(topUrl, {}, this.cancels)
       ]);
       if (allRiskTypes) {
-        if (allRiskTypes.result.length != 0) {
-          this.allRiskTypes = [...allRiskTypes.result];
-        } else {
-          this.allRiskTypes = [...this.defaultRiskTypes];
-        }
+        this.allRiskTypes = [...allRiskTypes.result];
       }
       if (trend) {
         this.trend = [...trend.result];
@@ -149,22 +153,15 @@ export default {
     filterTop(list) {
       this.getTopList(list);
     },
-    async getTopList(list) {
-      this.showTopLoading = true;
-      let params = "";
-      if (list.length !== this.allRiskTypes.length && list.length != 0) {
-        list.forEach((item, index) => {
-          if (index != list.length - 1) {
-            params += item + ",";
-          } else {
-            params += item;
-          }
-        });
-        params = "/" + params;
+    async getTopList(item) {
+      let url = "";
+      if (item == "全部") {
+        url = RISKWORD_SHOPTOP50;
       } else {
-        params = "/" + "全部";
+        url = RISKWORD_SHOPTOP50 + "?riskTypes=" + item;
       }
-      let res = await http.get(RISKWORD_SHOPTOP50 + params);
+      this.showTopLoading = true;
+      let res = await http.get(url);
       if (res) {
         this.showTopLoading = false;
         this.topFifty = [...res.result];
@@ -215,7 +212,6 @@ export default {
       }
     }
   }
-
   .left {
     width: 74%;
     padding-right: 20px;
