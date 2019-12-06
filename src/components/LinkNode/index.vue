@@ -16,51 +16,19 @@ export default {
   components: {},
   data() {
     return {
-      allChart: {},
-      currentId: "parent-one",
-      allPages: [
-        {
-          id: "parent-one",
-          name: "aaa"
-        },
-        {
-          id: "parent-two",
-          name: "aaa"
-        },
-        {
-          id: "parent-three",
-          name: "aaa"
-        },
-        {
-          id: "parent-four",
-          name: "aaa"
-        },
-        {
-          id: "parent-five",
-          name: "aaa"
-        }
-      ],
-      color: {
-        "parent-one": "orange",
-        "parent-two": "red",
-        "parent-three": "red",
-        "parent-four": "red",
-        "parent-five": "red"
-      },
-      originData: {
-        "parent-one": [10, 20, 15],
-        "parent-two": [15, 45, 80],
-        "parent-three": [15, 45, 80],
-        "parent-four": [15, 45, 50],
-        "parent-five": [15, 45, 30]
-      },
       showDetail: false,
       myChart: "",
       typeColor: {
         "01": "#FFDB5C",
         "02": "#CC6666",
-        "03": "#EA7E53",
-        "04": "#DD6B66"
+        "03": "#6666FF",
+        "04": "#339933"
+      },
+      typeTxt: {
+        "01": "生产环节",
+        "02": "流通环节",
+        "03": "餐饮环节",
+        "04": "其他"
       }
     };
   },
@@ -68,7 +36,6 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    console.log(allNodes);
     this.initChart();
   },
   methods: {
@@ -77,22 +44,23 @@ export default {
       this.initChart();
     },
     initChart(detail) {
-      let colors = [
-        "#FFDB5C",
-        "#E69D87",
-        "#EA7E53",
-        "#DD6B66",
-        "#37A2DA",
-        "#32C5E9",
-        "#67E0E3",
-        "#8DC1A9",
-        "#91C7AE",
-        "#9FE6B8",
-        "#2F4554",
-        "#61A0A8",
-        "#759AA0"
-      ];
+      let colors = [];
+      let categories = [];
+      let legend = [];
+      let nodes = [];
+      let links = [];
       let myChart = "";
+      for (let key in this.typeColor) {
+        colors.push(this.typeColor[key]);
+      }
+
+      for (let key in this.typeTxt) {
+        categories.push({
+          name: this.typeTxt[key]
+        });
+        legend.push(this.typeTxt[key]);
+      }
+
       if (this.myChart) {
         this.myChart.clear();
       }
@@ -101,8 +69,7 @@ export default {
       } else {
         myChart = echarts.init(document.getElementById("children-box"));
       }
-      let nodes = [];
-      let links = [];
+
       for (let i = 0; i < allLinks.length; i++) {
         for (let j = 0; j < allLinks[i].length; j++) {
           let flag = this.getOneNodeFlag(nodes, allLinks[i][j]);
@@ -114,6 +81,7 @@ export default {
                   name: allLinks[i][j],
                   value: value.value,
                   symbolSize: 10,
+                  category: this.typeTxt[value.type],
                   itemStyle: {
                     // color: colors[Math.floor(value / 50)]
                     normal: {
@@ -154,22 +122,6 @@ export default {
           }
         }
       }
-      // for (let i = 0; i < allNodes.length; i++) {
-      //   nodes.push({
-      //     name: allNodes[i].name,
-      //     value: allNodes[i].value,
-      //     symbolSize: allNodes[i].value,
-      //     itemStyle: {
-      //       color: colors[0]
-      //     }
-      //   });
-      // }
-      // for (let i = 0; i < allLinks.length; i++) {
-      //   links.push({
-      //     source: allLinks[i][0],
-      //     target: allLinks[i][1]
-      //   });
-      // }
       let option = {
         title: {
           text: "",
@@ -185,12 +137,16 @@ export default {
             }
           }
         },
-        // grid: {
-        //   top: 100,
-        //   bottom: 100,
-        //   left: 100,
-        //   right: 100
-        // },
+        legend: {
+          show: true,
+          top: 0,
+          left: "center",
+          data: legend,
+          textStyle: {
+            color: "#f5f5f5"
+          },
+          selectedMode: false
+        },
         animation: false,
         series: [
           {
@@ -202,6 +158,8 @@ export default {
             links: links,
             roam: true,
             draggable: true,
+            hoverAnimation: false,
+            // animationEasing: "circularOut",
             top: 300,
             bottom: 300,
             focusNodeAdjacency: true,
@@ -216,15 +174,13 @@ export default {
                 }
               }
             },
-            // itemStyle: {
-            //   color: colors
-            // },
+            categories: categories,
             force: {
-              // initLayout: "circular",
               edgeLength: [30, 50],
               repulsion: detail ? 180 : 80
             },
-            animationDuration: 90
+            animationDuration: 30,
+            animationDurationUpdate: 50
           }
         ]
       };

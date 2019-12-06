@@ -8,6 +8,7 @@
             class="filter-item"
             @getFood="getFood"
             :data="allFoodType"
+            :defaultData="foodType"
             :placeholder="foodType != '' ? '点击查看选择食品品类':'选择食品品类(单选)'"
           />
           <down-tree
@@ -150,6 +151,10 @@ export default {
     getDefaultData() {
       this.allData = [
         {
+          name: "小麦粉",
+          data: foodTwo
+        },
+        {
           name: "小麦粉制品",
           data: foodOne
           // data: [
@@ -163,20 +168,7 @@ export default {
           //   }
           // ]
         },
-        {
-          name: "小麦粉",
-          data: foodTwo
-          // data: [
-          //   {
-          //     itemName: "检查项目1",
-          //     qualifiedRate: 7
-          //   },
-          //   {
-          //     name: "检查项目2",
-          //     qualifiedRate: 10
-          //   }
-          // ]
-        },
+
         {
           name: "挂面",
           data: foodThree
@@ -214,6 +206,9 @@ export default {
       ];
 
       let projects = [];
+      this.allData[0].data = this.allData[0].data.sort((a, b) => {
+        return Number(a.qualifiedRate) - Number(b.qualifiedRate);
+      });
       for (let i = 0; i < this.allData[0].data.length; i++) {
         projects.push({
           id: (i + 1).toString(),
@@ -234,24 +229,39 @@ export default {
 
       for (let i = 0; i < this.allData.length; i++) {
         let data = [];
+        let len = this.checkType.filterData.length;
+        let height = len == 1 ? 120 : len <= 3 ? len * 80 : len * 45;
         this.allPages.push({
           id: "chart" + (i + 1),
           name: this.allData[i].name,
-          height: this.checkType.filterData.length * 50
+          height: height
         });
         for (let j = 0; j < this.checkType.filterData.length; j++) {
-          // data.push(i + j);
           let index = this.getCheckTypeIndex(
             this.allData[i].data,
             this.checkType.filterData[j].label
           );
-          let rate =
-            index != -1
-              ? (this.allData[i].data[index].qualifiedRate * 100).toFixed(2)
+          let rate = "";
+          let qualifiedRate = this.allData[i].data[index].qualifiedRate;
+          if (qualifiedRate == null) {
+            rate = null;
+          } else {
+            rate =
+              index != -1
                 ? (this.allData[i].data[index].qualifiedRate * 100).toFixed(2)
-                : 0
-              : 0;
-          data.push(this.standard == "合格率" ? rate : (100 - rate).toFixed(2));
+                  ? (this.allData[i].data[index].qualifiedRate * 100).toFixed(2)
+                  : 0
+                : 0;
+          }
+
+          data.push(
+            this.standard == "合格率"
+              ? rate
+              : rate == null
+              ? null
+              : (100 - rate).toFixed(2)
+          );
+          // data.push(null);
         }
         this.originData["chart" + (i + 1)] = data;
       }
@@ -268,11 +278,9 @@ export default {
       this.currentId = this.allPages[0].id;
 
       this.$nextTick(() => {
-        // setTimeout(() => {
         if (this.checkType.filterData.length > 0 && this.foodType != "") {
           this.initAllChart();
         }
-        // }, 3000);
       });
     },
     getCheckTypeIndex(arr, name) {
@@ -287,7 +295,10 @@ export default {
       }
       return index;
     },
-    getFood(food) {},
+    getFood(food) {
+      this.selectIndex = -1;
+      this.getDatas();
+    },
     selectDown(arr, modeType, filterArr, selectAll) {
       let out = [];
       if (arr.length > 0) {
@@ -300,14 +311,18 @@ export default {
       }
       this.checkType.filterData = out;
       // console.log(this.checkType.filterData);
+      this.selectIndex = -1;
       this.getDatas();
     },
     changeStandard() {
       // console.log(this.standard);
+      this.selectIndex = -1;
       this.getDatas();
     },
     changeTime() {
+      this.selectIndex = -1;
       // console.log(this.dateRange);
+      this.getDatas();
     },
     initAllChart() {
       for (let i = 0; i < this.allPages.length; i++) {
@@ -319,6 +334,9 @@ export default {
       }
     },
     initHorBar(id, color) {
+      if (this.allChart[id]) {
+        this.allChart[id].clear();
+      }
       let myChart = echarts.init(document.getElementById(id));
       let data = this.originData[id];
       let yData = this.yData;
@@ -327,18 +345,9 @@ export default {
         return b - a;
       });
       yData.forEach(item => {
-        shadowData.push(arr[0]);
+        shadowData.push(100);
       });
       let option = {
-        // title: {
-        //   text: "aaaa",
-        //   left: "center",
-        //   top: 10,
-        //   fontWeight: "lighter",
-        //   textStyle: {
-        //     color: color ? color : "#666"
-        //   }
-        // },
         grid: {
           top: 10,
           left: id == this.allPages[0].id ? 100 : 70,
@@ -399,22 +408,12 @@ export default {
           axisLabel: {
             // rotate: -30
             formatter: params => {
-              // console.log(params);
               if (params.length > 6) {
                 return params.substr(0, 6) + "...";
               } else {
                 return params;
               }
             }
-            // formatter: ["{a|aaaaaaaaaaaaaaaaaaaabgggdhgggghjftj}"].join("\n"),
-            // rich: {
-            //   a: {
-            //     display: "inlineBlock",
-            //     width: 100,
-            //     wordBreak: "breakAll",
-            //     wordWrap: "breakWord"
-            //   }
-            // }
           },
           axisTick: {
             show: false
@@ -457,10 +456,6 @@ export default {
                   }
                 }
               }
-              // emphasis: {
-              //   color: "#eee"
-              // }
-              // color: color ? color : "#ccc"
             }
           },
           {
@@ -469,19 +464,27 @@ export default {
             data: shadowData,
             barWidth: 15,
             barGap: "-100%",
+            label: {
+              normal: {
+                show: true,
+                position: "insideLeft",
+                formatter: params => {
+                  if (data[params.dataIndex] == null) {
+                    return "(空)";
+                  }
+                }
+              }
+            },
             itemStyle: {
               normal: {
+                borderWidth: 1,
                 color: params => {
                   let index = params.dataIndex;
-                  // if (color) {
                   if (index == this.selectIndex) {
                     return this.hignColor.shadow;
                   } else {
                     return "#eee";
                   }
-                  // } else {
-                  //   return "#eee";
-                  // }
                 }
               },
               emphasis: {
@@ -496,9 +499,7 @@ export default {
       this.allChart[id].off("click");
       this.allChart[id].on("click", e => {
         this.selectIndex = e.dataIndex;
-        // this.allChart[id].setOption(option);
         for (let i = 0; i < this.allPages.length; i++) {
-          // this.allChart[this.allPages[i].id].setOption(option);
           if (this.currentId == this.allPages[i].id) {
             this.initHorBar(this.allPages[i].id, this.colors[i]);
           } else {
@@ -514,7 +515,13 @@ export default {
       this.initHorBar(id, this.colors[index]);
     }
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    for (let i = 0; i < this.allPages.length; i++) {
+      if (this.allChart[this.allPages[i].id]) {
+        this.allChart[this.allPages[i].id].dispose();
+      }
+    }
+  },
   destroyed() {}
 };
 </script>
@@ -568,7 +575,7 @@ export default {
         // height: 100px;
         overflow: hidden;
         .nav-item {
-          width: 200px;
+          width: 240px;
           text-align: center;
           float: left;
           overflow: hidden;
@@ -588,7 +595,7 @@ export default {
             margin-left: 70px;
           }
           &:first-child {
-            width: 240px;
+            width: 260px;
             margin-left: 40px;
             .inline {
               margin-left: 100px;
@@ -599,13 +606,13 @@ export default {
       .bar-box {
         width: 100%;
         .bar-chart {
-          width: 200px;
+          width: 240px;
           // height: 1500px;
           float: left;
           overflow: hidden;
           color: rgb(173, 255, 210);
           &:first-child {
-            width: 240px;
+            width: 260px;
             margin-left: 40px;
           }
           // margin-left: 20px;
