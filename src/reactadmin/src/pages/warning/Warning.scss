@@ -1,0 +1,173 @@
+// :local {
+#warning {
+    background: #f5f5f5;
+    width: 100%;
+    .top {
+        width: 100%;
+        height: 50%;
+        overflow: hidden;
+        .item {
+            width: 50%;
+            height: 100%;
+            padding: 10px;
+            float: left;
+            overflow: hidden;
+            >div {
+                width: 100%;
+                // height: 300px;
+                height: 100%;
+                background: #fff;
+                position: relative;
+                .title {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    height: 50px;
+                    line-height: 50px;
+                    padding: 0 30px;
+                }
+                .chart {
+                    position: absolute;
+                    top: 50px;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                }
+                .filter {
+                    position: absolute;
+                    top: 20px;
+                    left: 20px;
+                    width: 120px;
+                    height: 46px;
+                    z-index: 999;
+                }
+            }
+        }
+        .aleft {
+            width: 60%;
+        }
+        .aright {
+            width: 40%;
+        }
+    }
+    .bot {
+        width: 100%;
+        height: 50%;
+        overflow: hidden;
+        .item {
+            // width: 50%;
+            padding: 10px;
+            float: left;
+            height: 100%;
+            overflow: hidden;
+            >div {
+                width: 100%;
+                height: 100%;
+                background: #fff;
+                position: relative;
+                // overflow: hidden;
+                .animateCircle {
+                    // transition: all 2s;
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 50%;
+                    border: 1px solid #ccc;
+                    animation: myanimate 20s infinite;
+                }
+                &.heightBox {
+                    height: 900px;
+                    // transition: all 2s;
+                    margin-top: 0;
+                    position: relative;
+                    .inners {
+                        position: absolute;
+                        height: 300px;
+                        left: 0;
+                        width: 100%;
+                        &:nth-child(1) {
+                            top: 0;
+                        }
+                        &:nth-child(2) {
+                            top: 300px;
+                        }
+                        &:nth-child(3) {
+                            top: 600px;
+                        }
+                    }
+                }
+                .chart {
+                    position: absolute;
+                    top: 50px;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                }
+            }
+            &:nth-child(1) {
+                width: 30%
+            }
+            &:nth-child(2) {
+                width: 30%
+            }
+            &:nth-child(3) {
+                width: 40%
+            }
+        }
+    }
+    .popWindow {
+        width: 200px;
+        height: 100px;
+        background: #fff;
+    }
+    .circle-box {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 auto;
+        position: relative;
+        .cirleft,
+        .cirright {
+            float: left;
+            width: 50%;
+            height: 100%;
+            position: relative;
+            .bar {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: #f5f5f5;
+            }
+            .rightbar {
+                background: #eee;
+            }
+        }
+        .lines {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            bottom: 0;
+            width: 0.5px;
+            transform: translateX(-50%);
+            background: #ccc;
+        }
+    }
+}
+
+.ant-modal-wrap {
+    .chart {
+        width: 500px;
+        height: 300px;
+    }
+}
+
+// }
+@keyframes myanimate {
+    from {
+        transform: rotate(0deg)
+    }
+    to {
+        transform: rotate(360deg)
+    }
+}

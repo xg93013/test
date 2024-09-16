@@ -1,0 +1,46 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Microsoft YaHei";
+    list-style: none;
+    text-decoration: none;
+}
+
+body {
+    background: #EBEBEB;
+}
+
+.pub-table {
+    thead * {
+        font-size: 16px;
+    }
+    tbody * {
+        font-size: 14px;
+    }
+    tbody {
+        tr:nth-child(even) {
+            background: #f6f6f6;
+        }
+    }
+    .ant-table-thead>tr>th {
+        background: #F5F8FD;
+        color: #276AB0;
+    }
+    .ant-spin-container {
+        text-align: center;
+    }
+    .ant-table-pagination.ant-pagination {
+        float: none;
+        display: inline-block;
+        padding: 0 10px;
+        margin: 10px auto 0;
+        * {
+            font-size: 14px;
+        }
+    }
+}
+
+.table-min-width {
+    min-width: 100px !important;
+}

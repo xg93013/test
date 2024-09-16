@@ -1,0 +1,130 @@
+﻿body {
+  margin:0px;
+  background-color:rgba(245, 245, 245, 1);
+  background-image:none;
+  position:relative;
+  left:-10px;
+  width:1250px;
+  margin-left:auto;
+  margin-right:auto;
+  text-align:left;
+}
+#base {
+  position:absolute;
+  z-index:0;
+}
+#u19453_img {
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:1201px;
+  height:87px;
+}
+#u19453 {
+  position:absolute;
+  left:10px;
+  top:10px;
+  width:1200px;
+  height:86px;
+  font-family:'微软雅黑 Bold', '微软雅黑 Regular', '微软雅黑';
+  font-style:normal;
+  text-align:left;
+  line-height:24px;
+}
+#u19454 {
+  position:absolute;
+  left:60px;
+  top:20px;
+  width:1120px;
+  word-wrap:break-word;
+}
+#u19455_img {
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:61px;
+  height:69px;
+}
+#u19455 {
+  position:absolute;
+  left:10px;
+  top:10px;
+  width:60px;
+  height:68px;
+  font-family:'Font Awesome 5 Pro';
+  font-weight:410;
+  font-style:normal;
+  font-size:28px;
+  color:#FF992F;
+  text-align:center;
+}
+#u19456 {
+  position:absolute;
+  left:2px;
+  top:20px;
+  width:56px;
+  word-wrap:break-word;
+}
+#u19457 {
+  position:absolute;
+  left:1250px;
+  top:0px;
+  width:10px;
+  height:10px;
+  overflow:hidden;
+  background-image:url('../../resources/images/transparent.gif');
+}
+#u19458_img {
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:566px;
+  height:140px;
+}
+#u19458 {
+  position:absolute;
+  left:10px;
+  top:123px;
+  width:565px;
+  height:139px;
+  font-family:'微软雅黑';
+  font-weight:400;
+  font-style:normal;
+  text-align:left;
+  line-height:20px;
+}
+#u19459 {
+  position:absolute;
+  left:20px;
+  top:62px;
+  width:543px;
+  visibility:hidden;
+  word-wrap:break-word;
+}
+#u19460_img {
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:545px;
+  height:140px;
+}
+#u19460 {
+  position:absolute;
+  left:10px;
+  top:123px;
+  width:544px;
+  height:139px;
+  font-size:18px;
+  line-height:40px;
+}
+#u19460_img.selected {
+}
+#u19460.selected {
+}
+#u19461 {
+  position:absolute;
+  left:2px;
+  top:50px;
+  width:540px;
+  word-wrap:break-word;
+}

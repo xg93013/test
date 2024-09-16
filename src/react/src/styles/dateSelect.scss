@@ -1,0 +1,207 @@
+$dateThemeBack: #1c2543;
+
+$dateItemBack: #293458;
+
+$dateActiveBack: #0099FF;
+
+$disableBack: #7E8E98;
+
+$topBack: #2E4354;
+
+$btnOk: #0FA063;
+
+@mixin spanItem($w, $h, $color) {
+    display: inline-block;
+    height: $h;
+    width: $w;
+    font-size: 12px;
+    color: #ccc;
+    line-height: $h;
+    box-sizing: border-box;
+    text-align: center;
+    /*padding-right: 2px;*/
+    background: $color;
+    margin-top: 2px;
+    background-clip: content-box;
+    cursor: pointer;
+    &.disabled{
+        background: $disableBack;
+        background-clip: content-box;
+        cursor: default;
+        color: #ccc;
+        &:hover{
+            cursor: not-allowed !important;
+        }
+    }
+    &.active{
+        background: $dateActiveBack;
+        color: #fff;
+        background-clip: content-box;
+    }
+}
+// .szl-time-pop.el-popper {
+// 	width: 450px;
+// 	background: rgba(28,37,67,1);
+// 	border: 1px solid rgba(28,37,67,1);
+// 	margin-left: 40px;
+// 	padding: 20px;
+// 	* {
+// 		color: #87b3d1;
+// 	}
+// }
+
+// .szl-time {
+// 	display: inline-block;
+// 	background: #0099FF;
+// 	border: 1px solid #0099FF;
+// 	color: #C5E6FE;
+// 	padding: 0 16px;
+// 	height: 32px;
+// 	line-height: 32px;
+// 	cursor: pointer;
+// 	border-radius: 6px;
+// 	img {
+// 		position: relative;
+// 		top: -1px;
+// 		vertical-align: middle;
+// 		opacity: .8;
+// 	}
+// }
+
+// .szl-time-pop.el-popper .popper__arrow {
+// 	border-bottom-color: #253745 !important;
+// 	&:after {
+// 		border-bottom-color: #253745 !important;
+// 	}
+// }
+.ant-popover-placement-bottomLeft > .ant-popover-content > .ant-popover-arrow{
+    background: #253745;
+}
+.ant-popover-content{
+    width: 400px;
+}
+.ant-popover-inner-content{
+    padding: 0;
+}
+.date-container{
+/*    position: relative;*/
+    z-index: 999;
+    .date-select{
+        width: 100px;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+    }
+    .date-box{
+        background: $dateThemeBack;
+        /*width: 400px;*/
+        height: auto;
+        padding: 10px;
+        /*position: absolute;*/
+        left: 0;
+        top: 50px;
+        right: 0;
+        border-radius: 5px;
+        overflow: hidden;
+        .date-type{
+            width: 100%;
+            overflow: hidden;
+            background : $topBack;
+            margin-right: -2px;
+            .item{
+                @include spanItem(50%, 32px, $topBack);
+                margin-top: 0;
+                float: left;
+            }
+        }
+        .date-year{
+            width: 100%;
+            overflow: hidden;
+            margin-top: 8px;
+            background: $topBack;
+            /*margin-right: -2px;*/
+            // margin-top: 6px;
+            .item{
+                @include spanItem(25%, 32px, $topBack);
+                margin-top: 0;
+                float: left;
+            }
+            .current-year{
+                @include spanItem(50%, 32px, $topBack);
+                margin-top: 0;
+                font-size: 14px;
+                color: #fff;
+                float: left;
+            }
+        }
+        .date-item-box{
+            /*width: 100%;*/
+            margin-top: 6px;
+            margin-right: -2px;
+            .item{
+            	padding-right: 2px;
+            }
+            .type-month{
+                width: 100%;
+                overflow: hidden;
+                
+                .item{
+                    @include spanItem(25%, 32px, $dateItemBack);
+                    float: left;
+                    
+                }
+            }
+            .type-season{
+                width: 100%;
+                overflow: hidden;
+                /*margin-right: -2px;*/
+                .item{
+                    @include spanItem(50%, 49px, $dateItemBack);
+                    float: left;
+                }
+            }
+            .type-halfyear{
+                width: 100%;
+                overflow: hidden;
+                /*margin-right: -2px;*/
+                .item{
+                    @include spanItem(50%, 100px, $dateItemBack);
+                    float: left;
+                }
+            }
+            .type-allyear{
+                width: 100%;
+                overflow: hidden;
+                /*margin-right: -2px;*/
+                .item{
+                    @include spanItem(100%, 100px, $dateItemBack);
+                    float: left;
+                }
+            }
+        }
+        .date-footer{
+        	width: 100%;
+            overflow: hidden;
+            margin-top: 6px;
+            .left{
+                width: 100px;
+                height: 40px;
+                line-height: 40px;
+                text-align: left;
+                float: left;
+                color: #fff;
+            }
+            .right{
+                float: right;
+                overflow: hidden;
+                .btn{
+                    @include spanItem(70px, 32px, $dateItemBack);
+                    float: left;
+                }
+                .ok{
+                	background: $btnOk;
+                }
+            }
+        }
+    }
+}

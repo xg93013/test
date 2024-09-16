@@ -1,0 +1,7 @@
+﻿$axure.loadCurrentPage(
+(function() {
+    var _ = function() { var r={},a=arguments; for(var i=0; i<a.length; i+=2) r[a[i]]=a[i+1]; return r; }
+    var _creator = function() { return _(b,c,d,e,f,g,h,g,i,[j],k,_(l,m,n,o,p,q,r,_(),s,_(t,u,v,w,x,_(y,z,A,B),C,null,D,E,F,E,G,H,I,null,J,K,L,M,N,O,P,K),Q,_(),R,_(S,_(T,U,V,[_(T,W,X,g,Y,[_(Z,ba,T,bb,bc,_(bd,be,bf,[]))])])),bg,_(bh,[])),bi,_(),bj,_());}; 
+var b="url",c="使用情况.html",d="generationDate",e=new Date(1560077976642.05),f="isCanvasEnabled",g=false,h="isAdaptiveEnabled",i="variables",j="OnLoadVariable",k="page",l="packageId",m="2297073e16dc430188537bf6de271c76",n="type",o="Axure:Page",p="name",q="使用情况",r="notes",s="style",t="baseStyle",u="627587b6038d43cca051c114ac41ad32",v="pageAlignment",w="center",x="fill",y="fillType",z="solid",A="color",B=0xFFF0F2F5,C="image",D="imageHorizontalAlignment",E="near",F="imageVerticalAlignment",G="imageRepeat",H="auto",I="favicon",J="sketchFactor",K="0",L="colorStyle",M="appliedColor",N="fontName",O="Applied Font",P="borderWidth",Q="adaptiveStyles",R="interactionMap",S="onLoad",T="description",U="OnPageLoad",V="cases",W="Case 1",X="isNewIfGroup",Y="actions",Z="action",ba="setFunction",bb="Set is selected of Unidentified equal to &quot;true&quot;",bc="expr",bd="exprType",be="block",bf="subExprs",bg="diagram",bh="objects",bi="masters",bj="objectPaths";
+return _creator();
+})());

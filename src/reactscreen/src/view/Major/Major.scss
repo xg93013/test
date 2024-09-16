@@ -1,0 +1,116 @@
+@import '~@/style/common.scss';
+:local {
+    $topHeight: 100px;
+    .major-area {
+        padding-top: $topHeight;
+        position: relative;
+        height: 100%;
+        .nav-area {
+            width: 100%;
+            height: $topHeight;
+            background: url(./images/nav-bg.png) no-repeat;
+            position: absolute;
+            top: 0px;
+            @include clf;
+            $skew : -34deg;
+            .nav-item {
+                text-align: center;
+                float: left;
+                height: $topHeight;
+                line-height: $topHeight;
+                width: 569px;
+                transform: skew($skew);
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+                @for $i from 1 through 3 {
+                    &:nth-child(#{$i}) {
+                        @if $i == 1 {
+                            left: -34px;
+                            width: 480px;
+                            .label-area {
+                                &::after {
+                                    left: 30px;
+                                }
+                            }
+                        } @else if $i == 2 {
+                            left: -103px;
+
+                        } @else if $i == 3 {
+                            left: -172px;
+                        }
+                        z-index: #{100 - $i};
+                        .label-area {
+                            &::before {
+                                background: url(./images/nav-item-bg#{$i}.png) no-repeat;
+                            }
+                        }
+                        &:hover,&.selected {
+                            .label-area {
+                                &::before,&::after {
+                                    opacity: 1;
+                                }
+                            }
+                        }
+                    }
+                }
+                .label-area {
+                    position: relative;
+                    z-index: 1;
+                    transform: skew(- $skew);
+                    transform-origin: 0% 0%;
+                    &:after  {
+                        background: url(./images/corner.png) no-repeat;
+                        opacity: 0;
+                        z-index: -1;
+                        content: '';
+                        display: block;
+                        width: 22px;
+                        height: 22px;
+                        position: absolute;
+                        // left: 0px;
+                        // bottom: 0px;
+                        left: 70px;
+                        bottom: 30px;
+                    }
+                    &::before {
+                        z-index: -1;
+                        content: '';
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                        position: absolute;
+                        left: 0px;
+                        top: 0px;
+                        opacity: 0;
+                        @include trans();
+                    }
+                    >span {
+                        font-weight: 500;
+                        font-size: 44px;
+                        &:last-child {
+                            font-size: 30px;
+                        }
+                    }
+                }
+            }
+            .back-btn {
+                // width: 200px;
+                height: $topHeight;
+                line-height: $topHeight;
+                position: absolute;
+                right: 0px;
+                padding-right: 30px;
+                >img {
+                    vertical-align: middle;
+                    cursor: pointer;
+                }
+            }
+        }
+        .router-area {
+            // position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+    }
+}

@@ -1,0 +1,37 @@
+.indexContent{
+    .left{
+        position: fixed;
+        left: 0;
+        top: 50px;
+        bottom: 0;
+        width: 200px;
+    }
+    .right{
+        position: fixed;
+        top: 50px;
+        left: 200px;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        .formItem{
+            float: 0 0 600px;
+            width: 600px;
+        }
+        .item{
+            flex: 0 0 50%;
+            width: 50%;
+            height: 100%;
+        }
+        .tableList{
+            width: 100%;
+        }
+    }
+  }
+  .mainCon{
+    position: fixed;
+    top: 50px;
+    left: 100px;
+    right: 0;
+    bottom: 0;
+    // display: flex;
+  }

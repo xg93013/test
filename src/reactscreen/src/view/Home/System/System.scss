@@ -1,0 +1,160 @@
+@import '~@/style/common.scss';
+
+:local {
+    .system-area {
+        height: 100%;
+        background: url(./images/SystemBg.png) no-repeat;
+        .system-area_item {
+            position: absolute;
+            height: 400px;
+            line-height: 400px;
+            z-index: 10;
+            text-align: center;
+            // vertical-align: middle;
+            &:nth-child(1) {
+                width: 700px;
+                top : 551px - 117px;
+                left: 215px - 123px;
+                .system-area_item_button{
+                    width: 466px;
+                }
+            }
+            &:nth-child(2) {
+                width: 639px;
+                top : 113px - 117px;
+                left: 1177px - 123px;
+                .system-area_item_button{
+                    width: 379px;
+                }
+            }
+            &:nth-child(3) {
+                width: 700px;
+                top : 652px - 117px;
+                left: 1236px - 123px;
+                .system-area_item_button{
+                    width: 454px;
+                }
+            }
+            .system-area_item_button {
+                // display: inline-block;
+                // margin: 0 auto;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+                // opacity: .7;
+                height: 154px;
+                line-height: 154px;
+                @include trans;
+                &:hover {
+                    // opacity: 1;
+                    cursor: pointer;
+                }
+                >span {
+                    font-size: 53px;
+                    font-weight: 500;
+                    text-shadow:0px 3px 3px rgba(11,77,158,0.52);
+                    &:last-child {
+                        font-size: 36px;
+                    }
+                }
+            }
+
+            @for $i from 1 through 3 {
+                &:nth-child(#{$i}) {
+                    background: url(./images/system-item-#{$i}.png) no-repeat;
+                    .system-area_item_bridge {
+                        position: absolute;
+                        top: 0px;
+                        left: 0px;
+                        width: 267px;
+                        height: 116px;
+                        background: url(./images/system-item--bridge#{$i}.png) no-repeat;
+                        @if $i == 1 {
+                            left: 350px;
+                            top: 21px;
+                        } @else if $i == 2 {
+                            top: 262px;
+                            left: 36px;
+                        } @else if $i == 3 {
+                            width: 281px;
+                            top: 24px;
+                            left: 24px;
+                        }
+                    }
+                }
+            }
+        }
+        .decorate-area {
+            height: 100%;
+            height: 100%;
+            position: absolute;
+            z-index: 0;
+            top: 0px;
+            .plate-area {
+                height: 475px;
+                width: 456px;
+                position: absolute;
+                left: 702px;
+                top: 260px;
+                // animation: zoom 120s linear infinite ;
+                // transform-origin: 0% 0%;
+                >img {
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    // transform: translate(-50%, -50%);
+                    // transform-origin: 0% 0%;
+                    &:nth-child(1) {
+                        left: calc(50% - 386px / 2);
+                        top: calc(50% - 382px / 2);
+                        // animation: clockwise 60s linear infinite ;
+                    }
+                    &:nth-child(2) {
+                        left: calc(50% - 312px / 2);
+                        top: calc(50% - 312px / 2);
+                        animation: clockwise 60s linear infinite ;
+                    }
+                    &:nth-child(3) {
+                        left: calc(50% - 810px / 2);
+                        top: calc(50% - 811px / 2);
+                        animation: anticlockwise 120s linear infinite ;
+                        // animation: zoom 120s linear infinite ;
+                        // transform-origin: 50% 50%;
+                    }
+                    &:nth-child(4) {
+                        left: calc(50% - 1623px / 2);
+                        top: calc(50% - 1625px / 2);
+                        animation: clockwise 240s linear infinite ;
+                    }
+                }
+            }
+        }
+    }
+}
+@keyframes :local(clockwise) {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+@keyframes :local(anticlockwise) {
+    from {
+        transform: rotate(360deg);
+    }
+    to {
+        transform: rotate(0deg);
+    }
+}
+@keyframes :local(zoom) {
+    from {
+        transform: rotate(360deg) scale(1);
+    }
+    to {
+        transform: rotate(0deg) scale(.5);
+    }
+}
+

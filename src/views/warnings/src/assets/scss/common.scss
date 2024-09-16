@@ -1,0 +1,37 @@
+$dateThemeBack: #1248a7;
+
+$dateItemBack: #0e62c0;
+
+$dateActiveBack: #09f;
+
+$disableBack: #0e62c0;
+
+@mixin spanItem($w, $h, $color) {
+    display: inline-block;
+    height: $h;
+    width: $w;
+    font-size: 12px;
+    color: #ccc;
+    line-height: $h;
+    box-sizing: border-box;
+    text-align: center;
+    padding-right: 2px;
+    background: $color;
+    margin-top: 2px;
+    background-clip: content-box;
+    cursor: pointer;
+    &.disabled{
+        background: $disableBack;
+        background-clip: content-box;
+        cursor: default;
+        color: #999;
+        &:hover{
+            cursor: not-allowed !important;
+        }
+    }
+    &.active{
+        background: $dateActiveBack;
+        color: #fff;
+        background-clip: content-box;
+    }
+}

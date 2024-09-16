@@ -1,0 +1,215 @@
+.ant-modal-wrap {
+    .modal-box {
+        .modal_title {
+            width: 100%;
+        }
+        overflow: hidden;
+        .modal-chart {
+            width: 50%;
+            height: 300px;
+            float: left;
+            position: relative;
+            transform: rotate(0deg);
+            .title {
+                position: absolute;
+                top: 0;
+                left: 20px;
+                height: 40px;
+                font-size: 14px;
+                font-weight: 400;
+                color: rgba(50, 50, 50, 1);
+                span {
+                    font-size: 12px;
+                    color: #666;
+                }
+            }
+            .bar-name {
+                position: absolute;
+                top: 77px;
+                left: 129px;
+                font-size: 12px;
+                color: #333;
+            }
+            .main-chart,
+            .out-box {
+                position: absolute;
+                top: 40px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                height: calc(100% - 40px);
+            }
+            .chart-title {
+                position: absolute;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .out-box {
+                .in-box {
+                    width: 200px;
+                    height: 200px;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    // transform: translate(-50%, -50%);
+                    margin-top: -100px;
+                    margin-left: -100px;
+                    .point {
+                        position: absolute;
+                        width: 13px;
+                        height: 13px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        border: 3px solid #79CDF7;
+                        background: #fff;
+                        transform: translate(-50%, -50%);
+                    }
+                }
+            }
+            .fillgauge {
+                width: 240px;
+                height: 240px;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+    }
+    .modal-compare {
+        .top {
+            width: 100%;
+            overflow: hidden;
+            margin-top: 20px;
+            .top-item {
+                width: 50%;
+                float: left;
+                font-size: 14px;
+                color: #323232;
+                overflow: hidden;
+                padding: 0 20px;
+                position: relative;
+                &:last-child {
+                    &::before {
+                        content: ' ';
+                        position: absolute;
+                        left: -1px;
+                        width: 2px;
+                        height: 50px;
+                        top: 50%;
+                        background: #eee;
+                        transform: translateY(-50%);
+                    }
+                }
+                p {
+                    margin-bottom: 0;
+                }
+                >div {
+                    overflow: hidden;
+                    span {
+                        display: block;
+                        height: 50px;
+                        float: left;
+                        &.num {
+                            font-size: 40px;
+                            color: #323232;
+                            font-weight: 400;
+                        }
+                        &.tips {
+                            position: relative;
+                            label {
+                                position: absolute;
+                                display: block;
+                                left: 4px;
+                                bottom: 0;
+                                height: 24px;
+                                line-height: 24px;
+                                padding-left: 10px;
+                                font-size: 14px;
+                                font-weight: 400;
+                                white-space: nowrap;
+                                background: url("./images/down.png") center left no-repeat;
+                                &.up {
+                                    background: url("./images/up.png") center left no-repeat;
+                                }
+                                &.normal {
+                                    background: none;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .bottom {
+            margin: 40px 0 20px 0;
+            >div {
+                overflow: hidden;
+                margin: 10px 0 0 0;
+                p {
+                    float: left;
+                    line-height: 30px;
+                    color: #323232;
+                    &:nth-child(1) {
+                        font-weight: bold;
+                        // text-align: right;
+                        width: 120px;
+                        padding-left: 20px;
+                    }
+                    width: 500px;
+                    span {
+                        display: inline-block;
+                        width: 210px;
+                        &:nth-child(odd) {
+                            width: 265px;
+                        }
+                    }
+                }
+                &.long {
+                    p {
+                        width: 420px;
+                        &:nth-child(1) {
+                            width: 150px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .ant-modal-header {
+        background: #2D2D2D;
+        // height: 50px;
+        padding: 10px 24px;
+        .ant-modal-title {
+            color: #fff;
+        }
+    }
+    .ant-modal-close {
+        color: #fff;
+        .ant-modal-close-x {
+            height: 45px;
+            line-height: 45px;
+        }
+    }
+}
+
+.potencyContainer {
+    .ant-popover-inner {
+        background: rgba(0, 0, 0, 0.55);
+    }
+    .ant-popover-inner-content {
+        color: #eee;
+        padding: 8px;
+    }
+    &.ant-popover-placement-bottom {
+        .ant-popover-arrow {
+            border-top-color: transparent;
+            border-right-color: transparent;
+            border-bottom-color: transparent;
+            border-top-color: transparent;
+            border-left-color: transparent;
+        }
+    }
+}

@@ -1,0 +1,88 @@
+// 默认文字颜色rgb 39,40,34
+$defaultTextColor:white;/* color:rgba(215,233,255,1); */;
+$defaultBgColor:rgba(22,115,213,1);
+// 主标题
+$mainTitle:20px;
+// 标题
+$normalTitle:18px;
+// 小标题
+$smallTitle:16px;
+// 正文
+$mainText:14px;
+// 正文(小)
+$mainTextSmall:13px;
+// 辅助文字
+$subText:12px;
+
+// 整体高度
+$totalHeight:1080px;
+$totalMinHeight:900px;
+// top高度
+$topHeight : 66px;
+// 导航宽度
+$navWidth : 50px;
+
+/* 声明公共样式 */
+
+//浮动
+//@param $direct 浮动方向
+@mixin float($direct){
+    float: $direct;
+}
+
+@mixin clearFloat{
+    &::after{
+        display: block;
+        visibility: hidden;
+        content: "";
+        width: 0;
+        clear:both;
+    }
+}
+
+@mixin routerViewCommon{
+    @include edgeStyle(null, 20px 40px);
+}
+
+//常规样式
+//@param $w 宽度
+//@param $h 高度
+@mixin normalStyle($w, $h:null,$lh:null,$disp:null){
+    width: $w;
+    height: $h;
+    line-height: $lh;
+    display: $disp;
+}
+
+//边距
+//@param $margin 外边距
+//@param $padding 内边距
+@mixin edgeStyle($margin,$padding:null){
+    margin: $margin;
+    padding: $padding;
+}
+
+//定位
+//@param $position 定位类型
+//@param $zIndex z-index 
+//@param $top 上偏移
+//@param $right 右偏移
+//@param $bottom 底偏移
+//@param $left 左偏移
+@mixin positionStyle($position,$zIndex:null,$top:null,$right:null,$bottom:null,$left:null){
+    position:$position;
+    z-index: $zIndex;
+    top:$top;
+    right:$right;
+    left:$left;
+    bottom:$bottom;
+}
+
+//背景图片
+//@param $margin 外边距
+//@param $padding 内边距
+@mixin backGroundImg($url,$rp:null,$posi:null){
+    background-image : $url;
+    background-repeat: $rp;
+    background-position: $posi;
+}

@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS `store`(
+   `user_id` INT UNSIGNED AUTO_INCREMENT,
+   `user_name` VARCHAR(100) NOT NULL,
+   `password` VARCHAR(40) NOT NULL,
+   `phone` VARCHAR(40) NOT NULL,
+   PRIMARY KEY ( `user_id` )
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `userinfo`(
+   `user_id` INT UNSIGNED AUTO_INCREMENT,
+   `user_name` VARCHAR(100) NOT NULL,
+   `password` VARCHAR(40) NOT NULL,
+   `phone` VARCHAR(40) NOT NULL,
+   PRIMARY KEY ( `user_id` )
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into store(user_id, user_name, password, phone) values (200, 'xgaa', 'xg123456', 'xg1234');
+
+insert into userinfo(user_id, user_name, password, phone) values (500, 'userddaa', 'xg123456', 'xg1234');

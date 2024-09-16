@@ -1,0 +1,240 @@
+#map {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    min-height: 600px;
+    min-width: 1500px;
+    .over-view {
+        padding: 20px;
+    }
+    >div {
+        width: 100%;
+        height: 100%;
+    }
+    .amap-geo,
+    .amap-zoomcontrol {
+        display: none !important;
+    }
+    .search-box {
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        width: 460px;
+        z-index: 10;
+    }
+    .classify {
+        position: absolute;
+        right: 88px;
+        top: 20px;
+        width: 400px;
+        z-index: 10;
+    }
+    .slider-box {
+        position: absolute;
+        right: 48px;
+        top: 20px;
+        height: 150px;
+        width: 20px;
+        z-index: 10;
+        .rang {
+            position: absolute;
+            width: 18px;
+            height: 100%;
+            right: -18px;
+            top: 0;
+            div {
+                width: 100%;
+                height: 20%;
+            }
+        }
+        .ant-slider-handle {
+            position: absolute;
+            cursor: pointer;
+            width: 0;
+            height: 0;
+            margin-bottom: -4px;
+            margin-left: -7px;
+            border-radius: 0;
+            border-left: solid 18px #40a9ff;
+            border-right: solid 0 transparent;
+            border-top: solid 10px transparent;
+            border-bottom: solid 10px transparent;
+            &:focus {
+                box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+            }
+        }
+        .ant-slider-vertical {
+            .ant-slider-track,
+            .ant-slider-rail,
+            .ant-slider-mark,
+            .ant-slider-step {
+                display: none;
+            }
+        }
+        .ant-slider-handle {
+            background: transparent;
+        }
+        .ant-slider-vertical {
+            width: 0;
+            padding: 0;
+        }
+    }
+    .org-lists {
+        position: absolute;
+        left: 20px;
+        top: 70px;
+        width: 460px;
+        bottom: 20px;
+        z-index: 9;
+        .org-lists-box {
+            position: absolute;
+            width: 100%;
+            left: 0;
+            top: 40px;
+            bottom: 50px;
+            overflow-y: auto;
+            >div {
+                position: relative;
+                padding: 20px 100px 20px 40px;
+                background: #fff;
+                margin-top: 20px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                cursor: pointer;
+                box-shadow: 3px 4px 13px 0px rgba(0, 0, 0, 0.09);
+                &:first-child {
+                    margin-top: 0;
+                }
+                .risk-num {
+                    position: absolute;
+                    right: 10px;
+                    top: 50%;
+                    transform: translate(0, -50%);
+                }
+                .sort-num {
+                    position: absolute;
+                    left: 10px;
+                    top: 10px;
+                    width: 24px;
+                    height: 30px;
+                    color: #fff;
+                    text-align: center;
+                    line-height: 30px;
+                    background-image: url(images/bg.png);
+                    background-repeat: no-repeat;
+                    background-size: cover;
+                }
+            }
+        }
+        .org-lists-box-a {
+            bottom: 0;
+        }
+        .org-lists-box-b {
+            top: 0;
+        }
+        .org-lists-box-c {
+            top: 0;
+            bottom: 0;
+        }
+        >div {
+            &:first-child {
+                position: absolute;
+                width: 100%;
+                height: 40px;
+                line-height: 40px;
+                padding: 0 10px;
+                left: 0;
+                top: 0;
+                background: #fff;
+                color: #2667AA;
+                font-size: 18px;
+                border-bottom: 1px solid #eee;
+            }
+            &:last-child {
+                position: absolute;
+                text-align: center;
+                height: 50px;
+                width: 100%;
+                left: 0;
+                bottom: 0;
+                background: #fff;
+                padding-top: 12px;
+                border-top: 1px solid #eee;
+                box-shadow: 3px 4px 13px 0px rgba(0, 0, 0, 0.09);
+            }
+        }
+        .ant-pagination-prev,
+        .ant-pagination-next,
+        .ant-pagination-jump-prev,
+        .ant-pagination-jump-next,
+        .ant-pagination-item {
+            min-width: 22px;
+            height: 22px;
+            line-height: 22px;
+        }
+    }
+    .org-details-box {
+        position: absolute;
+        width: 920px;
+        overflow: hidden;
+        left: 520px;
+        top: 50%;
+        background: #fff;
+        transform: translate(0, -50%);
+        box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.01), 0px 0px 14px 2px rgba(0, 0, 0, 0.05);
+        z-index: 10;
+        .org-name {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            padding-left: 20px;
+            padding-right: 40px;
+            font-size: 18px;
+            color: #000;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            border-bottom: 1px solid #E6E6E6;
+        }
+        .org-content {
+            width: 100%;
+            padding-right: 500px;
+            background: #fff;
+            overflow: hidden;
+            >div:first-child {
+                position: relative;
+                width: 100%;
+                padding: 30px 0 40px 0;
+                overflow: hidden;
+                text-align: center;
+                &:after {
+                    position: absolute;
+                    right: 0;
+                    top: 16%;
+                    bottom: 20%;
+                    width: 1px;
+                    content: "";
+                    background: #E6E6E6;
+                }
+                >div {
+                    display: inline-block;
+                    width: 360px;
+                    overflow: hidden;
+                    text-align: left;
+                }
+            }
+            >div:last-child {
+                position: absolute;
+                width: 440px;
+                overflow: hidden;
+                right: 30px;
+                top: 50%;
+                transform: translate(0, -50%);
+            }
+        }
+    }
+}

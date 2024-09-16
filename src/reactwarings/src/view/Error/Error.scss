@@ -1,0 +1,32 @@
+#error {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    height: 160px;
+    >img {
+        position: absolute;
+        left: 0;
+        height: 140px;
+        top: 10px;
+    }
+    .a {
+        color: #1E9CFA;
+        font-size: 18px;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+    .b {
+        color: #666;
+        margin-top: 10px;
+        line-height: 24px;
+    }
+    .c {
+        color: #333;
+        width: 340px;
+        >span {
+            color: #1E9CFA;
+        }
+        margin-top: 20px;
+    }
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="box">
+        事件名称：经营食品标签、说明书是事件名称：经营食品标签、说明书是否涉及疾病预防、治疗功能,经营食品标签、说明书是否涉及疾病预防、治疗功能,经营食品标签、否涉及疾病预防、治疗功能,经营食品标签、说明书是否涉及疾病预防、治疗功能,经营食品标签、
+    </div>
+</body>
+<style>
+    .box {
+        width: 100px;
+        height: 60px;
+        /* text-overflow: ellipsis;
+        white-space: nowrap;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden; */
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .box::after {
+        content: "...";
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding-left: 40px;
+        background: -webkit-linear-gradient(left, transparent, #fff 55%);
+        background: -o-linear-gradient(right, transparent, #fff 55%);
+        background: -moz-linear-gradient(right, transparent, #fff 55%);
+        background: linear-gradient(to right, transparent, #fff 55%);
+    }
+</style>
+
+</html>

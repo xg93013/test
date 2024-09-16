@@ -1,0 +1,224 @@
+/**
+ * 存储localStorage
+ */
+// export const setStore = (name, content) => {
+//   if (!name) return
+//   if (typeof content !== 'string') {
+//     content = JSON.stringify(content)
+//   }
+//   window.localStorage.setItem(name, content)
+// }
+
+/**
+ * 获取localStorage
+ */
+// export const getStore = name => {
+//   if (!name) return
+//   return window.localStorage.getItem(name)
+// }
+//
+// // 删除
+// export function localDel (query) {
+//   // 当前 localstorage 数组
+//   let searches = storage.get(SEARCH_KEY, [])
+//
+//   delArr(searches, (item) => {
+//     return item === query
+//   })
+//
+//   storage.set(SEARCH_KEY, searches)
+//   return searches
+// }
+
+export const myDOM = {
+    /**
+     * 判断是否有该 class
+     */
+    hasClass(el, className) {
+        let reg = new RegExp('(^|\\s)' + className + '(\\s|$)')
+        return reg.test(el.className)
+    },
+    /**
+     * 添加 class
+     */
+    addClass(el, className) {
+        if (this.hasClass(el, className)) {
+            return
+        }
+        let newClass = el.className.split(' ')
+        newClass.push(className)
+        el.className = newClass.join(' ')
+    },
+
+    /**
+     * 获取/设置 自定义属性 data-${name}=val
+     * 如果传入了 val 就设置自定义属性 `data-${name}` 的值为 val
+     * 如果没有传入了 val 就获取自定义属性 `data-${name}` 的值
+     */
+    customAttribute(el, name, val) {
+        if (val) {
+            return el.setAttribute(`data-${name}`, val)
+        } else {
+            return el.getAttribute(`data-${name}`)
+        }
+    },
+
+    /**
+     * 去抖（节流）
+     * 有一些浏览器事件可以很快地在短时间内多次触发，
+     * 例如调整窗口大小、向下滚动页面、搜索框节流等。
+     * 如果你将事件监听器绑定到窗口滚动事件，并且用户不断快速地向下滚动页面，
+     * 则你的事件可能在1秒内触发数千次。这可能会导致一些严重的性能问题。
+     * 解决这个问题的一种方法是去抖，通过限制再次调用函数之前必须经过的时间。
+     * 因此，去抖的正确实现是将几个函数调用组合成一个，并且在经过一段时间后仅执行一次。
+     *
+     * document.addEventListener('scroll', debounce(function () {
+     *   console.log('hello');
+     * }, 1000));
+     *
+     * @param  {Function} fn    要节流的函数
+     * @param  {number}   delay 延迟毫秒数
+     */
+    debounce(fn, delay) {
+        let timer = null
+
+        return function(...args) {
+            if (timer) {
+                clearTimeout(timer)
+            }
+
+            timer = setTimeout(() => {
+                fn.apply(this, args)
+            }, delay)
+        }
+    },
+    /**
+     * 
+     * @param {*} method 方法
+     * @param {*} delay 延迟执行
+     * @param {*} duration 下一次调用时间
+     */
+    throttle(method, delay, duration) {
+        var timer = null;
+        var begin = new Date();
+        return () => {
+            var context = this,
+                args = arguments;
+            var current = new Date();
+            clearTimeout(timer);
+            if (current - begin >= duration) {
+                method.apply(context, args);
+                begin = current;
+            } else {
+                timer = setTimeout(() => {
+                    method.apply(context, args);
+                }, delay);
+            }
+        }
+    }
+}
+
+export const myTime = {
+    /**
+     * 格式化时间戳(分:秒)
+     * 61 -> 01:01
+     */
+    format(timestamp) {
+        timestamp = Math.floor(timestamp)
+
+        let minute = (Math.floor(timestamp / 60)).toString().padStart(2, '0')
+        let second = (timestamp % 60).toString().padStart(2, '0')
+        return `${minute}:${second}`
+    }
+}
+
+export const myNumber = {
+    /**
+     * 返回一个 [min, max] 之间的随机整数
+     * @param  {number} min 下界
+     * @param  {number} max 上界
+     */
+    getRandom(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min)
+    }
+}
+
+export const myArray = {
+    /**
+     * 克隆数组
+     * @param  {array} arr 原数组
+     * @return {array}     新数组
+     */
+    cloneArr(arr) {
+        // 从第一个字符就开始 copy
+        // slice(start,end) 方法可从已有的数组中返回选定的元素。
+        return arr.slice(0)
+    },
+
+    /**
+     * 洗牌函数
+     * @param  {Array} arr 原数组
+     * @param  {boolean} flag 是否改变原数组，默认不改变
+     * @return {Array}     新数组
+     */
+    shuffle(arr, flag = false) {
+        let newArr = []
+        flag ? (newArr = arr) : (newArr = this.cloneArr(arr))
+
+        for (let i = 0; i < newArr.length; i++) {
+            let j = myNumber.getRandom(0, i)
+            let temp = newArr[i]
+            newArr[i] = newArr[j]
+            newArr[j] = temp
+        }
+        return newArr
+    },
+
+    /**
+     * 随机获取数组成员
+     * @param  {array} arr 传入数组
+     * @return {[type]}    一个随机成员
+     */
+    randomMember(arr) {
+        return arr[Math.floor(Math.random() * arr.length)]
+    }
+}
+
+export const myString = {}
+
+export const myStore = {
+    // https://github.com/ustbhuangyi/storage
+    // https://github.com/jaywcjlove/store.js
+}
+
+export const myHTTP = {}
+
+export const myOthers = {}
+
+export const throttle = (method, delay, duration) => {
+    var timer = null;
+    var begin = new Date();
+    return () => {
+        var context = this,
+            args = arguments;
+        var current = new Date();
+        clearTimeout(timer);
+        if (current - begin >= duration) {
+            method.apply(context, args);
+            begin = current;
+        } else {
+            timer = setTimeout(() => {
+                method.apply(context, args);
+            }, delay);
+        }
+    }
+}
+export const throttles = (method, delay = 200) => {
+    let timer = null;
+    return (e) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            method(e)
+        }, delay)
+    }
+}

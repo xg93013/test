@@ -1,0 +1,85 @@
+$multiNum = 4;
+
+$mainColor = 1, 255, 255;
+
+// 全局变量
+// header高度
+// $headerH=80px * $multiNum;
+$headerH=450px;
+$minHeight=1080px * $multiNum - 103px - 40px;
+
+//statistics    
+// $panelCommonWidth = 430px;
+// 大屏
+$panelCommonWidth = (1346.66px * 1227 / 376);
+
+
+// 声明minxin
+base(w=initial,h=initial,lh=initial)
+    width:w;
+    height:h;
+    line-height:lh;
+clf()
+    &:after
+        display block
+        clear both
+        content ""
+// 给自定义属性加计算属性值
+calcM(attr, per, px){
+    {attr} 'calc(%s - %s)' % (per px)
+    {attr} '-moz-calc(%s - %s)' % (per px)
+    {attr} '-webkit-calc(%s - %s)' (per px)
+}
+calcP(attr, per, px){
+    {attr} 'calc(%s + %s)' % (per px)
+    {attr} '-moz-calc(%s + %s)' % (per px)
+    {attr} '-webkit-calc(%s + %s)' (per px)
+}
+
+calcDivision(attr, per, px, divn) {
+    {attr} 'calc((%s - %s) / %s )' % (per px divn)
+    {attr} '-moz-calc((%s - %s) / %s )' % (per px divn)
+    {attr} '-webkit-calc((%s - %s) / %s )' (per px divn)
+}
+calcDivisionP(attr, per, px, divn, ex) {
+    {attr} 'calc((%s - %s) / %s + %s)' % (per px divn ex)
+    {attr} '-moz-calc((%s - %s) / %s + %s)' % (per px divn ex)
+    {attr} '-webkit-calc((%s - %s) / %s + %s)' (per px divn ex)
+}
+// 动画效果
+trans($a=all,$t=.25s,$s=ease-in-out) {
+    -webkit-transition: $a $t $s;
+    transition: $a $t $s;
+    -moz-transition: $a $t $s; /* Firefox 4 */
+    -o-transition: $a $t $s; /* Opera */
+}
+
+// 渐变色设置
+gradientStyle($d,$c1,$c2) {
+    background: linear-gradient(to $d,$c1,$c2);
+    // background: -webkit-gradient(linear,$d,$c1,$c2);
+    background: -o-linear-gradient($d,$c1,$c2);
+    background: -moz-linear-gradient($d,$c1,$c2);
+    background: -mos-linear-gradient($d,$c1,$c2);
+    background: -ms-linear-gradient($d,$c1,$c2);
+}
+
+// 统一处理单位
+fitPx($num) {
+    return $num * $multiNum
+}
+
+// scale
+transfS($x=50%, $y=50%) {
+    transform scale($multiNum) !important
+    transform-origin $x $y !important
+}
+
+
+// calc(attr, expression){
+//     {attr} cal({expression})
+//     {attr} -moz-calc({expression})
+//     {attr} -webkit-calc({expression})
+// }
+    // attr -moz-{expression}
+    // attr -webkit-{expression}

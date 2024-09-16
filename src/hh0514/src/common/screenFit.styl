@@ -1,0 +1,235 @@
+// @media screen and (max-height: 4320px) {
+    $panelCommonWidth = (1346.66px * 1227 / 376);
+    #yg_html {
+        // &:not(div[class].maptalks_scale) {
+        width 15360px
+        height 4320px
+        transform scale(.25)
+        transform-origin 0 0
+        // }
+    }
+    #mainPage {
+        width 15360px
+    }
+    #app_big{
+        .header { 
+            display none
+        }
+        // width 9900px
+        font-size fitPx(16px)
+        #mapContainer {
+        
+            #mapTalks {
+                max-width 3840px
+                max-height 1080px
+                transform scale(4)
+                transform-origin 0 0
+            }
+            .el-dialog__wrapper{
+                position: absolute
+
+            }
+        }
+        #exponextCharts {
+            .charts_background {
+                background-size 100%
+            }
+        }
+
+        #situation_statistics {
+            position relative
+            .panel_common{
+                width $panelCommonWidth
+            }
+            .section_common {
+
+            }
+            .reset_btn {
+            //     right fitPx(20px*2) + $panelCommonWidth
+            }
+            .stat {
+                .outline {
+                    text-align center
+                    .numArea {
+                        display flex
+                        flex-direction row
+                        justify-content center
+                        align-items flex-end
+                        .unit {
+                            position relative
+                        }
+                    }
+                }
+                .river_lake {
+                    
+                }
+            }
+        }
+        #situation_statistics_detail {
+            display flex
+            flex-direction column
+            .content {
+                flex-grow 1
+                // height 100%
+                calcM(height,100%, fitPx(21.25px + 20px))
+            }
+            .part_common {
+                float left
+                base(50%, 100% / 2)
+                display flex
+                flex-direction column
+                margin-bottom 0
+                &.fullWidth {
+                    width 100%
+                }
+                &.intro {
+                    display flex
+                    flex-direction column
+                    .exponentCircleBox {
+                        flex-grow 1
+                        display flex
+                        justify-content center
+                        align-items center
+                        .exponentCircle {
+                            svg {
+                                transfS(50%, 0)
+                            }
+                        }
+                        .exponentCircleArea {
+                            base(25%, 400px) 
+                        }
+                    }
+                }
+            }
+            .tendencyChartsArea {
+                #tendencyCharts{
+                    base(25%)
+                    transfS(0,0)
+                }
+            }
+            .el-dialog.tendency_dialog{ 
+                transform translate(-50%,-50%) scale($multiNum)
+                transform-origin 0 50%
+            }
+        }
+
+        .tableCommon {
+            width: 100%
+            tr {
+                &.big_screen {
+                    font-size 56px
+                    >td,>th {
+                        padding 16px 0px
+                        div {
+                            base(,92px,92px)
+                        }
+                    }
+                }
+            }
+        }
+        #gismap {
+            padding-top $headerH
+            .filterArea {
+                transfS(100%,0)
+                // right fitPx(20px*2) + $panelCommonWidth
+            }
+        }
+        .el-collapse-item__header {
+            font-size fitPx(13px)
+            base(,fitPx(48px),fitPx(48px))
+        }
+        .el-collapse-item__arrow {
+            base(fitPx(13px),fitPx(48px),fitPx(48px))
+        }
+        .el-collapse-item__content {
+            font-size fitPx(13px)
+        }
+        .el-select-dropdown.el-popper {
+            min-width 100% !important
+            left 0px !important
+            top 40px !important
+            .popper__arrow {
+                left fitPx(8px) !important
+            }
+        }
+    }
+    .searchCustomPopper {
+        // transfS(0,0);
+        left: 0 !important;
+        top: 45px !important;
+    }
+    .el-tooltip__popper.is-dark {
+        transfS(50%, 100%);
+        white-space pre
+    }
+    .el-loading-spinner {
+        transfS()
+    }
+// }
+
+@media screen and (max-device-width: 1366px) {
+    *{
+        // display: none;
+    }
+    $min_rate = 1366 / 1920;
+    html{
+        min-height 768px - 103px - 40px
+        min-width 1366px
+        .notebook_f {
+            
+        }
+        #app_m{
+            .header {
+                transform translateX(-50%) scale($min_rate)
+                transform-origin top
+            }
+            #situation_statistics{
+                .panel_common{
+                    transform scale($min_rate)
+                    calcDivision(height,100%, 40px, $min_rate);
+                    &.left_panel{
+                        transform-origin 0 0
+                    }
+                    &.right_panel{
+                        transform-origin 100% 0
+                    }
+                }
+                .reset_btn {
+                    top 160px * $min_rate
+                    right $panelCommonWidth * $min_rate + 20px * 2
+                    &.tendency {
+                        right 20px
+                    }
+                }
+            }
+            #gismap {
+                .filterArea {
+                    transform scale($min_rate)
+                    transform-origin 100% 0
+                    right $panelCommonWidth * $min_rate + 20px * 2
+                    top 100px * $min_rate
+                    &.tendency {
+                        right 20px
+                        // left auto
+                    }
+                }
+                .auto_slider {
+                    transform scale($min_rate)
+                    transform-origin 0 100%
+                    left $panelCommonWidth * $min_rate + 20px * 2
+                    // transform-origin 100% 0
+                }
+                .qualityLegend {
+                    transform scale($min_rate)
+                    right $panelCommonWidth * $min_rate + 20px * 2
+                    transform-origin 100% 100%
+                    &.tendency_view {
+                        right 40px
+                    }
+                }
+            }
+        }
+    }
+}
+
+
